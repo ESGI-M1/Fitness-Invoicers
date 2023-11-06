@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -37,6 +39,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_created = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?sex $sex = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?company $company = null;
+
+    #[ORM\ManyToMany(targetEntity: report::class, inversedBy: 'users')]
+    private Collection $report;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Quote::class)]
+    private Collection $quotes;
+
+    public function __construct()
+    {
+        $this->report = new ArrayCollection();
+        $this->quotes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -140,6 +161,84 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateCreated(\DateTimeInterface $date_created): static
     {
         $this->date_created = $date_created;
+
+        return $this;
+    }
+
+    public function getSex(): ?sex
+    {
+        return $this->sex;
+    }
+
+    public function setSex(?sex $sex): static
+    {
+        $this->sex = $sex;
+
+        return $this;
+    }
+
+    public function getCompany(): ?company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?company $company): static
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, report>
+     */
+    public function getReport(): Collection
+    {
+        return $this->report;
+    }
+
+    public function addReport(report $report): static
+    {
+        if (!$this->report->contains($report)) {
+            $this->report->add($report);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(report $report): static
+    {
+        $this->report->removeElement($report);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Quote>
+     */
+    public function getQuotes(): Collection
+    {
+        return $this->quotes;
+    }
+
+    public function addQuote(Quote $quote): static
+    {
+        if (!$this->quotes->contains($quote)) {
+            $this->quotes->add($quote);
+            $quote->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuote(Quote $quote): static
+    {
+        if ($this->quotes->removeElement($quote)) {
+            // set the owning side to null (unless already changed)
+            if ($quote->getOwner() === $this) {
+                $quote->setOwner(null);
+            }
+        }
 
         return $this;
     }
