@@ -37,7 +37,7 @@ class Product
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -49,7 +49,7 @@ class Product
         return $this->price;
     }
 
-    public function setPrice(float $price): static
+    public function setPrice(float $price): self
     {
         $this->price = $price;
 
@@ -61,7 +61,7 @@ class Product
         return $this->quote;
     }
 
-    public function setQuote(?quote $quote): static
+    public function setQuote(?quote $quote): self
     {
         $this->quote = $quote;
 
@@ -73,7 +73,7 @@ class Product
         return $this->category;
     }
 
-    public function setCategory(?category $category): static
+    public function setCategory(?category $category): self
     {
         $this->category = $category;
 

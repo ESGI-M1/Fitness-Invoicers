@@ -43,7 +43,7 @@ class PaymentStatus
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(string $type): self
     {
         $this->type = $type;
 
@@ -55,7 +55,7 @@ class PaymentStatus
         return $this->date_created;
     }
 
-    public function setDateCreated(\DateTimeInterface $date_created): static
+    public function setDateCreated(\DateTimeInterface $date_created): self
     {
         $this->date_created = $date_created;
 
@@ -67,7 +67,7 @@ class PaymentStatus
         return $this->date_updated;
     }
 
-    public function setDateUpdated(\DateTimeInterface $date_updated): static
+    public function setDateUpdated(\DateTimeInterface $date_updated): self
     {
         $this->date_updated = $date_updated;
 
@@ -82,7 +82,7 @@ class PaymentStatus
         return $this->payments;
     }
 
-    public function addPayment(Payment $payment): static
+    public function addPayment(Payment $payment): self
     {
         if (!$this->payments->contains($payment)) {
             $this->payments->add($payment);
@@ -92,7 +92,7 @@ class PaymentStatus
         return $this;
     }
 
-    public function removePayment(Payment $payment): static
+    public function removePayment(Payment $payment): self
     {
         if ($this->payments->removeElement($payment)) {
             // set the owning side to null (unless already changed)

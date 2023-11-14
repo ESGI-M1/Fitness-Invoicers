@@ -38,7 +38,7 @@ class Payment
         return $this->amount;
     }
 
-    public function setAmount(float $amount): static
+    public function setAmount(float $amount): self
     {
         $this->amount = $amount;
 
@@ -50,7 +50,7 @@ class Payment
         return $this->invoice;
     }
 
-    public function setInvoice(?invoice $invoice): static
+    public function setInvoice(?invoice $invoice): self
     {
         $this->invoice = $invoice;
 
@@ -62,7 +62,7 @@ class Payment
         return $this->payment_method;
     }
 
-    public function setPaymentMethod(?paymentMethod $payment_method): static
+    public function setPaymentMethod(?paymentMethod $payment_method): self
     {
         $this->payment_method = $payment_method;
 
@@ -74,7 +74,7 @@ class Payment
         return $this->payment_status;
     }
 
-    public function setPaymentStatus(?paymentStatus $payment_status): static
+    public function setPaymentStatus(?paymentStatus $payment_status): self
     {
         $this->payment_status = $payment_status;
 

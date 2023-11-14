@@ -74,7 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -103,7 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): static
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
@@ -118,7 +118,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
 
@@ -139,7 +139,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -151,7 +151,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->lastname;
     }
 
-    public function setLastname(string $lastname): static
+    public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
 
@@ -163,7 +163,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->date_created;
     }
 
-    public function setDateCreated(\DateTimeInterface $date_created): static
+    public function setDateCreated(\DateTimeInterface $date_created): self
     {
         $this->date_created = $date_created;
 
@@ -175,7 +175,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->sex;
     }
 
-    public function setSex(?sex $sex): static
+    public function setSex(?sex $sex): self
     {
         $this->sex = $sex;
 
@@ -187,7 +187,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->company;
     }
 
-    public function setCompany(?company $company): static
+    public function setCompany(?company $company): self
     {
         $this->company = $company;
 
@@ -202,7 +202,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->report;
     }
 
-    public function addReport(report $report): static
+    public function addReport(report $report): self
     {
         if (!$this->report->contains($report)) {
             $this->report->add($report);
@@ -211,7 +211,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeReport(report $report): static
+    public function removeReport(report $report): self
     {
         $this->report->removeElement($report);
 
@@ -226,7 +226,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->quotes;
     }
 
-    public function addQuote(Quote $quote): static
+    public function addQuote(Quote $quote): self
     {
         if (!$this->quotes->contains($quote)) {
             $this->quotes->add($quote);
@@ -236,7 +236,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeQuote(Quote $quote): static
+    public function removeQuote(Quote $quote): self
     {
         if ($this->quotes->removeElement($quote)) {
             // set the owning side to null (unless already changed)
@@ -253,7 +253,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->isVerified;
     }
 
-    public function setIsVerified(bool $isVerified): static
+    public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
 

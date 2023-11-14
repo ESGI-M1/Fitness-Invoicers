@@ -39,7 +39,7 @@ class PaymentMethod
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(string $type): self
     {
         $this->type = $type;
 
@@ -51,7 +51,7 @@ class PaymentMethod
         return $this->allowed;
     }
 
-    public function setAllowed(bool $allowed): static
+    public function setAllowed(bool $allowed): self
     {
         $this->allowed = $allowed;
 
@@ -66,7 +66,7 @@ class PaymentMethod
         return $this->payments;
     }
 
-    public function addPayment(Payment $payment): static
+    public function addPayment(Payment $payment): self
     {
         if (!$this->payments->contains($payment)) {
             $this->payments->add($payment);
@@ -76,7 +76,7 @@ class PaymentMethod
         return $this;
     }
 
-    public function removePayment(Payment $payment): static
+    public function removePayment(Payment $payment): self
     {
         if ($this->payments->removeElement($payment)) {
             // set the owning side to null (unless already changed)
