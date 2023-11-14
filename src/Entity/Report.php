@@ -40,7 +40,7 @@ class Report
         return $this->value;
     }
 
-    public function setValue(float $value): static
+    public function setValue(float $value): self
     {
         $this->value = $value;
 
@@ -52,7 +52,7 @@ class Report
         return $this->company;
     }
 
-    public function setCompany(?company $company): static
+    public function setCompany(?company $company): self
     {
         $this->company = $company;
 
@@ -67,7 +67,7 @@ class Report
         return $this->users;
     }
 
-    public function addUser(User $user): static
+    public function addUser(User $user): self
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
@@ -77,7 +77,7 @@ class Report
         return $this;
     }
 
-    public function removeUser(User $user): static
+    public function removeUser(User $user): self
     {
         if ($this->users->removeElement($user)) {
             $user->removeReport($this);

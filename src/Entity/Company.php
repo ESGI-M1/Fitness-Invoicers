@@ -47,7 +47,7 @@ class Company
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -59,7 +59,7 @@ class Company
         return $this->siret;
     }
 
-    public function setSiret(int $siret): static
+    public function setSiret(int $siret): self
     {
         $this->siret = $siret;
 
@@ -74,7 +74,7 @@ class Company
         return $this->users;
     }
 
-    public function addUser(User $user): static
+    public function addUser(User $user): self
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
@@ -84,7 +84,7 @@ class Company
         return $this;
     }
 
-    public function removeUser(User $user): static
+    public function removeUser(User $user): self
     {
         if ($this->users->removeElement($user)) {
             // set the owning side to null (unless already changed)
@@ -104,7 +104,7 @@ class Company
         return $this->reports;
     }
 
-    public function addReport(Report $report): static
+    public function addReport(Report $report): self
     {
         if (!$this->reports->contains($report)) {
             $this->reports->add($report);
@@ -114,7 +114,7 @@ class Company
         return $this;
     }
 
-    public function removeReport(Report $report): static
+    public function removeReport(Report $report): self
     {
         if ($this->reports->removeElement($report)) {
             // set the owning side to null (unless already changed)
@@ -134,7 +134,7 @@ class Company
         return $this->quotes;
     }
 
-    public function addQuote(Quote $quote): static
+    public function addQuote(Quote $quote): self
     {
         if (!$this->quotes->contains($quote)) {
             $this->quotes->add($quote);
@@ -144,7 +144,7 @@ class Company
         return $this;
     }
 
-    public function removeQuote(Quote $quote): static
+    public function removeQuote(Quote $quote): self
     {
         if ($this->quotes->removeElement($quote)) {
             // set the owning side to null (unless already changed)

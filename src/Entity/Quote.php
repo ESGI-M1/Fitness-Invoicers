@@ -58,7 +58,7 @@ class Quote
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -70,7 +70,7 @@ class Quote
         return $this->date_available;
     }
 
-    public function setDateAvailable(\DateTimeInterface $date_available): static
+    public function setDateAvailable(\DateTimeInterface $date_available): self
     {
         $this->date_available = $date_available;
 
@@ -82,7 +82,7 @@ class Quote
         return $this->date_created;
     }
 
-    public function setDateCreated(\DateTimeInterface $date_created): static
+    public function setDateCreated(\DateTimeInterface $date_created): self
     {
         $this->date_created = $date_created;
 
@@ -94,7 +94,7 @@ class Quote
         return $this->date_updated;
     }
 
-    public function setDateUpdated(\DateTimeInterface $date_updated): static
+    public function setDateUpdated(\DateTimeInterface $date_updated): self
     {
         $this->date_updated = $date_updated;
 
@@ -106,7 +106,7 @@ class Quote
         return $this->company;
     }
 
-    public function setCompany(?company $company): static
+    public function setCompany(?company $company): self
     {
         $this->company = $company;
 
@@ -118,7 +118,7 @@ class Quote
         return $this->owner;
     }
 
-    public function setOwner(?user $owner): static
+    public function setOwner(?user $owner): self
     {
         $this->owner = $owner;
 
@@ -133,7 +133,7 @@ class Quote
         return $this->products;
     }
 
-    public function addProduct(Product $product): static
+    public function addProduct(Product $product): self
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
@@ -143,7 +143,7 @@ class Quote
         return $this;
     }
 
-    public function removeProduct(Product $product): static
+    public function removeProduct(Product $product): self
     {
         if ($this->products->removeElement($product)) {
             // set the owning side to null (unless already changed)
@@ -163,7 +163,7 @@ class Quote
         return $this->invoices;
     }
 
-    public function addInvoice(Invoice $invoice): static
+    public function addInvoice(Invoice $invoice): self
     {
         if (!$this->invoices->contains($invoice)) {
             $this->invoices->add($invoice);
@@ -173,7 +173,7 @@ class Quote
         return $this;
     }
 
-    public function removeInvoice(Invoice $invoice): static
+    public function removeInvoice(Invoice $invoice): self
     {
         if ($this->invoices->removeElement($invoice)) {
             // set the owning side to null (unless already changed)
