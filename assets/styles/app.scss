@@ -5,3 +5,20 @@
 body {
     background-color: lightgray;
 }
+
+#top-menu {
+    transition: margin-left 2s ease;
+
+    &.show-menu{
+        margin-left: 0;
+    }
+}
+
+#left-menu {
+    transition: left 2s ease;
+    left: -250px;
+
+    &.show-menu{
+        left: 0;
+    }
+}
