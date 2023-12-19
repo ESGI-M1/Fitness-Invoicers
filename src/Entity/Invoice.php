@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
 class Invoice
 {
+    use Traits\Timestampable;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -27,12 +29,6 @@ class Invoice
 
     #[ORM\Column(length: 255)]
     private ?string $billing_address = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_created = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_updated = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
     #[ORM\JoinColumn(nullable: false)]
@@ -95,30 +91,6 @@ class Invoice
     public function setBillingAddress(string $billing_address): static
     {
         $this->billing_address = $billing_address;
-
-        return $this;
-    }
-
-    public function getDateCreated(): ?\DateTimeInterface
-    {
-        return $this->date_created;
-    }
-
-    public function setDateCreated(\DateTimeInterface $date_created): static
-    {
-        $this->date_created = $date_created;
-
-        return $this;
-    }
-
-    public function getDateUpdated(): ?\DateTimeInterface
-    {
-        return $this->date_updated;
-    }
-
-    public function setDateUpdated(\DateTimeInterface $date_updated): static
-    {
-        $this->date_updated = $date_updated;
 
         return $this;
     }
