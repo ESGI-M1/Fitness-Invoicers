@@ -1,0 +1,7 @@
+.input {
+  @apply bg-gray-400 text-black border-r-green-300;
+
+  &[type=radio].connection:focus {
+    @apply ring-green-600;
+  }
+}
