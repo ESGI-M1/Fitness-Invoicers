@@ -11,6 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: QuoteRepository::class)]
 class Quote
 {
+
+    use Traits\Timestampable;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -21,12 +24,6 @@ class Quote
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_available = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_created = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_updated = null;
 
     #[ORM\ManyToOne(inversedBy: 'quotes')]
     #[ORM\JoinColumn(nullable: false)]
@@ -73,30 +70,6 @@ class Quote
     public function setDateAvailable(\DateTimeInterface $date_available): static
     {
         $this->date_available = $date_available;
-
-        return $this;
-    }
-
-    public function getDateCreated(): ?\DateTimeInterface
-    {
-        return $this->date_created;
-    }
-
-    public function setDateCreated(\DateTimeInterface $date_created): static
-    {
-        $this->date_created = $date_created;
-
-        return $this;
-    }
-
-    public function getDateUpdated(): ?\DateTimeInterface
-    {
-        return $this->date_updated;
-    }
-
-    public function setDateUpdated(\DateTimeInterface $date_updated): static
-    {
-        $this->date_updated = $date_updated;
 
         return $this;
     }
