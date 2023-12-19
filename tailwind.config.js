@@ -11,7 +11,7 @@ module.exports = {
         'left-menu': 'left',
       },
       transitionDuration: {
-        '2s': '2s',
+        '2': '2s',
       },
       transitionTimingFunction: {
         'ease': 'ease',
