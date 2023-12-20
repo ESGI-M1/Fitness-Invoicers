@@ -14,9 +14,9 @@
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </head>
-<body class="bg-gray-50">
-{% include 'navbar/nav.html.twig' %}
+<body class="{{ backgroundClass ?? 'bg-white' }}">
 
+{% if backgroundClass is not defined %}{% include 'navbar/nav.html.twig' %} {% endif %}
 
 {% block body %}{% endblock %}
 

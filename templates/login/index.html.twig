@@ -1,7 +1,7 @@
 {# templates/login/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{# ... #}
+{% set backgroundClass = 'bg-black' %}
 
 {% block body %}
     {% if error %}
@@ -9,17 +9,39 @@
     {% endif %}
 
     <form action="{{ path('app_login') }}" method="post">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}">
+        <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+            <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+                <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-100">
+                    Connectez-vous</h2>
+            </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password">
+            <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                <form class="space-y-6" action="#" method="POST">
+                    {{ form_start(form) }}
+                    {{ form_end(form) }}
+                    <div class="flex justify-end mb-4">
+                        <a href="#" class="text-white text-sm hover:text-gray-300 ml-2">Mot de passe oublié?</a>
+                    </div>
+                    <div>
+                        {% include './components/a.html.twig' with {
+                            'bg_color': 'gray',
+                            'text_color': 'black',
+                            'label': 'Connexion',
+                        } %}
+                    </div>
+                </form>
 
-        {# If you want to control the URL the user is redirected to on success
-        <input type="hidden" name="_target_path" value="/account"> #}
-
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-        <button type="submit">login</button>
+                <p class="mt-10 text-center text-sm text-gray-500">
+                    Pas encore membre?
+                    <a href="#" class="font-semibold leading-6 text-green-600 hover:text-green-500">Créer un compte</a>
+                </p>
+                <div class="flex justify-center mt-2 space-x-2">
+                    <img src="./assets/images/logo-fb.svg" alt="Facebook" class="w-6 h-6">
+                    <img src="./assets/images/logo-twitter.svg" alt="Twitter" class="w-6 h-6">
+                    <img src="./assets/images/logo-google.svg" alt="Google" class="w-6 h-6">
+                    <img src="./assets/images/logo-linkedin.svg" alt="Linkedin" class="w-6 h-6">
+                </div>
+            </div>
+        </div>
     </form>
 {% endblock %}
