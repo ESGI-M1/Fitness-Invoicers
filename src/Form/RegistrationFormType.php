@@ -35,12 +35,45 @@ class RegistrationFormType extends AbstractType
                     ])
                 ]
             ])
-            ->add('company',TextType::class,[
+            ->add('firstname', TextType::class, [
+                'label' => 'Prénom',
+                'attr' => [
+                    'placeholder' => 'Ex : Jean',
+                    'autocomplete' => 'given-name'
+                ],
+                'constraints' =>[
+                    new Length([
+                        'min' => 3,
+                        'minMessage' => 'Votre prénom doit être de minimum {{ limit }} caractères',
+                    ]),
+                    new NotBlank([
+                        'message' => 'Merci d\'entrer votre prénom'
+                    ])
+                ]
+            ])
+            ->add('lastname', TextType::class, [
+                'label' => 'Nom',
+                'attr' => [
+                    'placeholder' => 'Ex : Dupont',
+                    'autocomplete' => 'family-name'
+                ],
+                'constraints' =>[
+                    new Length([
+                        'min' => 3,
+                        'minMessage' => 'Votre nom doit être de minimum {{ limit }} caractères',
+                    ]),
+                    new NotBlank([
+                        'message' => 'Merci d\'entrer votre nom'
+                    ])
+                ]
+            ])
+            ->add('companyName',TextType::class,[
                 'label' => 'Nom de la société',
                 'attr' => [
                     'placeholder' => 'Ex : Fitness Invoicer',
                     'autocomplete' => 'organization'
                 ],
+                'mapped' => false,
                 'constraints' => [
                     new Length([
                         'min' => 3,
@@ -50,7 +83,6 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Merci d\'entrer le nom de la société'
                     ]),
                 ],
-                'mapped' => false
             ])
             ->add('siret', TextType::class,[
                 'label' => 'Numéro de SIRET',
@@ -58,6 +90,7 @@ class RegistrationFormType extends AbstractType
                     'placeholder' => 'Ex : 12345678912345',
                     'autocomplete' => 'siret'
                 ],
+                'mapped' => false,
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Merci d\'entrer le numéro de SIRET'
@@ -67,7 +100,6 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Le numéro de SIRET doit être composé de 14 chiffres'
                     ]),
                 ],
-                'mapped' => false
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
