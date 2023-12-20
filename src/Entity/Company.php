@@ -18,10 +18,14 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Veillez renseigner le nom de votre société')]
+    #[Assert\Length(min: 3, minMessage: 'Le nom de la société doit être de minimum {{ limit }} caractères')]
     private ?string $name = null;
 
     #[ORM\Column]
-    private ?int $siret = null;
+    #[Assert\NotBlank(message: 'Veillez renseigner le numéro de SIRET de votre société')]
+    #[Assert\Regex(pattern: '/^[0-9]{14}$/', message: 'Le numéro de SIRET doit être composé de 14 chiffres')]
+    private ?string $siret = null;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
     private Collection $users;
@@ -56,12 +60,12 @@ class Company
         return $this;
     }
 
-    public function getSiret(): ?int
+    public function getSiret(): ?string
     {
         return $this->siret;
     }
 
-    public function setSiret(int $siret): static
+    public function setSiret(string $siret): static
     {
         $this->siret = $siret;
 

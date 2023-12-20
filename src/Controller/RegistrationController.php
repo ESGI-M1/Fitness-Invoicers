@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Company;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
@@ -34,6 +35,18 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $siret = $form->get('siret')->getData();
+            $company_name = $form->get('companyName')->getData();
+
+            $company = new Company();
+            $company->setName($company_name);
+            $company->setSiret($siret);
+
+            $entityManager->persist($company);
+
+            $user->setCompany($company);
+
             // encode the plain password
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
