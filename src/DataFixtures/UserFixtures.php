@@ -36,7 +36,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         foreach ($users as $user) {
             $object = (new User())
                 ->setEmail($user['email'])
-                ->setName($faker->name)
+                ->setFirstname($faker->firstName)
                 ->setLastname($faker->lastName)
                 ->setRoles($user['role'])
                 ->setCompany($companies[array_rand($companies)])
@@ -48,7 +48,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 10; $i++) {
             $user = (new User())
                 ->setEmail($faker->email)
-                ->setName($faker->name)
+                ->setFirstname($faker->firstName)
                 ->setLastname($faker->lastName)
                 ->setRoles([])
                 ->setCompany($companies[array_rand($companies)])
