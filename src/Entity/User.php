@@ -56,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?company $company = null;
 
-    #[ORM\ManyToMany(targetEntity: report::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Report::class, inversedBy: 'users')]
     private Collection $report;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Quote::class)]
@@ -243,7 +243,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isVerified(): bool
+    public function isVerified(): ?bool
     {
         return $this->isVerified;
     }
