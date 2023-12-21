@@ -2,14 +2,22 @@
 version: "3.4"
 
 services:
-  php:
-    user: "${UID}:${GID}"
-
   nginx:
-    user: "${UID}:${GID}"
     ports:
       - "8000:80"
 
   db:
     ports:
       - "5432:5432"
+
+  node:
+    hostname: toys-invoicers-node
+    image: node:20-alpine
+    volumes:
+      - .:/srv
+    working_dir: /srv
+    command: sh -c "npm install && tail -f /dev/null"
+
+  mailer:
+    image: schickling/mailcatcher
+    hostname: toys-invoicers-mailer
