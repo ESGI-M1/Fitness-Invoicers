@@ -55,3 +55,5 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
 docker-compose.override.yml
+
+app/
