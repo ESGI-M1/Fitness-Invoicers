@@ -1,0 +1,54 @@
+version: "3.7"
+
+services:
+  php:
+    hostname: toys-invoicers-php
+    build:
+      context: .docker/php
+    restart: unless-stopped
+    volumes:
+      - .:/srv:cached
+    env_file:
+      - .env.local
+
+  nginx:
+    hostname: toys-invoicers-nginx
+    build:
+      context: ./.docker/nginx
+    volumes:
+      - .:/srv:cached
+    environment:
+      fastcgi_pass: toys-invoicers-php:9000
+    env_file:
+      - .env.local
+
+  db:
+    hostname: toys-invoicers-db
+    image: postgres:16-alpine
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+    env_file:
+      - .env.local
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  node:
+    hostname: toys-invoicers-node
+    image: node:20-alpine
+    volumes:
+      - .:/srv
+    working_dir: /srv
+    command: sh -c "npm install && tail -f /dev/null"
+    env_file:
+      - .env.local
+
+  mailer:
+    image: schickling/mailcatcher
+    hostname: toys-invoicers-mailer
+    env_file:
+      - .env.local
+
+volumes:
+  database_data:
