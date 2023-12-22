@@ -26,13 +26,6 @@ class LoginFormType extends AbstractType
                 ],
 
             )
-//            ->add('agreeTerms', CheckboxType::class, [
-//                'constraints' => [
-//                    new IsTrue([
-//                        'message' => 'You should agree to our terms.',
-//                    ]),
-//                ],
-//            ])
             ->add(
                 'password',
                 PasswordType::class,
