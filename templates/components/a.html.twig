@@ -1,5 +1,10 @@
-{# components/a.html.twig #}
 <a href="#"
-   class="flex w-full justify-center rounded-md bg-{{ bg_color }}-200 bg-{{ bg_color }} text-{{ text_color }} px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus:outline-none hover:bg-{{ bg_color }}-400 focus-visible:ring focus-visible:ring-gray-300 focus-visible:border-gray-300 focus-visible:outline-offset-2 {% if autre is defined %}{{ autre }} {% endif %}">
+   class="flex w-full {% if svg is defined and svg is same as true %}justify-around{% else %}justify-center{% endif %} items-center rounded-md bg-{{ bg_color }}-200 bg-{{ bg_color }} text-{{ text_color }} px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus:outline-none hover:bg-{{ bg_color }}-400 focus-visible:ring focus-visible:ring-gray-300 focus-visible:border-gray-300 focus-visible:outline-offset-2 {% if autre is defined %}{{ autre }} {% endif %}">
     {{ label }}
+    {% if svg is defined and svg is same as true %}
+        <svg class="ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7M3 12h13"/>
+        </svg>
+    {% endif %}
 </a>
