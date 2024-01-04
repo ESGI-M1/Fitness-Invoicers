@@ -15,8 +15,11 @@ class CompanyMembership
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, enumType: CompanyMembershipStatusEnum::class)]
+    private ?CompanyMembershipStatusEnum $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'companyMemberships')]
     #[ORM\JoinColumn(nullable: false)]
@@ -26,12 +29,21 @@ class CompanyMembership
     #[ORM\JoinColumn(nullable: false)]
     private ?User $relatedUser = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255, enumType: CompanyMembershipStatusEnum::class)]
-    private ?CompanyMembershipStatusEnum $status = null;
-
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getStatus(): ?CompanyMembershipStatusEnum
+    {
+        return $this->status;
+    }
+
+    public function setStatus(CompanyMembershipStatusEnum $status): static
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
     public function getCompany(): ?Company
@@ -54,18 +66,6 @@ class CompanyMembership
     public function setRelatedUser(?User $relatedUser): static
     {
         $this->relatedUser = $relatedUser;
-
-        return $this;
-    }
-
-    public function getStatus(): ?CompanyMembershipStatusEnum
-    {
-        return $this->status;
-    }
-
-    public function setStatus(CompanyMembershipStatusEnum $status): static
-    {
-        $this->status = $status;
 
         return $this;
     }

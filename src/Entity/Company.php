@@ -18,13 +18,13 @@ class Company
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank(message: 'company.name.not_blank')]
     #[Assert\Length(min: 3, minMessage: 'Le nom de la société doit être de minimum {{ limit }} caractères')]
-    private string $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name', 'id'])]
@@ -33,14 +33,14 @@ class Company
     #[ORM\Column(type: Types::STRING, length: 14)]
     #[Assert\NotBlank(message: 'Veillez renseigner le numéro de SIRET de votre société')]
     #[Assert\Regex(pattern: '/^[0-9]{14}$/', message: 'Le numéro de SIRET doit être composé de 14 chiffres')]
-    private string $siret;
-
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Category::class, orphanRemoval: true)]
-    private Collection $categories;
+    private ?string $siret = null;
 
     #[ORM\ManyToOne(inversedBy: 'referentCompanies')]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $referent = null;
+
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Category::class, orphanRemoval: true)]
+    private Collection $categories;
 
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: CompanyMembership::class)]
     private Collection $companyMemberships;
@@ -92,6 +92,18 @@ class Company
         return $this;
     }
 
+    public function getReferent(): ?User
+    {
+        return $this->referent;
+    }
+
+    public function setReferent(?User $referent): static
+    {
+        $this->referent = $referent;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Category>
      */
@@ -118,18 +130,6 @@ class Company
                 $category->setCompany(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getReferent(): ?User
-    {
-        return $this->referent;
-    }
-
-    public function setReferent(?User $referent): static
-    {
-        $this->referent = $referent;
 
         return $this;
     }

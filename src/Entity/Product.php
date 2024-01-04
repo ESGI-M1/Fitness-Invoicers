@@ -26,7 +26,10 @@ class Product
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $name;
 
-    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private string $ref;
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Gedmo\Slug(fields: ['name', 'id'])]
     private string $slug;
 
@@ -62,6 +65,16 @@ class Product
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getRef(): string
+    {
+        return $this->ref;
+    }
+
+    public function setRef(string $ref): void
+    {
+        $this->ref = $ref;
     }
 
     public function getSlug(): ?string
