@@ -8,7 +8,9 @@ use App\Factory\ProductFactory;
 class ProductBuilder implements BuilderInterface
 {
     private ?string $name = null;
+    private ?string $ref = null;
     private ?float $price = null;
+
     /*
      * @var array<Category>|null
      */
@@ -20,6 +22,7 @@ class ProductBuilder implements BuilderInterface
             'name' => $this->name,
             'price' => $this->price,
             'categories' => $this->categories,
+            'ref' => $this->ref,
         ]));
 
         if ($persist) {
@@ -43,10 +46,17 @@ class ProductBuilder implements BuilderInterface
         return $this;
     }
 
+    public function withRef(string $ref): self
+    {
+        $this->ref = $ref;
+
+        return $this;
+    }
+
     /*
      * @param array<Category> $categories
      */
-    public function withCategories(array $categories): self
+    public function inCategories(array $categories): self
     {
         $this->categories = $categories;
 

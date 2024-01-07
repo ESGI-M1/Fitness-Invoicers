@@ -3,6 +3,7 @@
 namespace App\Builder;
 
 use App\Entity\Company;
+use App\Entity\User;
 use App\Enum\CompanyMembershipStatusEnum;
 use App\Factory\CompanyMembershipFactory;
 
@@ -10,7 +11,7 @@ class CompanyMembershipBuilder implements BuilderInterface
 {
     private ?Company $company = null;
     private ?CompanyMembershipStatusEnum $status = null;
-    private ?object $relatedUser = null;
+    private ?User $relatedUser = null;
 
     public function build(bool $persist = true): object
     {
@@ -41,7 +42,7 @@ class CompanyMembershipBuilder implements BuilderInterface
         return $this;
     }
 
-    public function withRelatedUser(object $relatedUser): self
+    public function withRelatedUser(User $relatedUser): self
     {
         $this->relatedUser = $relatedUser;
 

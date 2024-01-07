@@ -29,7 +29,7 @@ class CompanyMembershipFixtures extends Fixture implements DependentFixtureInter
             for ($i = 0; $i < random_int(1, 5); ++$i) {
                 $companyMembership = ThereIs::aCompanyMembership()
                     ->withCompany($company->object())
-                    ->withRelatedUser(UserFactory::new())
+                    ->withRelatedUser(UserFactory::random()->object())
                     ->build();
 
                 $manager->persist($companyMembership);

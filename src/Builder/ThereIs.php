@@ -28,4 +28,24 @@ final class ThereIs
     {
         return new CompanyMembershipBuilder();
     }
+
+    public static function aDeposit(): DepositBuilder
+    {
+        return new DepositBuilder();
+    }
+
+    public static function anInvoice(): InvoiceBuilder
+    {
+        return new InvoiceBuilder();
+    }
+
+    public static function anItem(): ItemBuilder
+    {
+        return new ItemBuilder();
+    }
+
+    public static function aQuote(): QuoteBuilder
+    {
+        return new QuoteBuilder();
+    }
 }

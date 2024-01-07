@@ -20,6 +20,8 @@ final class CompanyMembershipFactory extends ModelFactory
     {
         return [
             'status' => self::faker()->randomElement(CompanyMembershipStatusEnum::class),
+            'company' => CompanyFactory::createOne(),
+            'relatedUser' => UserFactory::createOne(),
         ];
     }
 

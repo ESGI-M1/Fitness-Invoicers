@@ -24,6 +24,8 @@ fixtures: db-schema
 cache-clear:
 	docker compose exec php php bin/console cache:clear
 cc: cache-clear
+fixcs:
+	docker compose exec php tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no
 
 theme-watch:
 	docker compose exec node npm run watch

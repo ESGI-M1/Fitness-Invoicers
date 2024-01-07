@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\QuoteStatusEnum;
 use App\Repository\QuoteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,14 +26,18 @@ class Quote
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $discountPercent = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[ORM\Column(type: Types::STRING, length: 255, enumType: QuoteStatusEnum::class)]
+    private ?QuoteStatusEnum $status = null;
 
     #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Invoice::class)]
     private Collection $invoices;
 
     #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Deposit::class)]
     private Collection $deposits;
+
+    #[ORM\ManyToOne(inversedBy: 'quotes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Company $company = null;
 
     public function __construct()
     {
@@ -100,12 +105,12 @@ class Quote
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?QuoteStatusEnum
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(QuoteStatusEnum $status): static
     {
         $this->status = $status;
 
@@ -180,6 +185,18 @@ class Quote
     public function setInvoice(?Invoice $invoice): static
     {
         $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }
