@@ -2,13 +2,13 @@
 
 namespace App\Factory;
 
-use App\Entity\Category;
+use App\Entity\Deposit;
 use Zenstruck\Foundry\ModelFactory;
 
 /**
- * @extends ModelFactory<Category>
+ * @extends ModelFactory<Deposit>
  */
-final class CategoryFactory extends ModelFactory
+final class DepositFactory extends ModelFactory
 {
     public function __construct()
     {
@@ -18,14 +18,12 @@ final class CategoryFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'company' => CompanyFactory::createOne(),
-            'name' => self::faker()->words(random_int(1, 3), true),
-            'products' => [],
+            'price' => self::faker()->randomFloat(),
         ];
     }
 
     protected static function getClass(): string
     {
-        return Category::class;
+        return Deposit::class;
     }
 }

@@ -45,10 +45,18 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: CompanyMembership::class)]
     private Collection $companyMemberships;
 
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Invoice::class, orphanRemoval: true)]
+    private Collection $invoices;
+
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Quote::class, orphanRemoval: true)]
+    private Collection $quotes;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->companyMemberships = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
+        $this->quotes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,6 +166,66 @@ class Company
             // set the owning side to null (unless already changed)
             if ($companyMembership->getCompany() === $this) {
                 $companyMembership->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            // set the owning side to null (unless already changed)
+            if ($invoice->getCompany() === $this) {
+                $invoice->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Quote>
+     */
+    public function getQuotes(): Collection
+    {
+        return $this->quotes;
+    }
+
+    public function addQuote(Quote $quote): static
+    {
+        if (!$this->quotes->contains($quote)) {
+            $this->quotes->add($quote);
+            $quote->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuote(Quote $quote): static
+    {
+        if ($this->quotes->removeElement($quote)) {
+            // set the owning side to null (unless already changed)
+            if ($quote->getCompany() === $this) {
+                $quote->setCompany(null);
             }
         }
 

@@ -3,16 +3,18 @@
 namespace App\Builder;
 
 use App\Entity\Company;
+use App\Entity\Product;
 use App\Factory\CategoryFactory;
 
 class CategoryBuilder implements BuilderInterface
 {
     private ?string $name = null;
-    /*
+    private ?Company $company = null;
+
+    /**
      * @var array<Product>|null
      */
     private ?array $products = null;
-    private ?Company $company = null;
 
     public function build(bool $persist = true): object
     {
@@ -36,19 +38,19 @@ class CategoryBuilder implements BuilderInterface
         return $this;
     }
 
-    /*
+    public function withCompany(Company $company): self
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
      * @param array<Product> $products
      */
     public function withProducts(array $products): self
     {
         $this->products = $products;
-
-        return $this;
-    }
-
-    public function withCompany(Company $company): self
-    {
-        $this->company = $company;
 
         return $this;
     }

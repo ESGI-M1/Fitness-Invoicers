@@ -2,13 +2,14 @@
 
 namespace App\Factory;
 
-use App\Entity\Category;
+use App\Entity\Quote;
+use App\Enum\QuoteStatusEnum;
 use Zenstruck\Foundry\ModelFactory;
 
 /**
- * @extends ModelFactory<Category>
+ * @extends ModelFactory<Quote>
  */
-final class CategoryFactory extends ModelFactory
+final class QuoteFactory extends ModelFactory
 {
     public function __construct()
     {
@@ -18,14 +19,14 @@ final class CategoryFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
+            'status' => self::faker()->randomElement(QuoteStatusEnum::class),
+            'items' => [],
             'company' => CompanyFactory::createOne(),
-            'name' => self::faker()->words(random_int(1, 3), true),
-            'products' => [],
         ];
     }
 
     protected static function getClass(): string
     {
-        return Category::class;
+        return Quote::class;
     }
 }

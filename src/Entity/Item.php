@@ -35,6 +35,9 @@ class Item
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $productLabel = null;
 
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $productRef = null;
+
     #[ORM\Column(type: Types::FLOAT)]
     private ?float $productPrice = null;
 
@@ -169,6 +172,18 @@ class Item
     public function setProductPrice(float $productPrice): static
     {
         $this->productPrice = $productPrice;
+
+        return $this;
+    }
+
+    public function getProductRef(): ?string
+    {
+        return $this->productRef;
+    }
+
+    public function setProductRef(string $productRef): static
+    {
+        $this->productRef = $productRef;
 
         return $this;
     }
