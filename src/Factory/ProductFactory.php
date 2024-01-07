@@ -14,6 +14,7 @@ final class ProductFactory extends ModelFactory
     {
         parent::__construct();
     }
+
     protected function getDefaults(): array
     {
         return [

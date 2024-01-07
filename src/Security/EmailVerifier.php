@@ -44,7 +44,7 @@ class EmailVerifier
      */
     public function handleEmailConfirmation(Request $request, UserInterface $user, ?TemplatedEmail $renewEmail = null): void
     {
-        if (intval($request->query->get('expires')) < (new \DateTime())->getTimestamp() && $renewEmail !== null && $user instanceof User) {
+        if (intval($request->query->get('expires')) < (new \DateTime())->getTimestamp() && null !== $renewEmail && $user instanceof User) {
             $this->sendEmailConfirmation('app_verify_email', $user, $renewEmail);
         }
         $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());

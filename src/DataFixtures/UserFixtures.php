@@ -9,7 +9,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class UserFixtures extends Fixture
 {
-
     public function load(ObjectManager $manager): void
     {
         $admin = ThereIs::aUser()
@@ -20,7 +19,7 @@ class UserFixtures extends Fixture
 
         $manager->persist($admin);
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             $user = ThereIs::aUser()->build();
             $manager->persist($user);
         }

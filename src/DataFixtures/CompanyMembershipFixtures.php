@@ -13,7 +13,6 @@ use Zenstruck\Foundry\Proxy;
 
 class CompanyMembershipFixtures extends Fixture implements DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         /** @var Proxy<Company> $company */
@@ -27,7 +26,7 @@ class CompanyMembershipFixtures extends Fixture implements DependentFixtureInter
                 $manager->persist($companyMembership);
             }
 
-            for ($i = 0; $i < random_int(1, 5); $i++) {
+            for ($i = 0; $i < random_int(1, 5); ++$i) {
                 $companyMembership = ThereIs::aCompanyMembership()
                     ->withCompany($company->object())
                     ->withRelatedUser(UserFactory::new())
@@ -35,7 +34,6 @@ class CompanyMembershipFixtures extends Fixture implements DependentFixtureInter
 
                 $manager->persist($companyMembership);
             }
-
         }
 
         $manager->flush();

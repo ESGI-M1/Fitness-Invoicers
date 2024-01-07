@@ -11,10 +11,9 @@ use Zenstruck\Foundry\Factory;
 
 class CompanyFixtures extends Fixture implements DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             $referent = UserFactory::random()->object();
 
             $company = ThereIs::aCompany();

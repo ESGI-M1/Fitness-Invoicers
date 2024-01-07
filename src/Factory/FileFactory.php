@@ -2,12 +2,9 @@
 
 namespace App\Factory;
 
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use Vich\UploaderBundle\Entity\File;
 use Zenstruck\Foundry\ModelFactory;
-use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
 
 /**
  * @extends ModelFactory<File>
@@ -17,8 +14,7 @@ final class FileFactory extends ModelFactory
     public function __construct(
         private readonly Filesystem $filesystem,
         private readonly string $uploadPath,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -34,7 +30,6 @@ final class FileFactory extends ModelFactory
             'originalName' => self::faker()->word().'.pdf',
             'size' => $this->faker->numberBetween(1000, 9999),
         ];
-
     }
 
     protected function initialize(): self

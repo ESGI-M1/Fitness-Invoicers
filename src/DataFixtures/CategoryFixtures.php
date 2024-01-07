@@ -10,7 +10,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class CategoryFixtures extends Fixture implements DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         foreach (CompanyFactory::all() as $company) {
@@ -18,7 +17,7 @@ class CategoryFixtures extends Fixture implements DependentFixtureInterface
                 continue;
             }
 
-            for ($i = 0; $i < random_int(1, 5); $i++) {
+            for ($i = 0; $i < random_int(1, 5); ++$i) {
                 $category = ThereIs::aCategory()
                     ->withCompany($company->object())
                     ->build();

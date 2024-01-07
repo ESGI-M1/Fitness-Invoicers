@@ -3,10 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\Company;
-use App\Repository\CompanyRepository;
 use Zenstruck\Foundry\ModelFactory;
-use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
 
 /**
  * @extends ModelFactory<Company>

@@ -11,27 +11,26 @@ use Zenstruck\Foundry\Factory;
 
 class ProductFixtures extends Fixture implements DependentFixtureInterface
 {
-
     public function load(ObjectManager $manager): void
     {
         foreach (CompanyFactory::all() as $company) {
-           if (null === $company->getReferent()) {
-               continue;
-           }
+            if (null === $company->getReferent()) {
+                continue;
+            }
 
-           for ($i = 0; $i < random_int(1, 10); ++$i) {
-               $product = ThereIs::aProduct();
+            for ($i = 0; $i < random_int(1, 10); ++$i) {
+                $product = ThereIs::aProduct();
 
-               foreach ($company->getCategories() as $category) {
-                   if (Factory::faker()->boolean(20)) {
-                       $product->inCategory($category);
-                   }
-               }
+                foreach ($company->getCategories() as $category) {
+                    if (Factory::faker()->boolean(20)) {
+                        $product->inCategory($category);
+                    }
+                }
 
-               $product = $product->build();
+                $product = $product->build();
 
-               $manager->persist($product);
-           }
+                $manager->persist($product);
+            }
         }
 
         $manager->flush();

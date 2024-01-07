@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Enum\CivilityEnum;
-use App\Enum\CompanyMembershipStatusEnum;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -38,7 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING)]
     private ?string $password = null;
 
-    #[ORM\Column(type: Types::STRING , length: 255, enumType: CivilityEnum::class)]
+    #[ORM\Column(type: Types::STRING, length: 255, enumType: CivilityEnum::class)]
     private ?CivilityEnum $civility = null;
 
     #[ORM\OneToMany(mappedBy: 'referent', targetEntity: Company::class)]
