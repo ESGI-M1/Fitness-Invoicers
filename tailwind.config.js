@@ -1,35 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-        "./assets/**/*.js",
-        "./templates/**/*.html.twig",
-    ],
-    theme: {
-        extend: {
-            transitionProperty: {
-                'top-menu': 'margin-left',
-                'left-menu': 'left',
-            },
-            transitionDuration: {
-                '2': '2s',
-            },
-            transitionTimingFunction: {
-                'ease': 'ease',
-            },
-        },
+  darkMode: 'class',
+  content: [
+    "./assets/**/*.js",
+    "./templates/**/*.html.twig",
+  ],
+  theme: {
+    extend: {
+      colors:{
+        primary: '#00A76F',
+        primaryLighter: '#C8FAD6',
+        grey: '#797979',
+      }
     },
-    plugins: [
-        function ({addUtilities}) {
-            const newUtilities = {
-                '.show-menu': {
-                    'left': '0 !important',
-                },
-            };
-            addUtilities(newUtilities, ['responsive', 'hover']);
-        },
-        require('@tailwindcss/typography'),
-        require('@tailwindcss/forms'),
-        require('@tailwindcss/aspect-ratio'),
-        require('@tailwindcss/container-queries'),
-    ],
+  },
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/container-queries'),
+  ],
 }

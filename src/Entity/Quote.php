@@ -17,7 +17,7 @@ class Quote
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\OneToMany(mappedBy: 'quote', targetEntity: item::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Item::class, orphanRemoval: true)]
     private Collection $items;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
