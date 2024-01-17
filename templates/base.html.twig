@@ -23,7 +23,7 @@
         <nav id="left-menu" class="overflow-hidden transition-all duration-500 bg-white text-white h-screen w-64 top-0 p-6 ">
             <h2 class="text-base font-bold uppercase text-grey mt-8 mb-4">Général</h2>
             <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey mb-10">
-                <li class="rounded hover:bg-primaryLighter hover:stroke-primary stroke-grey p-2">
+                <li class="rounded hover:bg-primaryLighter hover:text-primary hover:stroke-primary stroke-grey p-2">
                     <a href="{{ path('app_index') }}" class="flex nowrap gap-x-4 uppercase">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15" fill="none">
                             <path d="M7.5 0.500033L7.825 0.120033C7.73443 0.0425682 7.61918 0 7.5 0C7.38082 0 7.26557 0.0425682 7.175 0.120033L7.5 0.500033ZM0.5 6.50003L0.175 6.12003L0 6.27003V6.50003H0.5ZM5.5 14.5V15C5.63261 15 5.75979 14.9474 5.85355 14.8536C5.94732 14.7598 6 14.6326 6 14.5H5.5ZM9.5 14.5H9C9 14.6326 9.05268 14.7598 9.14645 14.8536C9.24021 14.9474 9.36739 15 9.5 15V14.5ZM14.5 6.50003H15V6.27003L14.825 6.12003L14.5 6.50003ZM1.5 15H5.5V14H1.5V15ZM14.825 6.12003L7.825 0.120033L7.175 0.880033L14.175 6.88003L14.825 6.12003ZM7.175 0.120033L0.175 6.12003L0.825 6.88003L7.825 0.880033L7.175 0.120033ZM6 14.5V11.5H5V14.5H6ZM9 11.5V14.5H10V11.5H9ZM9.5 15H13.5V14H9.5V15ZM15 13.5V6.50003H14V13.5H15ZM0 6.50003V13.5H1V6.50003H0ZM7.5 10C7.89782 10 8.27936 10.1581 8.56066 10.4394C8.84196 10.7207 9 11.1022 9 11.5H10C10 10.837 9.73661 10.2011 9.26777 9.73227C8.79893 9.26342 8.16304 9.00003 7.5 9.00003V10ZM7.5 9.00003C6.83696 9.00003 6.20107 9.26342 5.73223 9.73227C5.26339 10.2011 5 10.837 5 11.5H6C6 11.1022 6.15804 10.7207 6.43934 10.4394C6.72064 10.1581 7.10218 10 7.5 10V9.00003ZM13.5 15C13.8978 15 14.2794 14.842 14.5607 14.5607C14.842 14.2794 15 13.8979 15 13.5H14C14 13.6326 13.9473 13.7598 13.8536 13.8536C13.7598 13.9474 13.6326 14 13.5 14V15ZM1.5 14C1.36739 14 1.24021 13.9474 1.14645 13.8536C1.05268 13.7598 1 13.6326 1 13.5H0C0 13.8979 0.158035 14.2794 0.43934 14.5607C0.720644 14.842 1.10218 15 1.5 15V14Z"/>
@@ -45,7 +45,7 @@
                         Utilisateurs
                     </a>
                 </li>
-                <li class="rounded  hover:bg-primaryLighter hover:text-primary hover:stroke-primary stroke-grey p-2">
+                <li class="rounded hover:bg-primaryLighter hover:text-primary hover:stroke-primary stroke-grey p-2">
                     <a href="{{ path('app_products') }}" class="flex nowrap gap-x-4 uppercase">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15" fill="none">
                             <g clip-path="url(#clip0_167_1414)">
@@ -61,9 +61,9 @@
                         Produits
                     </a>
                 </li>
-                <li class="rounded hover:bg-primaryLighter hover:text-primary p-2">
+                <li class="group rounded hover:bg-primaryLighter hover:text-primary p-2">
                     <a href="{{ path('app_categories') }}"
-                       class="flex nowrap gap-x-4 uppercase hover:fill-primary fill-grey">
+                       class="flex nowrap gap-x-4 uppercase group-hover:fill-primary fill-grey">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
                             <g clip-path="url(#clip0_167_2072)">
                                 <path d="M9.84375 0.015625L15 2.59375V8.34326L14.0625 7.87451V3.64111L10.3125 5.51611V7.40576L9.375 7.87451V5.51611L5.625 3.64111V5.30371L4.6875 4.83496V2.59375L9.84375 0.015625ZM9.84375 4.70312L11.1401 4.05127L7.74902 2.11035L6.20361 2.88672L9.84375 4.70312ZM12.1509 3.55322L13.4839 2.88672L9.84375 1.06299L8.75244 1.6123L12.1509 3.55322ZM8.4375 8.34326L7.5 8.81201V8.80469L4.6875 10.2109V13.5435L7.5 12.1299V13.1846L4.21875 14.8252L0 12.7085V7.75732L4.21875 5.64795L8.4375 7.75732V8.34326ZM3.75 13.5435V10.2109L0.9375 8.80469V12.1299L3.75 13.5435ZM4.21875 9.39795L6.92139 8.05029L4.21875 6.69531L1.51611 8.05029L4.21875 9.39795ZM8.4375 9.39062L11.7188 7.75L15 9.39062V13.2505L11.7188 14.8911L8.4375 13.2505V9.39062ZM11.25 13.6094V11.3755L9.375 10.438V12.6719L11.25 13.6094ZM14.0625 12.6719V10.438L12.1875 11.3755V13.6094L14.0625 12.6719ZM11.7188 10.5625L13.4839 9.67627L11.7188 8.79736L9.95361 9.67627L11.7188 10.5625Z"/>
@@ -77,27 +77,27 @@
                         Catégories
                     </a>
                 </li>
-                <li class="rounded hover:bg-primaryLighter hover:text-primary p-2">
+                <li class="group rounded hover:bg-primaryLighter hover:text-primary p-2">
                     <a href="{{ path('app_invoices') }}"
-                       class="flex nowrap gap-x-4 uppercase hover:fill-primary fill-grey">
+                       class="flex nowrap gap-x-4 uppercase group-hover:fill-primary fill-grey">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
                             <path d="M2.8125 1.40625V13.5938H10.3125V12.6562H3.75V2.34375H8.4375V5.15625H11.25V6.09375H12.1875V4.5L12.0469 4.35938L9.23438 1.54687L9.09375 1.40625H2.8125ZM9.375 3L10.5938 4.21875H9.375V3ZM4.6875 6.09375V7.03125H10.3125V6.09375H4.6875ZM12.6562 7.03125V7.96875C11.8594 8.10938 11.25 8.76562 11.25 9.60938C11.25 10.5469 11.9531 11.25 12.8906 11.25H13.3594C13.7344 11.25 14.0625 11.5781 14.0625 11.9531C14.0625 12.3281 13.7344 12.6562 13.3594 12.6562H11.7188V13.5938H12.6562V14.5312H13.5938V13.5938C14.3906 13.4531 15 12.7969 15 11.9531C15 11.0156 14.2969 10.3125 13.3594 10.3125H12.8906C12.5156 10.3125 12.1875 9.98438 12.1875 9.60938C12.1875 9.23438 12.5156 8.90625 12.8906 8.90625H14.5312V7.96875H13.5938V7.03125H12.6562ZM4.6875 8.4375V9.375H7.96875V8.4375H4.6875ZM8.90625 8.4375V9.375H10.3125V8.4375H8.90625ZM4.6875 10.3125V11.25H7.96875V10.3125H4.6875ZM8.90625 10.3125V11.25H10.3125V10.3125H8.90625Z"/>
                         </svg>
                         Factures
                     </a>
                 </li>
-                <li class="rounded hover:bg-primaryLighter hover:text-primary p-2">
+                <li class="group rounded hover:bg-primaryLighter hover:text-primary p-2">
                     <a href="{{ path('app_quotes') }}"
-                       class="flex nowrap gap-x-4 uppercase hover:fill-primary fill-grey">
+                       class="flex nowrap gap-x-4 uppercase group-hover:fill-primary fill-grey">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
                             <path d="M11.25 1.25L12.1875 2.1875L13.125 1.25V5.70625L11.875 6.95625V3.06875H3.125V11.9312H6.5625V12.8125L5.625 13.75L4.6875 12.8125L3.75 13.75L2.8125 12.8125L1.875 13.75V1.25L2.8125 2.1875L3.75 1.25L4.6875 2.1875L5.625 1.25L6.5625 2.1875L7.5 1.25L8.4375 2.1875L9.375 1.25L10.3125 2.1875L11.25 1.25ZM8.125 12.475L11.9562 8.64375L13.2312 9.91875L9.4 13.75H8.125V12.475ZM12.3937 8.20625L13.0062 7.59375L13.0187 7.58125C13.05 7.55625 13.0875 7.53125 13.125 7.51875C13.1816 7.49798 13.2429 7.49401 13.3017 7.50732C13.3605 7.52063 13.4141 7.55064 13.4562 7.59375L14.2812 8.41875C14.4062 8.54375 14.4062 8.75 14.2812 8.86875L13.6687 9.48125L12.3937 8.20625ZM11.25 7.58125L10.7062 8.125H3.75V6.875H11.25V7.58125ZM9.45625 9.375L8.20625 10.625H3.75V9.375H9.45625ZM11.25 5.625V4.375H3.75V5.625H11.25Z"/>
                         </svg>
                         Devis
                     </a>
                 </li>
-                <li class="rounded hover:bg-primaryLighter hover:text-primary p-2">
+                <li class="group rounded hover:bg-primaryLighter hover:text-primary p-2">
                     <a href="{{ path('app_reports') }}"
-                       class="flex nowrap gap-x-4 uppercase hover:fill-primary fill-grey">
+                       class="flex nowrap gap-x-4 uppercase group-hover:fill-primary fill-grey">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 12 15">
                             <path d="M10.9091 1.60714H9.27273V1.07143C9.27273 0.787268 9.15779 0.514746 8.95321 0.313814C8.74862 0.112882 8.47114 0 8.18182 0H3.81818C3.52885 0 3.25138 0.112882 3.04679 0.313814C2.84221 0.514746 2.72727 0.787268 2.72727 1.07143V1.60714H1.09091C0.801582 1.60714 0.524105 1.72003 0.31952 1.92096C0.114935 2.12189 0 2.39441 0 2.67857V13.9286C0 14.2127 0.114935 14.4853 0.31952 14.6862C0.524105 14.8871 0.801582 15 1.09091 15H10.9091C11.1984 15 11.4759 14.8871 11.6805 14.6862C11.8851 14.4853 12 14.2127 12 13.9286V2.67857C12 2.39441 11.8851 2.12189 11.6805 1.92096C11.4759 1.72003 11.1984 1.60714 10.9091 1.60714ZM3.81818 1.07143H8.18182V3.21429H3.81818V1.07143ZM10.9091 13.9286H1.09091V2.67857H2.72727V4.28571H9.27273V2.67857H10.9091V13.9286Z"/>
                         </svg>
