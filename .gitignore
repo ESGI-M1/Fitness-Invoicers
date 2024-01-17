@@ -26,7 +26,5 @@ yarn-error.log
 ###> IDE ###
 .idea
 ###< IDE ###
-
-###> Server ###
 .htaccess
-###< Server ###
+app/
