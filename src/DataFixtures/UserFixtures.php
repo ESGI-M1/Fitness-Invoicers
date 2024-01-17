@@ -12,8 +12,8 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $admin = ThereIs::aUser()
-            ->withEmail('admin@yopmail.com')
-            ->withPassword('admin')
+            ->withEmail('Admin@yopmail.com')
+            ->withPassword('Admin')
             ->withCivility(CivilityEnum::MALE)
             ->build();
 
