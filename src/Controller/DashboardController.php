@@ -54,20 +54,11 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    #[Route('/factures', name: 'app_invoices')]
-    public function invoices(EntityManagerInterface $entityManager): Response
-    {
-        $invoices = $entityManager->getRepository(Invoice::class)->findAll();
-
-        return $this->render('dashboard/invoices.html.twig', [
-            'invoices' => $invoices,
-        ]);
-    }
-
     #[Route('/devis', name: 'app_quotes')]
     public function quotes(EntityManagerInterface $entityManager): Response
     {
-        $quotes = $entityManager->getRepository(Quote::class)->findAll();
+        $users = null;
+        $quotes = $entityManager->getRepository(Quote::class)->findBy([$users => $users]);
 
         return $this->render('dashboard/quotes.html.twig', [
             'quotes' => $quotes,

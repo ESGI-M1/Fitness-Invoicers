@@ -105,7 +105,7 @@ abstract class AbstractDoctrineAnnotationFixer extends AbstractFixer implements 
                     // PHPDocumentor 2
                     'api',
                     'author',
-                    'category',
+                    'categories',
                     'copyright',
                     'deprecated',
                     'example',

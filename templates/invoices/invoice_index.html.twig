@@ -4,4 +4,8 @@
 
 {% block main %}
 
+    {% for inv in invoices %}
+        {{inv.status}}
+    {% endfor %}
+
 {% endblock %}

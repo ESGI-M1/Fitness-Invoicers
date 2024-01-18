@@ -42,7 +42,7 @@ final class PhpdocSeparationFixer extends AbstractFixer implements ConfigurableF
      */
     public const OPTION_GROUPS_DEFAULT = [
         ['author', 'copyright', 'license'],
-        ['category', 'package', 'subpackage'],
+        ['categories', 'package', 'subpackage'],
         ['property', 'property-read', 'property-write'],
         ['deprecated', 'link', 'see', 'since'],
     ];
@@ -78,7 +78,7 @@ final class PhpdocSeparationFixer extends AbstractFixer implements ConfigurableF
                 new CodeSample($code, ['groups' => [
                     ['deprecated', 'link', 'see', 'since'],
                     ['author', 'copyright', 'license'],
-                    ['category', 'package', 'subpackage'],
+                    ['categories', 'package', 'subpackage'],
                     ['property', 'property-read', 'property-write'],
                     ['param', 'return'],
                 ]]),

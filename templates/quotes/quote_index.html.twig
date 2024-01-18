@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis{% endblock %}
+
+{% block main %}
+
+    {% for quo in quote %}
+        {{ quo.status}}
+        {{quo.company}}
+        {{quo.discountAmount}}
+        {{quo.discountPercent}}
+    {% endfor %}
+
+{% endblock %}

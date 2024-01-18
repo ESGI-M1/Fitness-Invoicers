@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catégories{% endblock %}
+
+{% block main %}
+
+    {% for cat in category %}
+        {{cat.name}}
+        {{cat.company}}
+        {{cat.slug}}
+    {% endfor %}
+
+{% endblock %}

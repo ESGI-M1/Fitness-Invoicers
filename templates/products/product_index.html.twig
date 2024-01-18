@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits{% endblock %}
+
+{% block main %}
+    {% for pro in product %}
+        {{ pro.name }}
+        {{ pro.ref }}
+        {{ pro.slug }}
+        {{ pro.price }}
+        {% for category in pro.categories %}
+            {{ category.name }}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entreprise{% endblock %}
+
+{% block main %}
+
+    {% for com in company %}
+        {{com.name}}
+        {{com.slug}}
+        {{com.siret}}
+    {% endfor %}
+
+{% endblock %}

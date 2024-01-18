@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dépôt{% endblock %}
+
+{% block main %}
+
+    {% for dep in deposit %}
+        {{ dep.quote }}
+        {{ dep.invoice }}
+        {{ dep.price }}
+    {% endfor %}
+
+{% endblock %}
