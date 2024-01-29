@@ -3,12 +3,16 @@
 namespace App\Controller\User;
 
 use App\Entity\Company;
+use App\Service\CompanySession;
 use App\Form\Company\CompanyFormType;
+use App\Form\Company\CompanyChoiceType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 
 class CompanyController extends AbstractController
 {
@@ -72,5 +76,37 @@ class CompanyController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_company_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('company/set', name: 'app_user_company_set', methods: ['GET', 'POST'])]
+    public function set(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
+    {
+        $user = $this->getUser();
+        $companies = $user->getCompanyMemberships()->getValues();
+
+        $form = $this->createForm(CompanyChoiceType::class, null, ['companies' => $companies]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $user = $this->getUser();
+            $CompanyMemberships = $user->getCompanyMemberships()->getValues();
+
+            $companyForm = $form->get('company')->getData();
+            foreach ($CompanyMemberships as $company) {
+                if ($company == $companyForm) {
+                    $companySession->setCurrentCompany($company->getCompany());
+                    break;
+                }
+            }
+
+            return $this->redirectToRoute('app_index');
+        }
+
+        return $this->render('action.html.twig', [
+            'action' => 'Choisir une entreprise',
+            'form' => $form,
+        ]);
+
     }
 }
