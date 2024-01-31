@@ -10,8 +10,8 @@
                 <h2>Facture n°{{ invoice.id }}</h2>
                 <p>Statut : // a rajouter</p>
                 <p>Date : // a rajouter</p>
-                <a href="{{ path('app_user_invoice_show', {company_slug: company.slug, id: invoice.id}) }}" class="btn btn-primary bg-gray-500">Voir la facture</a>
-                <a href="{{ path('app_user_invoice_edit', {company_slug: company.slug, id: invoice.id}) }}" class="btn btn-warning bg-gray-500">Modifier la facture</a>
+                <a href="{{ path('app_user_invoice_show', {id: invoice.id}) }}" class="btn btn-primary bg-gray-500">Voir la facture</a>
+                <a href="{{ path('app_user_invoice_edit', {id: invoice.id}) }}" class="btn btn-warning bg-gray-500">Modifier la facture</a>
                 <a> TODO Télécharger la facture</a>
 
                 {{ dump(invoice) }}

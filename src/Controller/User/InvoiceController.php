@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class InvoiceController extends AbstractController
 {
-    #[Route('/invoice-list', name: 'app_user_invoice_index')]
+    #[Route('/invoice', name: 'app_user_invoice_index')]
     public function list(EntityManagerInterface $entityManager, CompanySession $companySession): Response
     {
 
@@ -25,20 +25,23 @@ class InvoiceController extends AbstractController
             return $company;
         }
 
-        dd($company);
+        $invoices = $company->getInvoices();
 
-        $company->getInvoices();
-
-        dd($company->getInvoices());
+        dump($company);
 
         return $this->render('invoices/invoice_index.html.twig', [
-            'company' => $company,
+            'invoices' => $invoices
         ]);
     }
 
-    #[Route('/invoice', name: 'app_user_invoice_show', methods: ['GET'])]
-    public function show(): Response
+    #[Route('/invoice/tata', name: 'app_user_invoice_show', methods: ['GET'])]
+    public function show(CompanySession $companySession): Response
     {
+        $company = $companySession->getCurrentCompany();
+        if($company instanceof RedirectResponse) {
+            return $company;
+        }
+
         return $this->render('invoices/invoice_show.html.twig', [
         ]);
     }
@@ -65,8 +68,8 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('{company_slug}/invoice/edit/{id}', name: 'app_user_invoice_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, #[MapEntity(mapping: ['company_slug' => 'slug'])] Company $company, Invoice $invoice, EntityManagerInterface $entityManager): Response
+    #[Route('invoice/edit/{id}', name: 'app_user_invoice_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, #[MapEntity(mapping: ['company_slug' => 'slug'])]  Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(InvoiceFormType::class, $invoice);
         $form->handleRequest($request);
@@ -80,21 +83,18 @@ class InvoiceController extends AbstractController
         return $this->render('action.html.twig', [
             'action' => 'Modifier la facture n°'.$invoice->getId(),
             'categories' => $invoice,
-            'form' => $form,
-            'company' => $company,
+            'form' => $form
         ]);
     }
 
-    #[Route('{slug}/invoice/delete/{id}', name: 'app_user_invoice_delete', methods: ['POST'])]
-    public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager, Company $company): Response
+    #[Route('invoice/delete/{id}', name: 'app_user_invoice_delete', methods: ['POST'])]
+    public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$invoice->getId(), $request->request->get('_token'))) {
             $entityManager->remove($invoice);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_user_invoice_index', [
-            'company' => $company,
-        ], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_user_invoice_index');
     }
 }
