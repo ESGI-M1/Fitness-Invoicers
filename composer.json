@@ -11,6 +11,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.17",
         "stof/doctrine-extensions-bundle": "*",
+        "symfony/apache-pack": "^1.0",
         "symfony/console": "7.0.*",
         "symfony/dotenv": "7.0.*",
         "symfony/flex": "^2",

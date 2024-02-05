@@ -15,8 +15,7 @@ class ProductController extends AbstractController
     #[Route('/product', name: 'app_user_product_index')]
     public function list(EntityManagerInterface $entityManager): Response
     {
-        $users = $this->getUser();
-        $product = $entityManager->getRepository(Product::class)->findBy([$users]);
+        $product = $entityManager->getRepository(Product::class)->findAll();
 
         return $this->render('products/product_index.html.twig', [
             'product' => $product,

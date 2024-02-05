@@ -13,13 +13,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategoryController extends AbstractController
 {
     #[Route('/category', name: 'app_user_category_index')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(EntityManagerInterface $entityManager, Request $request): Response
     {
-        $users = $this->getUser();
-        $category = $entityManager->getRepository(Category::class)->findBy([$users]);
+        $category =
+            $entityManager->getRepository(Category::class)->findAll();
 
         return $this->render('categories/category_index.html.twig', [
-            'category' => $category,
+            'categories' => $category,
         ]);
     }
 
@@ -27,14 +27,47 @@ class CategoryController extends AbstractController
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $category = new Category();
-        $form = $this->createForm(CategoryFormType::class, $category);
+
+        $form = $this->createForm(
+            CategoryFormType::class,
+            $category,
+            [
+                'action' => $this->generateUrl(
+                    'app_user_category_add',
+                    [
+                    ]
+                ),
+            ]
+        );
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($category);
-            $entityManager->flush();
+            if ($request->request->get('update_fields') != 1) {
+                $error = false;
 
-            return $this->redirectToRoute('app_user_category_index', [], Response::HTTP_SEE_OTHER);
+                if (!$error) {
+                    $entityManager->persist($category);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('app_user_category_index', [], Response::HTTP_SEE_OTHER);
+
+//                    return $this->json(
+//                        [
+//                            'refresh' => $this->generateUrl(
+//                                'employees_edit',
+//                                [
+//                                    '_portal' => $this->portal->getNomAbrege(),
+//                                    'tab' => 'assignements',
+//                                    'id' => $salarie->getId(),
+//                                ]
+//                            ),
+//                            'target' => '.ajax-content',
+//                            'dialog' => false,
+//                        ]
+//                    );
+                }
+            }
         }
 
         return $this->render('action.html.twig', [

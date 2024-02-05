@@ -24,9 +24,9 @@ class DashboardController extends AbstractController
         $companies = $user->getcompanyMemberships()->getValues();
         $company = $companies[0]->getCompany();
 
-        return $this->render('dashboard/index.html.twig', [
-            'company' => $company,
-        ]);
+        dump($company);
+
+        return $this->render('dashboard/index.html.twig');
     }
 
     #[Route('/app_default_dev', name: 'app_default_dev')]

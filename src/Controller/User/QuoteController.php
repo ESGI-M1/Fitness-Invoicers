@@ -15,8 +15,7 @@ class QuoteController extends AbstractController
     #[Route('/quote', name: 'app_user_quote_index')]
     public function list(EntityManagerInterface $entityManager): Response
     {
-        $users = $this->getUser();
-        $quote = $entityManager->getRepository(Quote::class)->findBy([$users]);
+        $quote = $entityManager->getRepository(Quote::class)->findAll();
 
         return $this->render('quotes/quote_index.html.twig', [
             'quote' => $quote,
