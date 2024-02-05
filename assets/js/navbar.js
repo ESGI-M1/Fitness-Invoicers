@@ -31,19 +31,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     systemMode.addEventListener('click', () => {
         console.log('systemMode');
+        localStorage.removeItem('theme');
         initSystemMode();
         systemMode.classList.add('bg-primary');
-
     });
 
     function initSystemMode(){
-        localStorage.removeItem('theme')
 
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
+            document.documentElement.classList.add('dark');
             console.log('darkMode loaded');
         } else {
-            document.documentElement.classList.remove('dark')
+            document.documentElement.classList.remove('dark');
             console.log('lightMode loaded');
         }
     }
