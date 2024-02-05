@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('systemMode');
         localStorage.removeItem('theme');
         initSystemMode();
-        systemMode.classList.add('bg-primary');
     });
 
     function initSystemMode(){
