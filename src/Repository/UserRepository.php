@@ -40,28 +40,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getUsersByFilters($options = [])
+    {
+        $query = $this->createQueryBuilder('u')
+        ->andWhere('u.isVerified = 1');
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (isset($options['name']) && $options['name']) {
+            $query->andWhere('u.firstName = :name')
+            ->setParameter('name', $options['name']);
+        }
+
+        if (isset($options['company']) && $options['company']) {
+            $query->leftJoin('u.companyMemberships', 'memberShip')
+                ->andWhere('memberShip.company IN (:company)')
+            ->setParameter('company', $options['company']);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }

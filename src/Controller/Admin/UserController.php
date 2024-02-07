@@ -4,7 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\User\UserFormType;
+use App\Form\User\UserSearchType;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,12 +15,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_admin_user_index')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
     {
-        $users = $entityManager->getRepository(User::class)->findAll();
+        $form = $this->createForm(
+            UserSearchType::class,
+        );
+
+        $form->handleRequest($request);
+
+        $users = $paginator->paginate(
+            $entityManager->getRepository(User::class)->getUsersByFilters($form->getData()),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('items', 20)
+        );
 
         return $this->render('users/user_index.html.twig', [
             'users' => $users,
+            'form' => $form
         ]);
     }
 

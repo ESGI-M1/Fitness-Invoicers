@@ -4,22 +4,34 @@ namespace App\Controller\User;
 
 use App\Entity\Category;
 use App\Form\Category\CategoryFormType;
+use App\Form\Category\CategorySearchType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 class CategoryController extends AbstractController
 {
     #[Route('/category', name: 'app_user_category_index')]
-    public function list(EntityManagerInterface $entityManager, Request $request): Response
+    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
     {
-        $category =
-            $entityManager->getRepository(Category::class)->findAll();
+        $form = $this->createForm(
+            CategorySearchType::class,
+        );
+
+        $form->handleRequest($request);
+
+        $category = $paginator->paginate(
+            $entityManager->getRepository(Category::class)->getCategoriesByFilters($form->getData()),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('items', 20)
+        );
 
         return $this->render('categories/category_index.html.twig', [
             'categories' => $category,
+            'form' => $form
         ]);
     }
 
@@ -54,14 +66,7 @@ class CategoryController extends AbstractController
 
 //                    return $this->json(
 //                        [
-//                            'refresh' => $this->generateUrl(
-//                                'employees_edit',
-//                                [
-//                                    '_portal' => $this->portal->getNomAbrege(),
-//                                    'tab' => 'assignements',
-//                                    'id' => $salarie->getId(),
-//                                ]
-//                            ),
+//                            'refresh' => true,
 //                            'target' => '.ajax-content',
 //                            'dialog' => false,
 //                        ]

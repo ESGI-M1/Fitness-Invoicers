@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\InvoiceStatusEnum;
 use App\Repository\InvoiceRepository;
+use App\Trait\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -12,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
 class Invoice
 {
+
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
@@ -169,4 +173,15 @@ class Invoice
 
         return $this;
     }
+
+    public function getAmount()
+    {
+        $items = $this->getItems()->getValues();
+        $amount = 0;
+        foreach ($items as $item) {
+            $amount += $item->getProductPrice() * $item->getQuantity();
+        }
+        return $amount;
+    }
+
 }

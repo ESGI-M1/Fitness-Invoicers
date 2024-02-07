@@ -21,28 +21,18 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-    //    /**
-    //     * @return Category[] Returns an array of Category objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        public function getCategoriesByFilters($options = [])
+        {
+            $query = $this->createQueryBuilder('c');
 
-    //    public function findOneBySomeField($value): ?Category
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+            if (isset($options['name']) && $options['name']) {
+                $query->andWhere('c.name is null');
+            }
+            if (isset($options['company']) && $options['company']) {
+                $query->andWhere('c.company IN (:company)')
+                    ->setParameter('company', $options['company']);
+            }
+
+             return $query->getQuery()->getResult();
+        }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Form\Company;
 
-use App\Entity\Company;
 use App\Entity\CompanyMembership;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -27,6 +26,7 @@ class CompanyChoiceType extends AbstractType
                 'placeholder' => 'Choisissez une entreprise',
                 'required' => true,
                 'mapped' => false,
+                'multiple' => false
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Valider',

@@ -3,14 +3,69 @@
 {% block title %}Utilisateurs{% endblock %}
 
 {% block main %}
-    {% for user in users %}
-        {{ user.firstname }}
-        {{ user.lastname }}
-        {{ user.email }}
-        {{ user.civility }}
-        {{ user.verified }}
-        {% for roles in user.roles %}
-            {{ roles }}
+    <div class="search border-b shadow-lg p-4">
+        {{ form_start(form) }}
+        {{ form_end(form) }}
+    </div>
+
+    <div class="border-b shadow-lg p-4 grid grid-cols-2">
+        <div>
+            <h3 class="text-lg font-bold">Utilisateurs ({{users.totalItemCount}})</h3>
+        </div>
+    </div>
+<div class="mt-4">
+    <table class="table table-bordered table-striped table-hover w-full">
+        <colgroup>
+            <col class="w-8"/>
+            <col/>
+            <col/>
+            <col/>
+            <col class="w-8"/>
+        </colgroup>
+        <thead>
+        <tr>
+            <th class="border text-center"></th>
+            <th class="border">Nom</th>
+            <th class="border">Prénom</th>
+            <th class="border">Email</th>
+            <th class="border">Rôles</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td class="text-center border">
+                    <a data-type="ajax" class="fancy-add"
+                       data-src="{{ path('app_admin_user_edit', {'id' : user.id }) }}">
+                        <svg class="feather feather-edit h-4 w-4 mx-auto align-middle" viewBox="0 0 24 24" fill="none"
+                             stroke="blue" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 1L23 5L5 23H1V19L19 1Z"></path>
+                        </svg>
+                    </a>
+                </td>
+                <td class="border">{{ user.lastName }}</td>
+                <td class="border">{{ user.firstName }}</td>
+                <td class="border">{{ user.email }}</td>
+                <td class="border">
+                    {% for role in user.roles %}
+                        {{ role }}<br>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center border">Aucun utilisateur trouvé</td>
+            </tr>
         {% endfor %}
-    {% endfor %}
+        </tbody>
+    </table>
+    {% if users is not empty %}
+        <div class="box-footer">
+            <div class="navigation">
+                {{ knp_pagination_render(users) }}
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

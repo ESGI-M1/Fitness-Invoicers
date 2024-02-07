@@ -21,28 +21,19 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    //    /**
-    //     * @return Product[] Returns an array of Product objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getProductsByFilters($options = [])
+    {
+        $query = $this->createQueryBuilder('p');
 
-    //    public function findOneBySomeField($value): ?Product
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (isset($options['name']) && $options['name']) {
+            $query->andWhere('c.name is null');
+        }
+        if (isset($options['category']) && $options['category']) {
+            $query->innerJoin('p.categories', 'categories')
+                ->andWhere('categories.id IN (:category)')
+                ->setParameter('category', $options['category']);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }

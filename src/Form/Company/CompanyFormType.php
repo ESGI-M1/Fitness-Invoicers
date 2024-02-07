@@ -30,8 +30,17 @@ class CompanyFormType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => Company::class,
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => Company::class,
+                'csrf_protection' => false,
+                'allow_extra_fields' => true,
+                'attr' => [
+                    'class' => 'add-form do-confirm',
+                    'data-target' => '.modal-content',
+                ],
+                'update' => true,
+            ]
+        );
     }
 }

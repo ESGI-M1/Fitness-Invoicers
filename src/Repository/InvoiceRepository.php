@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Company;
 use App\Entity\Invoice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,6 +20,21 @@ class InvoiceRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Invoice::class);
+    }
+
+    public function findByDateRange(Company $company, \DateTime $startDate, \DateTime $endDate)
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.company = :company')
+            ->andWhere('i.createdAt >= :startDate')
+            ->andWhere('i.createdAt <= :endDate')
+            ->setParameter('company', $company)
+            ->setParameter('startDate', $startDate->format('Y-m-d'))
+            ->setParameter('endDate', $endDate->format('Y-m-d'))
+            ->orderBy('i.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     //    /**

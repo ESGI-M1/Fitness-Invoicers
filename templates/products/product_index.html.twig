@@ -3,13 +3,48 @@
 {% block title %}Produits{% endblock %}
 
 {% block main %}
-    {% for pro in product %}
-        {{ pro.name }}
-        {{ pro.ref }}
-        {{ pro.slug }}
-        {{ pro.price }}
-        {% for category in pro.categories %}
-            {{ category.name }}
-        {% endfor %}
-    {% endfor %}
+    <div class="search border-b shadow-lg p-4">
+        {{ form_start(form) }}
+        {{ form_end(form) }}
+    </div>
+    <div class="border-b shadow-lg p-4 grid grid-cols-2">
+        <div>
+            <h3 class="text-lg font-bold">Produits ({{products.totalItemCount}})</h3>
+        </div>
+        <div class="text-right">
+            <button data-type="ajax" data-src="{{ path('app_user_product_add') }}"
+                    class="fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right">
+                Ajouter un produit
+            </button>
+        </div>
+    </div>
+    <div class="container mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            {% for product in products %}
+                <div class="w-full p-2">
+                    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                        <img src="{{ vich_uploader_asset(product, 'imageFile') }}">
+                        <div class="p-4">
+                            <h2 class="text-gray-800 text-lg font-semibold">{{ product.name }}</h2>
+                            <p class="mt-2 text-gray-600">{{ product.ref }}</p>
+                            <p class="mt-2 text-gray-600">{{ product.price }} €</p>
+                            <p class="mt-2 text-gray-600">Catégories:</p>
+                            <ul class="list-disc pl-5">
+                                {% for category in product.categories %}
+                                    <li>{{ category.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if products is not empty %}
+            <div class="box-footer">
+                <div class="navigation">
+                    {{ knp_pagination_render(products) }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

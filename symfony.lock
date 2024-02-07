@@ -47,6 +47,9 @@
             "migrations/.gitignore"
         ]
     },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v6.3.0"
+    },
     "stof/doctrine-extensions-bundle": {
         "version": "1.10",
         "recipe": {

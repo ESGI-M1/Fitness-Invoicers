@@ -34,8 +34,17 @@ class ProductFormType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => Product::class,
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => Product::class,
+                'csrf_protection' => false,
+                'allow_extra_fields' => true,
+                'attr' => [
+                    'class' => 'add-form do-confirm',
+                    'data-target' => '.modal-content',
+                ],
+                'update' => true,
+            ]
+        );
     }
 }

@@ -4,7 +4,9 @@ namespace App\Controller\User;
 
 use App\Entity\Product;
 use App\Form\Product\ProductFormType;
+use App\Form\Product\ProductSearchType;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,12 +15,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     #[Route('/product', name: 'app_user_product_index')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
     {
-        $product = $entityManager->getRepository(Product::class)->findAll();
+        $form = $this->createForm(
+            ProductSearchType::class,
+        );
+
+        $form->handleRequest($request);
+
+        $product = $paginator->paginate(
+            $entityManager->getRepository(Product::class)->getProductsByFilters($form->getData()),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('items', 9)
+        );
 
         return $this->render('products/product_index.html.twig', [
-            'product' => $product,
+            'products' => $product,
+            'form' => $form
         ]);
     }
 

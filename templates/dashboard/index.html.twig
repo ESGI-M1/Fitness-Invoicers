@@ -1,7 +1,121 @@
 {% extends 'base.html.twig' %}
 
+{% block javascripts %}
+    {{ encore_entry_script_tags('dashboardChart') }}
+    {{ parent() }}
+{% endblock %}
+
 {% block title %}Accueil{% endblock %}
 
 {% block main %}
+
+    {% if statistics %}
+    <script>
+      const invoiceChartData = {
+        labels: [
+            {% for key, status in statistics.invoicesByStatus.invoices %}
+          '{{ key }}',
+            {% endfor %}
+        ],
+        datasets: [{
+          label: 'Montant des factures',
+          data: [
+              {% for status in statistics.invoicesByStatus.amount %}
+            '{{ status }}',
+              {% endfor %}
+          ],
+        }],
+      };
+
+      const quoteChartData = {
+        labels: [
+            {% for key, status in statistics.quotesByStatus.quotes %}
+          '{{ key }}',
+            {% endfor %}
+        ],
+        datasets: [{
+          label: 'Montant des devis',
+          data: [
+              {% for status in statistics.quotesByStatus.amount %}
+            '{{ status }}',
+              {% endfor %}
+          ],
+        }],
+      };
+
+    </script>
+    {% endif %}
+
+    <div class="flex flex-col py-4">
+        <div class="w-full flex justify-around">
+            <div>
+                <h2>Heureux de vous revoir !</h2>
+            </div>
+            {{ form_start(dateRangeForm) }}
+
+            <div class="flex">
+                {{ form_row(dateRangeForm.submitDay) }}
+                {{ form_row(dateRangeForm.submitMonth) }}
+                {{ form_row(dateRangeForm.submitYear) }}
+                {{ form_row(dateRangeForm.submitDayBefore) }}
+                {{ form_row(dateRangeForm.submitMonthBefore) }}
+                {{ form_row(dateRangeForm.submitYearBefore) }}
+            </div>
+            <div class="flex">
+                <div class="flex flex-col">
+                    {{ form_row(dateRangeForm.startDate) }}
+
+                </div>
+                <div class="flex flex-col">
+                    {{ form_row(dateRangeForm.endDate) }}
+                </div>
+                <div>
+                    {{ form_row(dateRangeForm.submitDateRange) }}
+                </div>
+            </div>
+            {{ form_end(dateRangeForm) }}
+
+        </div>
+        {% if statistics %}
+        <div class="flex flex-col">
+            <div class="flex grow">
+                <div class="flex flex-col">
+                    <div class="flex flex-col">
+                        <div class="bg-gray-600">Nombre de factures : {{ statistics.invoices|length }}</div>
+                        <div class="flex">
+                            {% for key, status in statistics.invoicesByStatus.invoices %}
+                                <div>
+                                    <h3>{{ key }}</h3>
+                                    <div>{{ status|length }} {% if status|length > 1 %}factures{% else %}facture{% endif %}</div>
+                                    <div>{{ statistics.invoicesByStatus.amount[key] }} €</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="w-1/2">
+                    <canvas id="invoiceChart"></canvas>
+                </div>
+            </div>
+            <div class="flex grow">
+                <div class="flex flex-col">
+                    <div class="bg-gray-600">Nombre de devis : {{ statistics.quotes|length }}</div>
+                    <div class="flex">
+                        {% for key, status in statistics.quotesByStatus.quotes %}
+                            <div>
+                                <h3>{{ key }}</h3>
+                                <div>{{ status|length }} {% if status|length > 1 %}devis{% else %}devis{% endif %}</div>
+                                <div>{{ statistics.quotesByStatus.amount[key] }} €</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="w-1/2">
+                    <canvas id="quoteChart"></canvas>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 
 {% endblock %}

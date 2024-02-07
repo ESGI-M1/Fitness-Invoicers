@@ -11,9 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Vich\UploaderBundle\Entity\File as EmbeddedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[Vich\Uploadable]
 class Product
 {
     use TimestampableTrait;
@@ -36,11 +37,19 @@ class Product
     #[ORM\Column(type: Types::FLOAT)]
     private float $price;
 
-    #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'image.name', size: 'image.size')]
+    #[Vich\UploadableField(mapping: 'productImage', fileNameProperty: 'imageName')]
+    #[Assert\Image(
+        maxSize: '500k',
+        mimeTypes: ['image/jpeg', 'image/png'],
+        maxHeight: 500,
+        maxSizeMessage: 'Le logo ne doit pas dépasser 500ko.',
+        mimeTypesMessage: 'Le logo doit être au format JPG ou PNG.',
+        maxHeightMessage: 'Le logo ne doit pas dépasser 500px de hauteur.'
+    )]
     private ?File $imageFile = null;
 
-    #[ORM\Embedded(class: 'Vich\UploaderBundle\Entity\File')]
-    private ?EmbeddedFile $image = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'products')]
     private Collection $categories;
@@ -124,4 +133,25 @@ class Product
 
         return $this;
     }
+
+    public function setImageFile(?File $image = null): void
+    {
+        $this->imageFile = $image;
+
+        if (null !== $image) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+
 }

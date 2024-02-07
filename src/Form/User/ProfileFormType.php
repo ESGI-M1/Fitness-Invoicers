@@ -2,16 +2,44 @@
 
 namespace App\Form\User;
 
+use App\Entity\CompanyMembership;
 use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Enum\CivilityEnum;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Doctrine\ORM\EntityManagerInterface;
 
-class UserFormType extends AbstractType
+
+class ProfileFormType extends AbstractType
 {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * DocumentHeaderType constructor.
+     * @param EntityManagerInterface $em
+     * @param Security $security
+     */
+    public function __construct(
+        EntityManagerInterface $em,
+        Security               $security,
+    ) {
+        $this->em = $em;
+        $this->security = $security;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -29,28 +57,19 @@ class UserFormType extends AbstractType
             ])
             ->add('civility', ChoiceType::class, [
                 'choices' => [
-                    'Homme' => 'MALE',
-                    'Femme' => 'FEMALE',
-                    'Autre' => 'OTHER',
+                    'Homme' => CivilityEnum::MALE,
+                    'Femme' => CivilityEnum::FEMALE,
+                    'Autre' => CivilityEnum::OTHER,
                 ],
-                'multiple' => false,
+                'label' => 'Sexe'
             ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(
-            [
-                'data_class' => User::class,
-                'csrf_protection' => false,
-                'allow_extra_fields' => true,
-                'attr' => [
-                    'class' => 'add-form do-confirm',
-                    'data-target' => '.modal-content',
-                ],
-                'update' => true,
-            ]
-        );
+        $resolver->setDefaults([
+            'data_class' => User::class,
+        ]);
     }
 }

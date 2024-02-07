@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let modal = document.getElementById('modal');
             modal.querySelector('.modal-content').innerHTML = xhr.responseText;
 
-            // Serialize the form data and include it in the request
             let form = modal.querySelector('form.add-form');
             let formData = new FormData(form);
             src += '?' + new URLSearchParams(formData).toString();
@@ -28,10 +27,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.querySelector('.fancy-add-csv').addEventListener('click', function () {
-        window.location.href = this.dataset.src;
-        loadAddForm();
-    });
+    // document.querySelector('.fancy-add-csv').addEventListener('click', function () {
+    //     window.location.href = this.dataset.src;
+    //     loadAddForm();
+    // });
 
     loadAddForm = function () {
         preparePlugins();
@@ -53,22 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     sendForm($this);
                 }
             });
-        });
-
-        document.getElementById('addGroup').addEventListener('submit', function (event) {
-            const quotaDftField = document.getElementById('quotaDft');
-            let quotaDftValue = quotaDftField.value;
-            const symbolElement = document.getElementById('symbol');
-            const peopleIconElement = document.getElementById('peopleIcon');
-
-            if (quotaDftValue == -Math.abs(quotaDftValue)) {
-                symbolElement.style.display = 'inline';
-                peopleIconElement.style.display = 'none';
-            } else if (quotaDftValue == Math.abs(quotaDftValue)) {
-                symbolElement.style.display = 'none';
-                peopleIconElement.style.display = 'inline';
-            }
-            quotaDftField.value = Math.abs(quotaDftValue);
         });
     };
 });

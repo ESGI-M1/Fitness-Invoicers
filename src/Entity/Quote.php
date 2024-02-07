@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\QuoteStatusEnum;
 use App\Repository\QuoteRepository;
+use App\Trait\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -12,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: QuoteRepository::class)]
 class Quote
 {
+
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
@@ -200,4 +204,16 @@ class Quote
 
         return $this;
     }
+
+    public function getAmount(): float
+    {
+        $items = $this->getItems()->getValues();
+        $amount = 0;
+        foreach ($items as $item) {
+            $amount += $item->getProductPrice() * $item->getQuantity();
+        }
+
+        return $amount;
+    }
+
 }

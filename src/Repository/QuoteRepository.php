@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Company;
 use App\Entity\Quote;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,6 +20,21 @@ class QuoteRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Quote::class);
+    }
+
+    public function findByDateRange(Company $company, \DateTime $startDate, \DateTime $endDate)
+    {
+        return $this->createQueryBuilder('q')
+            ->andWhere('q.company = :company')
+            ->andWhere('q.createdAt >= :startDate')
+            ->andWhere('q.createdAt <= :endDate')
+            ->setParameter('company', $company)
+            ->setParameter('startDate', $startDate->format('Y-m-d'))
+            ->setParameter('endDate', $endDate->format('Y-m-d'))
+            ->orderBy('q.createdAt', 'desc')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     //    /**

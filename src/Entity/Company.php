@@ -10,8 +10,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[Vich\Uploadable]
 class Company
 {
     use TimestampableTrait;
@@ -34,6 +37,20 @@ class Company
     #[Assert\NotBlank(message: 'Veillez renseigner le numéro de SIRET de votre société')]
     #[Assert\Regex(pattern: '/^[0-9]{14}$/', message: 'Le numéro de SIRET doit être composé de 14 chiffres')]
     private ?string $siret = null;
+
+    #[Vich\UploadableField(mapping: 'companyLogo', fileNameProperty: 'imageName')]
+    #[Assert\Image(
+        maxSize: '100k',
+        mimeTypes: ['image/jpeg', 'image/png'],
+        maxHeight: 48,
+        maxSizeMessage: 'Le logo ne doit pas dépasser 500ko.',
+        mimeTypesMessage: 'Le logo doit être au format JPG ou PNG.',
+        maxHeightMessage: 'Le logo ne doit pas dépasser 48px de hauteur.'
+    )]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
 
     #[ORM\ManyToOne(inversedBy: 'referentCompanies')]
     #[ORM\JoinColumn(nullable: true)]
@@ -231,4 +248,24 @@ class Company
 
         return $this;
     }
+
+    public function setImageFile(?File $image = null): void
+    {
+        $this->imageFile = $image;
+
+        if (null !== $image) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
 }
