@@ -5,7 +5,8 @@ function fancyConfirm(opts) {
         message: 'Etes-vous sûr de vouloir effectuer cette opération?',
         okButton: 'Oui',
         noButton: 'Annuler',
-        callback: function() {},
+        callback: function () {
+        },
         adButton: null,
         intButton: null
     }, opts);
@@ -55,21 +56,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     forms.forEach(function (form) {
         const parentDiv = form.parentElement;
+        const mb6Divs = form.querySelectorAll('div.mb-6');
+
         if (parentDiv.classList.contains('search')) {
-            form.classList.add('flex', 'justify-around');
+            form.classList.add('flex');
+            mb6Divs.forEach(div => {
+                div.classList.add('pr-4');
+            });
         }
     });
 
-    document.querySelectorAll('.select2').forEach(function(element) {
-        element.addEventListener('change', function() {
+    document.querySelectorAll('.select2').forEach(function (element) {
+        element.addEventListener('change', function () {
             this.closest('form').submit();
         });
-    });
-
-    document.querySelectorAll('.select2').select2({
-        closeOnSelect: false,
-        width: '100%',
-        dropdownCssClass: 'instant-search',
     });
 
 });

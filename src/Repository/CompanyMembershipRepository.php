@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Company;
 use App\Entity\CompanyMembership;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,6 +20,17 @@ class CompanyMembershipRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, CompanyMembership::class);
+    }
+
+    public function getCompanyMembershipsByCompany(Company $company)
+    {
+        //related user name = jules
+
+        return $this->createQueryBuilder('cm')
+            ->andWhere('cm.company = :company')
+            ->setParameter('company', $company)
+            ->getQuery()
+        ;
     }
 
     //    /**

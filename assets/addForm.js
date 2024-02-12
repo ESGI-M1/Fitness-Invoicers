@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     function fancyForm(src) {
-        startOverlay();
         let xhr = new XMLHttpRequest();
         xhr.open('GET', src, false);
 
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             modal.modal('show');
             loadAddForm();
-            stopOverlay();
         };
 
         xhr.send();
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // });
 
     loadAddForm = function () {
-        preparePlugins();
         prepareSubmit(function () {
             loadAddForm();
         });

@@ -21,18 +21,39 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-        public function getCategoriesByFilters($options = [])
-        {
-            $query = $this->createQueryBuilder('c');
+    public function getCategoriesByFilters($company = null, $options = [])
+    {
+        $query = $this->createQueryBuilder('c');
 
-            if (isset($options['name']) && $options['name']) {
-                $query->andWhere('c.name is null');
-            }
-            if (isset($options['company']) && $options['company']) {
-                $query->andWhere('c.company IN (:company)')
-                    ->setParameter('company', $options['company']);
-            }
-
-             return $query->getQuery()->getResult();
+        if ($company) {
+            $query->andWhere('c.company = :company')
+                ->setParameter('company', $company);
         }
+
+        if (isset($options['alias']) && $options['alias'] !== '') {
+            $parts = explode(' ', $options['alias']);
+            $subAnd = [];
+            foreach ($parts as $k => $p) {
+                $tag = 'alias_' . $k;
+                $subOr = [];
+                foreach (['c.name'] as $f) {
+                    $subOr[] = "{$f} LIKE :{$tag}";
+                }
+                $subAnd[] = '(' . implode(' OR ', $subOr) . ')';
+                $query->setParameter($tag, "%$p%");
+            }
+            $query
+                ->andWhere('(' . implode(' AND ', $subAnd) . ')');
+        }
+        if (isset($options['company']) && $options['company']) {
+            $query->andWhere('c.company IN (:company)')
+                ->setParameter('company', $options['company']);
+        }
+//        if (isset($filters['name']) && $filters['name']) {
+//            $query->andWhere('c.name LIKE :name')
+//                ->setParameter('name', '%' . $filters['name'] . '%');
+//        }
+
+        return $query->getQuery()->getResult();
+    }
 }

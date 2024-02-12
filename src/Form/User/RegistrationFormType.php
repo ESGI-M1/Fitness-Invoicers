@@ -3,10 +3,13 @@
 namespace App\Form\User;
 
 use App\Entity\User;
+use App\Enum\CivilityEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,6 +21,9 @@ class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        foreach (CivilityEnum::cases() as $civility) {
+            $civilities[$civility->name] = $civility->name;
+        }
         $builder
             ->add('lastName', TextType::class, [
                 'required' => true,
@@ -27,25 +33,24 @@ class RegistrationFormType extends AbstractType
                 'required' => true,
                 'label' => 'Prénom',
             ])
-            ->add('companyMemberships', TextType::class, [
-                'required' => true,
-                'label' => 'Entreprise',
-            ])
             ->add('email', EmailType::class, [
                 'required' => true,
                 'label' => 'Email',
             ])
+            ->add('civility', ChoiceType::class, [
+                'choices' => $civilities,
+                'label' => 'Sexe'
+            ])
             ->add('agreeTerms', CheckboxType::class, [
-                                'mapped' => false,
+                'mapped' => false,
                 'constraints' => [
                     new IsTrue([
                         'message' => 'You should agree to our terms.',
                     ]),
                 ],
+                'label'  => 'Accepter les termes'
             ])
             ->add('plainPassword', PasswordType::class, [
-                                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
@@ -59,8 +64,9 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+                'label'  => 'Mot de passe'
             ])
-        ;
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

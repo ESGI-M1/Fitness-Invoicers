@@ -4,32 +4,23 @@ namespace App\Form\Company;
 
 use App\Entity\CompanyMembership;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class CompanyChoiceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('company', ChoiceType::class, [
-                'label' => 'Entreprise',
+            ->add('company', EntityType::class, [
+                'class' => CompanyMembership::class,
                 'choices' => $options['companies'],
-                'choice_label' => function (?CompanyMembership $companyMembership) {
-                    return $companyMembership->getCompany()->getName();
-                },
-                'choice_value' => function (?CompanyMembership $companyMembership) {
-                    return $companyMembership ? $companyMembership->getCompany()->getId() : '';
-                },
-                'placeholder' => 'Choisissez une entreprise',
+                'choice_label' => 'company.name',
+                'label' => 'Société',
+                'placeholder' => 'Choisir une société',
                 'required' => true,
-                'mapped' => false,
-                'multiple' => false
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Valider',
+                'multiple' => false,
             ]);
     }
 

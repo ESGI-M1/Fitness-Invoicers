@@ -45,6 +45,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $query = $this->createQueryBuilder('u')
         ->andWhere('u.isVerified = 1');
 
+//        if ($company){
+//            $query->andWhere('u.company IN (:company')
+//                ->setParameter('company', $company);
+//        }
+
         if (isset($options['name']) && $options['name']) {
             $query->andWhere('u.firstName = :name')
             ->setParameter('name', $options['name']);

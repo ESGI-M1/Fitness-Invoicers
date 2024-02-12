@@ -24,7 +24,15 @@ class ItemController extends AbstractController
         ]);
     }
 
-    #[Route('/add', name: 'app_user_item_add', methods: ['GET', 'POST'])]
+    #[Route('/item/show/{id}', name: 'app_user_item_show', methods: ['GET'])]
+    public function show(Item $item): Response
+    {
+        return $this->render('items/item_show.html.twig', [
+            'item' => $item,
+        ]);
+    }
+
+    #[Route('item/add', name: 'app_user_item_add', methods: ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $item = new Item();
@@ -34,6 +42,7 @@ class ItemController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($item);
             $entityManager->flush();
+            $this->addFlash('success', 'L\'item a bien été ajouté');
 
             return $this->redirectToRoute('app_user_item_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -53,6 +62,7 @@ class ItemController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $this->addFlash('success', 'L\'item a bien été modifié');
 
             return $this->redirectToRoute('app_user_item_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -64,12 +74,13 @@ class ItemController extends AbstractController
         ]);
     }
 
-    #[Route('item/delete/{id}', name: 'app_user_item_delete', methods: ['POST'])]
-    public function delete(Request $request, Item $item, EntityManagerInterface $entityManager): Response
+    #[Route('item/delete/{id}/{token}', name: 'app_user_item_delete', methods: ['GET'])]
+    public function delete(Request $request, Item $item, EntityManagerInterface $entityManager, string $token): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$item->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$item->getId(), $token)) {
             $entityManager->remove($item);
             $entityManager->flush();
+            $this->addFlash('success', 'L\'item a bien été supprimé');
         }
 
         return $this->redirectToRoute('app_user_item_index', [], Response::HTTP_SEE_OTHER);

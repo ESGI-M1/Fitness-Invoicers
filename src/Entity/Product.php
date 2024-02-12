@@ -4,11 +4,11 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use App\Trait\TimestampableTrait;
+use App\Trait\SluggableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Product
 {
     use TimestampableTrait;
+    use SluggableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,10 +30,6 @@ class Product
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $ref;
-
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Gedmo\Slug(fields: ['name', 'id'])]
-    private string $slug;
 
     #[ORM\Column(type: Types::FLOAT)]
     private float $price;
@@ -86,18 +83,6 @@ class Product
         $this->ref = $ref;
     }
 
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
     public function getPrice(): ?float
     {
         return $this->price;
@@ -134,12 +119,17 @@ class Product
         return $this;
     }
 
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
     public function setImageFile(?File $image = null): void
     {
         $this->imageFile = $image;
 
         if (null !== $image) {
-            $this->updatedAt = new \DateTimeImmutable();
+            $this->updatedAt = new \DateTime();
         }
     }
 

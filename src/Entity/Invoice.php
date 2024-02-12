@@ -110,7 +110,7 @@ class Invoice
         return $this->items;
     }
 
-    public function addItem(Item $item): static
+    public function addItems(Item $item): static
     {
         if (!$this->items->contains($item)) {
             $this->items->add($item);
@@ -120,7 +120,7 @@ class Invoice
         return $this;
     }
 
-    public function removeItem(Item $item): static
+    public function removeItems(Item $item): static
     {
         if ($this->items->removeElement($item)) {
             // set the owning side to null (unless already changed)

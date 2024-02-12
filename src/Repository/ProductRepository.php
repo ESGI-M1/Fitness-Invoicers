@@ -25,8 +25,20 @@ class ProductRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('p');
 
-        if (isset($options['name']) && $options['name']) {
-            $query->andWhere('c.name is null');
+        if (isset($options['alias']) && $options['alias'] !== '') {
+            $parts = explode(' ', $options['alias']);
+            $subAnd = [];
+            foreach ($parts as $k => $p) {
+                $tag = 'alias_' . $k;
+                $subOr = [];
+                foreach (['p.name', 'p.slug'] as $f) {
+                    $subOr[] = "{$f} LIKE :{$tag}";
+                }
+                $subAnd[] = '(' . implode(' OR ', $subOr) . ')';
+                $query->setParameter($tag, "%$p%");
+            }
+            $query
+                ->andWhere('(' . implode(' AND ', $subAnd) . ')');
         }
         if (isset($options['category']) && $options['category']) {
             $query->innerJoin('p.categories', 'categories')

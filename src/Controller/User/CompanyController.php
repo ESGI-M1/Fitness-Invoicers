@@ -3,6 +3,8 @@
 namespace App\Controller\User;
 
 use App\Entity\Company;
+use App\Entity\CompanyMembership;
+use App\Enum\CompanyMembershipStatusEnum;
 use App\Service\CompanySession;
 use App\Form\Company\CompanyFormType;
 use App\Form\Company\CompanyChoiceType;
@@ -17,17 +19,27 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class CompanyController extends AbstractController
 {
     #[Route('/company', name: 'app_user_company_index')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(CompanySession $companySession, EntityManagerInterface $entityManager): Response
     {
-        $users = $this->getUser();
-        $company = $entityManager->getRepository(Company::class)->findBy([$users]);
+        $company = $companySession->getCurrentCompany();
+        if($company instanceof RedirectResponse) {
+            return $company;
+        }
 
         return $this->render('companies/company_index.html.twig', [
             'company' => $company,
         ]);
     }
 
-    #[Route('/add', name: 'app_user_company_add', methods: ['GET', 'POST'])]
+    #[Route('/company/show/{id}', name: 'app_user_company_show')]
+    public function show(Company $company): Response
+    {
+        return $this->render('companies/company_show.html.twig', [
+            'company' => $company,
+        ]);
+    }
+
+    #[Route('company/add', name: 'app_user_company_add', methods: ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $company = new Company();
@@ -35,6 +47,18 @@ class CompanyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $user = $this->getUser();
+            $companyMembership = new CompanyMembership();
+            $companyMembership->setRelatedUser($user);
+            $companyMembership->setCompany($company);
+            $companyMembership->setStatus(CompanyMembershipStatusEnum::ACCEPTED);
+            $entityManager->persist($companyMembership);
+
+
+            $company->setReferent($user);
+            $company->addCompanyMembership($companyMembership);
+
             $entityManager->persist($company);
             $entityManager->flush();
 
@@ -67,10 +91,10 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    #[Route('company/delete/{id}', name: 'app_user_company_delete', methods: ['POST'])]
-    public function delete(Request $request, Company $company, EntityManagerInterface $entityManager): Response
+    #[Route('company/delete/{id}/{token}', name: 'app_user_company_delete', methods: ['POST'])]
+    public function delete(Request $request, Company $company, EntityManagerInterface $entityManager, string $token): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$company->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$company->getId(), $token)) {
             $entityManager->remove($company);
             $entityManager->flush();
         }
@@ -82,7 +106,7 @@ class CompanyController extends AbstractController
     public function set(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
     {
         $user = $this->getUser();
-        $companies = $user->getCompanyMemberships()->getValues();
+        $companies = $user->getCompanyMembershipAccepted();
 
         $form = $this->createForm(CompanyChoiceType::class, null, ['companies' => $companies]);
         $form->handleRequest($request);
@@ -90,14 +114,10 @@ class CompanyController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $this->getUser();
-            $CompanyMemberships = $user->getCompanyMemberships()->getValues();
 
-            $companyForm = $form->get('company')->getData();
-            foreach ($CompanyMemberships as $company) {
-                if ($company == $companyForm) {
-                    $companySession->setCurrentCompany($company->getCompany());
-                    break;
-                }
+            $companyMembershipForm = $form->get('company')->getData();
+            if($companyMembershipForm->getRelatedUser() === $user && $companyMembershipForm->getStatus() === CompanyMembershipStatusEnum::ACCEPTED) {
+                $companySession->setCurrentCompany($companyMembershipForm->getCompany());
             }
 
             return $this->redirectToRoute('app_index');
@@ -107,6 +127,5 @@ class CompanyController extends AbstractController
             'action' => 'Choisir une entreprise',
             'form' => $form,
         ]);
-
     }
 }

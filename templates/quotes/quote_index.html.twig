@@ -3,11 +3,69 @@
 {% block title %}Devis{% endblock %}
 
 {% block main %}
-
-    {% for quo in quote %}
-        {{ quo.company.name }}
-        {{ quo.discountAmount }}
-        {{ quo.discountPercent }}
-    {% endfor %}
-
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Devis',
+        'values': quotes,
+        'path': path('app_user_quote_add'),
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'label': 'Ajouter un devis'
+    } %}
+    <div class="mt-4">
+        <table class="table table-bordered table-striped table-hover w-full">
+            <colgroup>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+            </colgroup>
+            <thead>
+            <tr>
+                <th class="border">
+                    Montant remise
+                </th>
+                <th class="border">% réduction</th>
+                <th class="border">Statut</th>
+                <th class="border">Factures</th>
+                <th class="border">Rapports</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quote in quotes %}
+                <tr>
+                    <td class="border">{{ quote.discountAmount ?? 0 }}%</td>
+                    <td class="border">{{ quote.discountPercent }}%</td>
+                    <td class="border">{{ quote.status.getStatusLabel() }}</td>
+                    <td class="border text-center">
+                        {% for invoices in quote.invoices %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_show', { 'id': invoices.id }),
+                                'fa': 'eye'
+                            } %}
+                        {% endfor %}
+                    </td>
+                    <td class="border">
+                        {% for deposit in quote.deposits %}
+                            {{ deposit.price }}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center border">Aucun devis</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if quotes is not empty %}
+            <div class="box-footer">
+                <div class="navigation">
+                    {{ knp_pagination_render(quotes) }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

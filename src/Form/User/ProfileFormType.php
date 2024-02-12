@@ -2,7 +2,6 @@
 
 namespace App\Form\User;
 
-use App\Entity\CompanyMembership;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
@@ -13,6 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Doctrine\ORM\EntityManagerInterface;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+
 
 
 class ProfileFormType extends AbstractType
@@ -62,6 +63,17 @@ class ProfileFormType extends AbstractType
                     'Autre' => CivilityEnum::OTHER,
                 ],
                 'label' => 'Sexe'
+            ])
+            ->add('imageFile', VichImageType::class, [
+                'required' => false,
+                'label' => 'Photo de profil',
+                'download_uri' => false,
+                'image_uri' => false,
+                'allow_delete' => false,
+                'delete_label' => 'Supprimer',
+                'download_label' => 'Télécharger',
+                'download_uri' => false,
+                'asset_helper' => true,
             ])
         ;
     }

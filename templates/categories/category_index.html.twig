@@ -3,46 +3,41 @@
 {% block title %}Catégories{% endblock %}
 
 {% block main %}
-    <div class="search border-b shadow-lg p-4">
-        {{ form_start(form) }}
-        {{ form_end(form) }}
-    </div>
-    <div class="border-b shadow-lg p-4 grid grid-cols-2">
-        <div>
-            <h3 class="text-lg font-bold">Catégories ({{categories.totalItemCount}})</h3>
-        </div>
-        <div class="text-right">
-            <button data-type="ajax" data-src="{{ path('app_user_category_add') }}"
-                    class="fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right">
-                Ajouter une catégorie
-            </button>
-        </div>
-    </div>
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Catégorie',
+        'values': pagination,
+        'path': path('app_user_category_add'),
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'label': 'Ajouter une catégorie'
+    } %}
     <div class="mt-4">
         <table class="table table-bordered table-striped table-hover w-full">
-            <colgroup>
-                <col class="w-8"/>
-                <col/>
-                <col/>
-                <col/>
-                <col class="w-8"/>
-            </colgroup>
             <thead>
             <tr>
-                <th class="border text-center">
+                <th class="border {% if pagination.isSorted('c.name') %}sorted {% endif %}">
+                    {{ knp_pagination_sortable(pagination, 'Nom', 'c.name') }}
+                    {% if pagination.isSorted('c.name') %}
+                        {% if app.request.get('direction') == 'asc' %}
+                            <i class="fa-solid fa-arrow-up"></i>
+                        {% elseif app.request.get('direction') == 'desc' %}
+                            <i class="fa-solid fa-arrow-down"></i>
+                        {% endif %}
+                    {% endif %}
                 </th>
-                <th class="border">Nom</th>
-                <th class="border">Slug</th>
-                <th class="border">Entreprise</th>
+                <th class="border">Nombre de produits</th>
+                <th class="border"></th>
                 <th class="border"></th>
             </tr>
             </thead>
             <tbody>
-            {% for category in categories %}
+            {% for category in pagination %}
                 <tr>
+                    <td class="border">{{ category.name }}</td>
+                    <td class="border">{{ category.products|length }}</td>
                     <td class="text-center border">
                         <a data-type="ajax" class="fancy-add"
-                           data-src="{{ path('app_user_category_edit', {'id' : category.id }) }}">
+                           href="{{ path('app_user_category_edit', {'id' : category.id }) }}">
                             <svg class="feather feather-edit h-4 w-4 mx-auto align-middle" viewBox="0 0 24 24"
                                  fill="none" stroke="blue" stroke-width="1.5" stroke-linecap="round"
                                  stroke-linejoin="round">
@@ -50,14 +45,14 @@
                             </svg>
                         </a>
                     </td>
-                    <td class="border">{{ category.name }}</td>
-                    <td class="border">{{ category.slug }}</td>
-                    <td class="border">{{ category.company.name }}</td>
-                    <td class="text-center border">
-                        <a data-type="ajax" class="fancy"
-                           data-src="{{ path('app_user_category_delete', {'id' : category.id }) }}">
-                            <i class="fa fa-trash text-blue-500 text-sm"></i>
-                        </a>
+                    <td class="text-center border do-confirm">
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_category_delete', {'id': category.id, 'token': csrf_token('delete' ~ category.id)}),
+                            'class': 'text-white font-bold py-2 px-4 rounded',
+                            'svg': 'http://www.w3.org/2000/svg',
+                            'label': '',
+                            'svg_path': 'M15 5a1 1 0 0 1 1 1v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h1V4a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v1h1zm-4 1h-2V4a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v2H5a1 1 0 0 0 0 2h1v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8h1a1 1 0 0 0 0-2h-1V6a1 1 0 0 0-1-1z'
+                        } %}
                     </td>
                 </tr>
             {% else %}
@@ -67,10 +62,10 @@
             {% endfor %}
             </tbody>
         </table>
-        {% if categories is not empty %}
+        {% if pagination is not empty %}
             <div class="box-footer">
                 <div class="navigation">
-                    {{ knp_pagination_render(categories) }}
+                    {{ knp_pagination_render(pagination) }}
                 </div>
             </div>
         {% endif %}

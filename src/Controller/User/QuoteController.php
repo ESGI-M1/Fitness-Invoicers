@@ -3,8 +3,12 @@
 namespace App\Controller\User;
 
 use App\Entity\Quote;
+use App\Enum\QuoteStatusEnum;
 use App\Form\Quote\QuoteFormType;
+use App\Form\Quote\QuoteSearchType;
+use App\Service\CompanySession;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,17 +16,49 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class QuoteController extends AbstractController
 {
-    #[Route('/quote', name: 'app_user_quote_index')]
-    public function list(EntityManagerInterface $entityManager): Response
+    private $companySession;
+
+    public function __construct(CompanySession $companySession)
     {
-        $quote = $entityManager->getRepository(Quote::class)->findAll();
+        $this->companySession = $companySession;
+    }
+
+    #[Route('/quote', name: 'app_user_quote_index')]
+    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
+    {
+        $form = $this->createForm(
+            QuoteSearchType::class,
+        );
+
+        $form->handleRequest($request);
+
+        $company = $this->companySession->getCurrentCompany();
+
+        $quotes = $paginator->paginate(
+            $company->getQuotes(),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('items', 20)
+        );
 
         return $this->render('quotes/quote_index.html.twig', [
-            'quote' => $quote,
+            'quotes' => $quotes,
+            'form' => $form
         ]);
     }
 
-    #[Route('/add', name: 'app_user_quote_add', methods: ['GET', 'POST'])]
+    #[Route('/quote/show/{id}', name: 'app_user_quote_show', methods: ['GET'])]
+    public function show(Quote $quote, Request $request): Response
+    {
+        $form = $this->createForm(QuoteFormType::class, $quote);
+        $form->handleRequest($request);
+
+        return $this->render('show.html.twig', [
+            'entity' => 'Devis',
+            'form' => $form
+        ]);
+    }
+
+    #[Route('quote/add', name: 'app_user_quote_add', methods: ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $quote = new Quote();
@@ -30,8 +66,11 @@ class QuoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $quote->setStatus(QuoteStatusEnum::DRAFT);
+            $quote->setCompany($this->companySession->getCurrentCompany());
             $entityManager->persist($quote);
             $entityManager->flush();
+            $this->addFlash('success', 'Le devis a bien été ajouté.');
 
             return $this->redirectToRoute('app_user_quote_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -51,6 +90,7 @@ class QuoteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $this->addFlash('success', 'Le devis a bien été modifié.');
 
             return $this->redirectToRoute('app_user_quote_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -62,12 +102,13 @@ class QuoteController extends AbstractController
         ]);
     }
 
-    #[Route('quote/delete/{id}', name: 'app_user_quote_delete', methods: ['POST'])]
-    public function delete(Request $request, Quote $quote, EntityManagerInterface $entityManager): Response
+    #[Route('quote/delete/{id}/{token}', name: 'app_user_quote_delete', methods: ['POST'])]
+    public function delete(Request $request, Quote $quote, EntityManagerInterface $entityManager, string $token): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$quote->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$quote->getId(), $token)) {
             $entityManager->remove($quote);
             $entityManager->flush();
+            $this->addFlash('success', 'Le devis a bien été supprimé.');
         }
 
         return $this->redirectToRoute('app_user_quote_index', [], Response::HTTP_SEE_OTHER);

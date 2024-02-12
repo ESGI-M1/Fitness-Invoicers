@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
+use App\Enum\CompanyMembershipStatusEnum;
 use App\Repository\CompanyRepository;
 use App\Trait\TimestampableTrait;
+use App\Trait\SluggableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -18,6 +19,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Company
 {
     use TimestampableTrait;
+    use SluggableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,10 +31,6 @@ class Company
     #[Assert\Length(min: 3, minMessage: 'Le nom de la société doit être de minimum {{ limit }} caractères')]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-    #[Gedmo\Slug(fields: ['name', 'id'])]
-    private ?string $slug = null;
-
     #[ORM\Column(type: Types::STRING, length: 14)]
     #[Assert\NotBlank(message: 'Veillez renseigner le numéro de SIRET de votre société')]
     #[Assert\Regex(pattern: '/^[0-9]{14}$/', message: 'Le numéro de SIRET doit être composé de 14 chiffres')]
@@ -40,12 +38,12 @@ class Company
 
     #[Vich\UploadableField(mapping: 'companyLogo', fileNameProperty: 'imageName')]
     #[Assert\Image(
-        maxSize: '100k',
+        maxSize: '250k',
         mimeTypes: ['image/jpeg', 'image/png'],
-        maxHeight: 48,
-        maxSizeMessage: 'Le logo ne doit pas dépasser 500ko.',
+        maxHeight: 96,
+        maxSizeMessage: 'Le logo ne doit pas dépasser 250ko.',
         mimeTypesMessage: 'Le logo doit être au format JPG ou PNG.',
-        maxHeightMessage: 'Le logo ne doit pas dépasser 48px de hauteur.'
+        maxHeightMessage: 'Le logo ne doit pas dépasser 96px de hauteur.'
     )]
     private ?File $imageFile = null;
 
@@ -89,18 +87,6 @@ class Company
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = $slug;
 
         return $this;
     }
@@ -249,12 +235,17 @@ class Company
         return $this;
     }
 
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
     public function setImageFile(?File $image = null): void
     {
         $this->imageFile = $image;
 
         if (null !== $image) {
-            $this->updatedAt = new \DateTimeImmutable();
+            $this->updatedAt = new \DateTime();
         }
     }
 
@@ -266,6 +257,28 @@ class Company
     public function setImageName(?string $imageName): void
     {
         $this->imageName = $imageName;
+    }
+
+    public function userInCompany(User $user): bool
+    {
+        foreach ($this->companyMemberships as $companyMembership) {
+            if ($companyMembership->getRelatedUser() === $user) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function userAcceptedInCompany(User $user): bool
+    {
+        foreach ($this->companyMemberships as $companyMembership) {
+            if ($companyMembership->getRelatedUser() === $user && $companyMembership->getStatus() === CompanyMembershipStatusEnum::ACCEPTED) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

@@ -21,28 +21,24 @@ class DepositRepository extends ServiceEntityRepository
         parent::__construct($registry, Deposit::class);
     }
 
-    //    /**
-    //     * @return Deposit[] Returns an array of Deposit objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Deposit[] Returns an array of Deposit objects
+     */
+    public function getDepositFromCompany($company, $options = []): array
+    {
+        $query = $this->createQueryBuilder('d')
+            ->leftJoin('d.quote', 'quotes')
+            ->innerJoin('quotes.invoices', 'invoices')
+            ->andWhere('quotes.company IN (:company)')
+            ->setParameter('company', $company);
 
-    //    public function findOneBySomeField($value): ?Deposit
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (isset($options['price']) && $options['price']) {
+            $query->andWhere('d.price = :price')
+                ->setParameter('price', $options['price']);
+        }
+        return $query
+            ->getQuery()
+            ->getResult();
+    }
+
 }

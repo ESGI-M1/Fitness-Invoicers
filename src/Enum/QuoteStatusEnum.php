@@ -9,4 +9,9 @@ enum QuoteStatusEnum: string
     case ACCEPTED = 'accepted';
     case REJECTED = 'rejected';
     case CANCELLED = 'cancelled';
+
+    public function getStatusLabel(): string
+    {
+        return $this->value;
+    }
 }

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block main %}
+    <div class="flex justify-around">
+        <div class="max-w-md bg-white rounded-lg shadow-md p-6 basis-2/5">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Modifier votre profil</h2>
+            {{ form_start(profileForm) }}
+            {{ form_widget(profileForm) }}
+            {% include './components/button.html.twig' with {
+                'class': 'bg-blue-500 text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded',
+                'label': 'Enregistrer les modifications',
+            } %}
+            {{ form_end(profileForm) }}
+        </div>
+        <div class="max-w-md bg-white rounded-lg shadow-md p-6 basis-2/5">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Vos entreprises</h2>
+            {% for companyMemberShip in companyMemberships %}
+                <div class="flex justify-between gap-8 mb-4">
+                    <p>{{ companyMemberShip.company.name }}</p>
+                    <p>{{ companyMemberShip.status.name }}</p>
+                    {% include './components/a.html.twig' with {
+                        'path': path('app_user_company_membership_delete', {'id': companyMemberShip.id, 'token': csrf_token('delete-user-company-membership' ~ companyMemberShip.id)}),
+                        'class': '',
+                        'label': 'SVG/FA',
+                    } %}
+                </div>
+            {% endfor %}
+            {% include './components/a.html.twig' with {
+                'path': path('app_user_company_add'),
+                'class': 'bg-blue-500 text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded',
+                'label': 'Créer mon entreprise',
+            } %}
+        </div>
+    </div>
+{% endblock %}

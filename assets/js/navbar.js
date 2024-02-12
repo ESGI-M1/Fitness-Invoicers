@@ -5,10 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const leftMenu = document.getElementById('left-menu');
 
     burgerButton.addEventListener('click', () => {
-        leftMenu.classList.toggle('w-0');
-        leftMenu.classList.toggle('w-64');
-        leftMenu.classList.toggle('p-6');
-        leftMenu.classList.toggle('p-0');
+        leftMenu.classList.toggle('max-w-full');
+        leftMenu.classList.toggle('max-w-0');
     });
 
     const lightMode = document.getElementById('lightMode');

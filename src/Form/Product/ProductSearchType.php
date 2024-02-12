@@ -16,11 +16,8 @@ class ProductSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
+            ->add('alias', TextType::class, [
                 'label' => 'Nom',
-            ])
-            ->add('slug', TextType::class, [
-                'label' => 'Slug',
             ])
             ->add('price', IntegerType::class, [
                 'label' => 'Prix',

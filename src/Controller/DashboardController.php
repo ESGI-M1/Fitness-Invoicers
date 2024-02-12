@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\Dashboard\DateRangeFormType;
+use App\Form\User\CompanyFormType;
 use App\Service\CompanySession;
 use App\Service\Dashboard;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,27 +49,15 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    #[Route('/profile', name: 'app_index_profile')]
-    public function profile(Request $request, EntityManagerInterface $manager): Response
-    {
-        $form = $this->createForm(ProfileFormType::class, $this->getUser());
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $manager->flush();
-            return $this->redirectToRoute('app_index_profile');
-        }
-
-        return $this->render('profile.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
     #[Route('/app_default_dev', name: 'app_default_dev')]
     public function app_default_dev(): Response
     {
         return $this->render('dashboard/index.html.twig');
     }
 
+    #[Route('/design_guide', name: 'design_guide')]
+    public function designGuide(): Response
+    {
+        return $this->render('designGuide.html.twig');
+    }
 }

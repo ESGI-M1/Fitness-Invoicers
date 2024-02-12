@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -25,25 +26,47 @@ class CompanySession
     {
         $user = $this->security->getUser();
 
-        // To Do rajouter, company valide uniquement
+        $companyMembershipAccepted = $user->getCompanyMembershipAccepted();
+        if (count($companyMembershipAccepted) == 1) {
+            return $companyMembershipAccepted[0]->getCompany();
+        }
 
-        if (count($user->getCompanyMemberships()) == 1) {
-            return $user->getCompanyMemberships()[0]->getCompany();
+        $session = $this->requestStack->getSession();
+        $companyId = $session->get('current_company');
+
+        if (!$companyId && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
+            return new RedirectResponse($this->router->generate('app_user_company_set'), Response::HTTP_SEE_OTHER);
+        }
+
+        $company = $this->entityManager->getRepository(Company::class)->find($companyId);
+
+        if (!$company) {
+            return new RedirectResponse($this->router->generate('app_user_company_set'), Response::HTTP_SEE_OTHER);
+        }
+
+        return $company;
+    }
+
+    public function getCurrentCompanyWithoutRedirect(): Company | Null
+    {
+        $user = $this->security->getUser();
+
+        $companyMembershipAccepted = $user->getCompanyMembershipAccepted();
+        if (count($companyMembershipAccepted) == 1) {
+            return $companyMembershipAccepted[0]->getCompany();
         }
 
         $session = $this->requestStack->getSession();
         $companyId = $session->get('current_company');
 
         if (!$companyId) {
-            $url = $this->router->generate('app_user_company_set');
-            return new RedirectResponse($url);
+            return null;
         }
 
         $company = $this->entityManager->getRepository(Company::class)->find($companyId);
 
         if (!$company) {
-            $url = $this->router->generate('app_user_company_set');
-            return new RedirectResponse($url);
+            return null;
         }
 
         return $company;
@@ -60,8 +83,9 @@ class CompanySession
 
         $user = $this->security->getUser();
 
-        if(count($user->getCompanyMemberships()) == 1){
-            return $user->getCompanyMemberships()[0]->getCompany();
+        $companyMembershipAccepted = $user->getCompanyMembershipAccepted();
+        if (count($companyMembershipAccepted) == 1) {
+            return $companyMembershipAccepted[0]->getCompany();
         }
 
         $session = $this->requestStack->getSession();

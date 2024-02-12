@@ -3,8 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use App\Form\User\UserFormType;
 use App\Form\User\UserSearchType;
+use App\Form\User\UserFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,11 +12,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UserController extends AbstractController
+class UserAdminController extends AbstractController
 {
-    #[Route('/user', name: 'app_admin_user_index')]
-    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
-    {
+    #[Route('/user_admin', name: 'app_admin_user_index')]
+    public function list(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        PaginatorInterface $paginator,
+    ): Response {
         $form = $this->createForm(
             UserSearchType::class,
         );
@@ -29,13 +32,13 @@ class UserController extends AbstractController
             $request->query->getInt('items', 20)
         );
 
-        return $this->render('users/user_index.html.twig', [
+        return $this->render('users/user_index_admin.html.twig', [
             'users' => $users,
             'form' => $form
         ]);
     }
 
-    #[Route('/add', name: 'app_admin_user_add', methods: ['GET', 'POST'])]
+    #[Route('user_admin/add', name: 'app_admin_user_add', methods: ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
@@ -56,7 +59,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('user/edit/{id}', name: 'app_admin_user_edit', methods: ['GET', 'POST'])]
+    #[Route('user_admin/edit/{id}', name: 'app_admin_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UserFormType::class, $user);
@@ -75,7 +78,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('user/delete/{id}', name: 'app_admin_user_delete', methods: ['POST'])]
+    #[Route('user_admin/delete/{id}', name: 'app_admin_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {

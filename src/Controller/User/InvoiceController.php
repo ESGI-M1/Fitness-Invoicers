@@ -3,57 +3,86 @@
 namespace App\Controller\User;
 
 use App\Entity\Company;
+use App\Entity\Deposit;
 use App\Entity\Invoice;
+use App\Enum\InvoiceStatusEnum;
 use App\Service\CompanySession;
 use App\Form\Invoice\InvoiceFormType;
+use App\Form\Invoice\InvoiceSearchType;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class InvoiceController extends AbstractController
 {
-    #[Route('/invoice', name: 'app_user_invoice_index')]
-    public function list(EntityManagerInterface $entityManager, CompanySession $companySession): Response
+    private $companySession;
+
+    public function __construct(CompanySession $companySession)
     {
+        $this->companySession = $companySession;
+    }
 
-        $company = $companySession->getCurrentCompany();
-        if($company instanceof RedirectResponse) {
-            return $company;
-        }
+    #[Route('/invoice', name: 'app_user_invoice_index')]
+    public function list(
+        EntityManagerInterface $entityManager,
+        Request                $request,
+        PaginatorInterface     $paginator
+    ): Response
+    {
+        $form = $this->createForm(
+            InvoiceSearchType::class,
+        );
 
-        $invoices = $company->getInvoices();
+        $form->handleRequest($request);
 
-        dump($company);
+        $company = $this->companySession->getCurrentCompany();
+
+        $invoices = $paginator->paginate(
+            $company->getInvoices(),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('items', 20)
+        );
 
         return $this->render('invoices/invoice_index.html.twig', [
-            'invoices' => $invoices
+            'invoices' => $invoices,
+            'form' => $form
         ]);
     }
 
-    #[Route('/invoice/tata', name: 'app_user_invoice_show', methods: ['GET'])]
-    public function show(CompanySession $companySession): Response
+    #[Route('/invoice/show/{id}', name: 'app_user_invoice_show', methods: ['GET'])]
+    public function show(Invoice $invoice, Request $request): Response
     {
-        $company = $companySession->getCurrentCompany();
-        if($company instanceof RedirectResponse) {
-            return $company;
-        }
+        $form = $this->createForm(InvoiceFormType::class, $invoice);
+        $form->handleRequest($request);
 
-        return $this->render('invoices/invoice_show.html.twig', [
+        return $this->render('show.html.twig', [
+            'entity' => 'Factures',
+            'form' => $form
         ]);
     }
 
-    #[Route('{slug}/add', name: 'app_user_invoice_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, EntityManagerInterface $entityManager, Company $company): Response
+    #[Route('invoice/add', name: 'app_user_invoice_add', methods: ['GET', 'POST'])]
+    public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $invoice = new Invoice();
         $form = $this->createForm(InvoiceFormType::class, $invoice);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $invoice->setStatus(InvoiceStatusEnum::DRAFT);
+            $invoice->setCompany($this->companySession->getCurrentCompany());
+
+//            if ($invoice->getQuote()) {
+//                $deposit = new Deposit();
+//                $deposit->setInvoice($invoice);
+//                $deposit->setQuote($invoice->getQuote());
+//                $entityManager->persist($deposit);
+//            }
+
             $entityManager->persist($invoice);
             $entityManager->flush();
 
@@ -64,12 +93,11 @@ class InvoiceController extends AbstractController
             'action' => 'Ajouter une facture',
             'invoice' => $invoice,
             'form' => $form,
-            'company' => $company,
         ]);
     }
 
     #[Route('invoice/edit/{id}', name: 'app_user_invoice_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, #[MapEntity(mapping: ['company_slug' => 'slug'])]  Invoice $invoice, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, #[MapEntity(mapping: ['company_slug' => 'slug'])] Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(InvoiceFormType::class, $invoice);
         $form->handleRequest($request);
@@ -81,16 +109,16 @@ class InvoiceController extends AbstractController
         }
 
         return $this->render('action.html.twig', [
-            'action' => 'Modifier la facture n°'.$invoice->getId(),
+            'action' => 'Modifier la facture n°' . $invoice->getId(),
             'categories' => $invoice,
             'form' => $form
         ]);
     }
 
-    #[Route('invoice/delete/{id}', name: 'app_user_invoice_delete', methods: ['POST'])]
-    public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
+    #[Route('invoice/delete/{id}/{token}', name: 'app_user_invoice_delete', methods: ['GET'])]
+    public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager, string $token): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$invoice->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $invoice->getId(), $token)) {
             $entityManager->remove($invoice);
             $entityManager->flush();
         }

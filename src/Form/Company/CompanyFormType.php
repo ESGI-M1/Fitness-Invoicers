@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+
 
 class CompanyFormType extends AbstractType
 {
@@ -17,13 +19,20 @@ class CompanyFormType extends AbstractType
                 'required' => true,
                 'label' => 'Nom',
             ])
-            ->add('slug', TextType::class, [
-                'required' => true,
-                'label' => 'Nom'
-            ])
             ->add('siret', TextType::class, [
                 'required' => true,
                 'label' => 'Siret'
+            ])
+            ->add('imageFile', VichImageType::class, [
+                'required' => false,
+                'label' => 'Photo de l\'entreprise',
+                'download_uri' => false,
+                'image_uri' => false,
+                'allow_delete' => false,
+                'delete_label' => 'Supprimer',
+                'download_label' => 'Télécharger',
+                'download_uri' => false,
+                'asset_helper' => true,
             ])
         ;
     }
@@ -33,7 +42,6 @@ class CompanyFormType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => Company::class,
-                'csrf_protection' => false,
                 'allow_extra_fields' => true,
                 'attr' => [
                     'class' => 'add-form do-confirm',

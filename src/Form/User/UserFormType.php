@@ -3,6 +3,7 @@
 namespace App\Form\User;
 
 use App\Entity\User;
+use App\Enum\CivilityEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -29,11 +30,11 @@ class UserFormType extends AbstractType
             ])
             ->add('civility', ChoiceType::class, [
                 'choices' => [
-                    'Homme' => 'MALE',
-                    'Femme' => 'FEMALE',
-                    'Autre' => 'OTHER',
+                    'Homme' => CivilityEnum::MALE,
+                    'Femme' => CivilityEnum::FEMALE,
+                    'Autre' => CivilityEnum::OTHER,
                 ],
-                'multiple' => false,
+                'label' => 'Sexe'
             ])
         ;
     }
