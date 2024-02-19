@@ -16,15 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use App\Controller\MainController;
 
-class InvoiceController extends AbstractController
+
+class InvoiceController extends MainController
 {
-    private $companySession;
-
-    public function __construct(CompanySession $companySession)
-    {
-        $this->companySession = $companySession;
-    }
 
     #[Route('/invoice', name: 'app_user_invoice_index')]
     public function list(

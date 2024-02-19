@@ -7,18 +7,19 @@ use App\Form\Category\CategoryFormType;
 use App\Form\Category\CategorySearchAdminType;
 use App\Form\Category\CategorySearchType;
 use App\Service\CompanySession;
+use App\Security\RightSociete;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Controller\MainController;
 
-class CategoryController extends AbstractController
+class CategoryController extends MainController
 {
-    #[Route('/category-admin', name: 'app_admin_category_index')]
+    #[Route('/category-admin', name: 'app_admin_category_index', methods: ['GET', 'POST'], )]
     public function listadmin(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
     {
         $form = $this->createForm(
@@ -39,7 +40,7 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/category', name: 'app_user_category_index')]
+    #[Route('/category', name: 'app_user_category_index', methods: ['GET', 'POST'])]
     public function list(
         EntityManagerInterface $entityManager,
         Request $request,
@@ -47,23 +48,15 @@ class CategoryController extends AbstractController
         PaginatorInterface $paginator
     ): Response {
         $company = $companySession->getCurrentCompany();
-        if($company instanceof RedirectResponse) {
-            return $company;
-        }
 
         $form = $this->createForm(
             CategorySearchType::class,
         );
 
         $form->handleRequest($request);
-
-        $filter = [];
-        if($form->isSubmitted() && $form->isValid()) {
-            $filter = $form->getData();
-        }
         
         $pagination = $paginator->paginate(
-            $entityManager->getRepository(Category::class)->getCategoriesByFilters($company, $filter),
+            $entityManager->getRepository(Category::class)->getCategoriesByFilters($company, $form->getData()),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );
@@ -112,9 +105,6 @@ class CategoryController extends AbstractController
     public function add(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
     {
         $company = $companySession->getCurrentCompany();
-        if ($company instanceof RedirectResponse) {
-            return $company;
-        }
 
         $category = new Category();
 

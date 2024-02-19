@@ -12,15 +12,10 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Controller\MainController;
 
-class DepositController extends AbstractController
+class DepositController extends MainController
 {
-    private $companySession;
-
-    public function __construct(CompanySession $companySession)
-    {
-        $this->companySession = $companySession;
-    }
 
     #[Route('/deposit', name: 'app_user_deposit_index')]
     public function list(

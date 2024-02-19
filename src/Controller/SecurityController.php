@@ -273,4 +273,10 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('app_check_email');
     }
 
+    #[Route('/invitation_check', name: 'invitation_check')]
+    public function check(): never
+    {
+        throw new \LogicException('This code should never be reached');
+    }
+
 }

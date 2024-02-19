@@ -12,11 +12,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 #[Vich\Uploadable]
-class Company
+class Company implements \Serializable
 {
     use TimestampableTrait;
     use SluggableTrait;
@@ -40,11 +42,18 @@ class Company
     #[Assert\Image(
         maxSize: '250k',
         mimeTypes: ['image/jpeg', 'image/png'],
-        maxHeight: 96,
+        maxHeight: 250,
+        maxWidth: 250,
+        minWidth: 48,
+        minHeight: 48,
         maxSizeMessage: 'Le logo ne doit pas dépasser 250ko.',
         mimeTypesMessage: 'Le logo doit être au format JPG ou PNG.',
-        maxHeightMessage: 'Le logo ne doit pas dépasser 96px de hauteur.'
+        maxHeightMessage: 'Le logo ne doit pas dépasser 250px de hauteur.',
+        maxWidthMessage: 'Le logo ne doit pas dépasser 250px de largeur.',
+        minWidthMessage: 'Le logo doit faire au moins 48px de largeur.',
+        minHeightMessage: 'Le logo doit faire au moins 48px de hauteur.',
     )]
+    #[Ignore]
     private ?File $imageFile = null;
 
     #[ORM\Column(nullable: true)]
@@ -279,6 +288,30 @@ class Company
         }
 
         return false;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->id,
+            $this->name,
+            $this->siret,
+            $this->imageName,
+            $this->createdAt,
+            $this->updatedAt,
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        [
+            $this->id,
+            $this->name,
+            $this->siret,
+            $this->imageName,
+            $this->createdAt,
+            $this->updatedAt,
+        ] = unserialize($serialized);
     }
 
 }

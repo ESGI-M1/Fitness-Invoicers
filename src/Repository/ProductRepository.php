@@ -45,6 +45,11 @@ class ProductRepository extends ServiceEntityRepository
                 ->andWhere('categories.id IN (:category)')
                 ->setParameter('category', $options['category']);
         }
+        if (isset($options['price']) && $options['price']) {
+            $query
+                ->andWhere('p.price LIKE :price')
+                ->setParameter('price', '%' . $options['price'] . '%');
+        }
 
         return $query->getQuery()->getResult();
     }

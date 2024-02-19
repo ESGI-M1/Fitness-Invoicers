@@ -32,7 +32,7 @@ class ProductFormType extends AbstractType
             ])
             ->add('imageFile', VichImageType::class, [
                 'required' => false,
-                'label' => 'Photo de l\'entreprise',
+                'label' => 'Photo du produit',
                 'download_uri' => false,
                 'image_uri' => false,
                 'allow_delete' => false,
@@ -49,7 +49,6 @@ class ProductFormType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => Product::class,
-                'csrf_protection' => false,
                 'allow_extra_fields' => true,
                 'attr' => [
                     'class' => 'add-form do-confirm',

@@ -14,17 +14,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Controller\MainController;
 
 
-class CompanyController extends AbstractController
+class CompanyController extends MainController
 {
     #[Route('/company', name: 'app_user_company_index')]
     public function list(CompanySession $companySession, EntityManagerInterface $entityManager): Response
     {
         $company = $companySession->getCurrentCompany();
-        if($company instanceof RedirectResponse) {
-            return $company;
-        }
 
         return $this->render('companies/company_index.html.twig', [
             'company' => $company,
@@ -79,6 +77,7 @@ class CompanyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_user_company_index', [], Response::HTTP_SEE_OTHER);

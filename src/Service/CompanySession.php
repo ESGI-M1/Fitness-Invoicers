@@ -20,7 +20,9 @@ class CompanySession
         private EntityManagerInterface $entityManager,
         private FormFactoryInterface $formFactory,
         private Security $security
-    ) { }
+    ) {
+
+    }
 
     public function getCurrentCompany(): Company | RedirectResponse
     {

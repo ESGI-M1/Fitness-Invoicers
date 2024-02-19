@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -56,19 +57,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isVerified = false;
 
-    #[Vich\UploadableField(mapping: 'userImage', fileNameProperty: 'imageName')]
-    #[Assert\Image(
-        maxSize: '500k',
-        mimeTypes: ['image/jpeg', 'image/png'],
-        maxHeight: 256,
-        maxSizeMessage: 'Le logo ne doit pas dépasser 500ko.',
-        mimeTypesMessage: 'Le logo doit être au format JPG ou PNG.',
-        maxHeightMessage: 'Le logo ne doit pas dépasser 256px de hauteur.'
-    )]
-    private ?File $imageFile = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?string $imageName = null;
+    #[OneToOne(mappedBy: "user", targetEntity: Customer::class)]
+    private $customer;
 
     public function __construct()
     {
@@ -254,31 +244,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
-
-    public function setImageFile(File $imageFile = null)
-    {
-        $this->imageFile = $imageFile;
-        if ($this->imageFile instanceof UploadedFile) {
-            $this->updatedAt = new \DateTime();
-        }
-
-        return $this;
-    }
-
-    public function getImageName(): ?string
-    {
-        return $this->imageName;
-    }
-
-    public function setImageName(?string $imageName): void
-    {
-        $this->imageName = $imageName;
-    }
-
     public function getCompanyMembershipAccepted(): array
     {
         $companyMemberships = $this->getCompanyMemberships();
@@ -291,6 +256,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $companyMembershipsAccepted;
+    }
+
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    public function setCustomer($customer): self
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function __serialize()
+    {
+        return [
+            $this->id,
+            $this->email,
+            $this->password,
+        ];
+    }
+
+    public function __unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->email,
+            $this->password,
+        ) = $serialized;
     }
 
 }

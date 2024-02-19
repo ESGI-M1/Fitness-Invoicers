@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserFormType extends AbstractType
 {
@@ -23,6 +24,9 @@ class UserFormType extends AbstractType
             ->add('firstName', TextType::class, [
                 'required' => true,
                 'label' => 'Prénom',
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
             ->add('email', EmailType::class, [
                 'required' => true,
@@ -44,13 +48,13 @@ class UserFormType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => User::class,
-                'csrf_protection' => false,
                 'allow_extra_fields' => true,
                 'attr' => [
                     'class' => 'add-form do-confirm',
                     'data-target' => '.modal-content',
                 ],
                 'update' => true,
+                'validation_groups' => false,
             ]
         );
     }

@@ -28,7 +28,12 @@
                         <img src="{{ vich_uploader_asset(companySession.getCurrentCompanyTwig, 'imageFile') }}"
                              alt="{{ companySession.getCurrentCompanyTwig.slug }}"
                              class="w-14 h-14 rounded-md aspect-square object-cover">
-                        <h1 class="text-base font-bold uppercase">{{ companySession.getCurrentCompanyTwig.slug }}</h1>
+                        <h1 class="text-base font-bold uppercase">
+                            <a href="{{ path('app_user_company_set') }}">{{ companySession.getCurrentCompanyTwig.slug }}</a>
+                            {% if is_granted('company_referent') %}
+                                <a href="{{ path('app_user_company_edit', { 'id': companySession.getCurrentCompanyTwig.id }) }}"><i class="fa-solid fa-pen-to-square"></i></a></i>
+                            {% endif %}
+                        </h1>
                     </div>
                 {% endif %}
                 <h2 class="text-base font-bold uppercase text-grey mt-8 mb-4">Général</h2>
@@ -45,9 +50,9 @@
                 </ul>
                 {% if app.user.companyMemberships|length > 0 %}
                     <h2 class="text-base font-bold uppercase text-grey mb-4">Tableau de bord</h2>
-                    <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey">
+                    <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey mb-10">
                         <li class="rounded hover:bg-primaryLighter hover:text-primary hover:stroke-primary stroke-grey p-2">
-                            <a href="{{ path('app_user_user_index') }}" class="flex nowrap gap-x-4 uppercase">
+                            <a href="{{ path('app_user_company_membership_index') }}" class="flex nowrap gap-x-4 uppercase">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15"
                                      fill="none">
                                     <path d="M7.5 6.25C8.88071 6.25 10 5.13071 10 3.75C10 2.36929 8.88071 1.25 7.5 1.25C6.11929 1.25 5 2.36929 5 3.75C5 5.13071 6.11929 6.25 7.5 6.25Z"
@@ -166,11 +171,20 @@
             </nav>
             <main class="flex flex-col p-4">
                 {% for type, flashMessages in app.flashes %}
+                <div class="flex items-center p-4 mb-4 text-md border rounded-lg" role="alert">
+                    <svg class="mr-2" height="24" width="24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
                     {% for message in flashMessages %}
-                        {{ type }}{{ message }}
+                        <div>
+                            <span class="font-medium">{{ type }} alert</span> {{ message }}
+                        </div>
                     {% endfor %}
+                </div>
                 {% endfor %}
+
                 {% block main %}{% endblock %}
+
             </main>
         </div>
     </div>

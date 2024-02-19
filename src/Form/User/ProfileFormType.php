@@ -64,17 +64,6 @@ class ProfileFormType extends AbstractType
                 ],
                 'label' => 'Sexe'
             ])
-            ->add('imageFile', VichImageType::class, [
-                'required' => false,
-                'label' => 'Photo de profil',
-                'download_uri' => false,
-                'image_uri' => false,
-                'allow_delete' => false,
-                'delete_label' => 'Supprimer',
-                'download_label' => 'Télécharger',
-                'download_uri' => false,
-                'asset_helper' => true,
-            ])
         ;
     }
 

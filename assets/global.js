@@ -63,6 +63,11 @@ document.addEventListener('DOMContentLoaded', function () {
             mb6Divs.forEach(div => {
                 div.classList.add('pr-4');
             });
+            form.querySelectorAll('input').forEach(input => {
+                input.addEventListener('change', function() {
+                    form.submit();
+                });
+            });
         }
     });
 
