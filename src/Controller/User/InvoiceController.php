@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Dompdf\Dompdf;
 use App\Controller\MainController;
 
 
@@ -93,6 +94,7 @@ class InvoiceController extends MainController
     }
 
     #[Route('invoice/edit/{id}', name: 'app_user_invoice_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', 'invoice')]
     public function edit(Request $request, #[MapEntity(mapping: ['company_slug' => 'slug'])] Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(InvoiceFormType::class, $invoice);
@@ -112,6 +114,7 @@ class InvoiceController extends MainController
     }
 
     #[Route('invoice/delete/{id}/{token}', name: 'app_user_invoice_delete', methods: ['GET'])]
+    #[IsGranted('delete', 'invoice')]
     public function delete(Request $request, Invoice $invoice, EntityManagerInterface $entityManager, string $token): Response
     {
         if ($this->isCsrfTokenValid('delete' . $invoice->getId(), $token)) {
@@ -121,4 +124,31 @@ class InvoiceController extends MainController
 
         return $this->redirectToRoute('app_user_invoice_index');
     }
+
+    #[Route('invoice/generate-pdf/{id}', name: 'app_user_invoice_genere_pdf', methods: ['GET'])]
+    public function generatePdf(Invoice $invoice, EntityManagerInterface $entityManager): Response
+    {
+        $dompdf = new Dompdf();
+
+        $company = $invoice->getCompany();
+
+        $html = $this->renderView('invoices/invoice_pdf_2.html.twig', [
+            'invoice' => $invoice,
+            'company' => $company
+        ]);
+
+        $dompdf->loadHtml($html);
+
+        $dompdf->setPaper('A4', 'portrait');
+
+        $dompdf->render();
+
+        return new Response (
+            $dompdf->stream('resume', ["Attachment" => false]),
+            Response::HTTP_OK,
+            ['Content-Type' => 'application/pdf']
+        );
+
+    }
+
 }

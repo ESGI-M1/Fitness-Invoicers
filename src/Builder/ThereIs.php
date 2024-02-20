@@ -48,4 +48,9 @@ final class ThereIs
     {
         return new QuoteBuilder();
     }
+
+    public static function anAddress(): AddressBuilder
+    {
+        return new AddressBuilder();
+    }
 }

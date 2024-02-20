@@ -2,7 +2,7 @@
 
 namespace App\Security;
 
-use App\Entity\User;
+use App\Entity\Company;
 use App\Service\CompanySession;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -20,10 +20,12 @@ class RightSociete
         $this->security = $security;
     }
 
-    public function hasRightOnSociete()
+    public function hasRightOnCompany()
     {
         $user = $this->security->getUser();
-        if ($this->companySession->getCurrentCompany()->getReferent() === $user || $user->getRoles() === 'ROLE_ADMIN') {
+        if (($this->companySession->getCurrentCompany() instanceof Company &&
+            $this->companySession->getCurrentCompany()->getReferent() === $user) ||
+            $user->getRoles() === 'ROLE_ADMIN') {
             return true;
         }
         return false;

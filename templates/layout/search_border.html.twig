@@ -11,11 +11,13 @@
     </div>
     {% if path is defined %}
         <div class="text-right">
+        {% if right %}
             {% include './components/a.html.twig' with {
                 'path': path,
                 'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
                 'label': label,
             } %}
+        {% endif %}
         </div>
     {% endif %}
 </div>

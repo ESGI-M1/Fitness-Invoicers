@@ -7,12 +7,12 @@ use App\Form\User\UserSearchType;
 use App\Form\User\UserFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Controller\MainController;
 
-class UserAdminController extends AbstractController
+class UserAdminController extends MainController
 {
     #[Route('/user_admin', name: 'app_admin_user_index')]
     public function list(

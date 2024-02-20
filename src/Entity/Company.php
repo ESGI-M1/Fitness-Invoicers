@@ -75,6 +75,10 @@ class Company implements \Serializable
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Quote::class, orphanRemoval: true)]
     private Collection $quotes;
 
+    #[ORM\OneToOne(inversedBy: 'company', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Address $Address = null;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -312,6 +316,18 @@ class Company implements \Serializable
             $this->createdAt,
             $this->updatedAt,
         ] = unserialize($serialized);
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->Address;
+    }
+
+    public function setAddress(Address $Address): static
+    {
+        $this->Address = $Address;
+
+        return $this;
     }
 
 }

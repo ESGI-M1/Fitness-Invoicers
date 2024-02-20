@@ -63,7 +63,7 @@ class Quote
         return $this->items;
     }
 
-    public function addItem(item $item): static
+    public function addItem(Item $item): static
     {
         if (!$this->items->contains($item)) {
             $this->items->add($item);
@@ -73,7 +73,7 @@ class Quote
         return $this;
     }
 
-    public function removeItem(item $item): static
+    public function removeItem(Item $item): static
     {
         if ($this->items->removeElement($item)) {
             // set the owning side to null (unless already changed)
