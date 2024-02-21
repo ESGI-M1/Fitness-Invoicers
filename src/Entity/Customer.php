@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OneToOne;
@@ -26,11 +28,22 @@ class Customer
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $lastName;
 
-    #[OneToOne(inversedBy: "customer", targetEntity: User::class)]
-    private $user;
+    #[ORM\OneToOne(mappedBy: 'Customer', cascade: ['persist', 'remove'])]
+    private ?User $user = null;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private bool $active = true;
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Invoice::class)]
+    private Collection $invoices;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $deliveryAddress = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $billingAddress = null;
+
+    public function __construct()
+    {
+        $this->invoices = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -62,26 +75,78 @@ class Customer
         return $this;
     }
 
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser($user): self
+    public function setUser(?User $user): static
     {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setCustomer(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getCustomer() !== $this) {
+            $user->setCustomer($this);
+        }
+
         $this->user = $user;
 
         return $this;
     }
 
-    public function isActive(): bool
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
     {
-        return $this->active;
+        return $this->invoices;
     }
 
-    public function setActive(bool $active): self
+    public function addInvoice(Invoice $invoice): static
     {
-        $this->active = $active;
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            // set the owning side to null (unless already changed)
+            if ($invoice->getCustomer() === $this) {
+                $invoice->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDeliveryAddress(): ?Address
+    {
+        return $this->deliveryAddress;
+    }
+
+    public function setDeliveryAddress(?Address $deliveryAddress): static
+    {
+        $this->deliveryAddress = $deliveryAddress;
+
+        return $this;
+    }
+
+    public function getBillingAddress(): ?Address
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(?Address $billingAddress): static
+    {
+        $this->billingAddress = $billingAddress;
 
         return $this;
     }

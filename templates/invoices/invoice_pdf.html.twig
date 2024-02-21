@@ -1,113 +1,148 @@
 <!doctype html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Invoice</title>
+    <meta charset="UTF-8">
+    <title>{{ invoice.id }}.pdf</title>
 </head>
-<body>
-<style>
-    h4 {
-        margin: 0;
-    }
-    .w-full {
-        width: 100%;
-    }
-    .w-half {
-        width: 50%;
-    }
-    .margin-top {
-        margin-top: 1.25rem;
-    }
-    .footer {
-        font-size: 0.875rem;
-        padding: 1rem;
-        background-color: rgb(241 245 249);
-    }
-    table {
-        width: 100%;
-        border-spacing: 0;
-    }
-    table.products {
-        font-size: 0.875rem;
-    }
-    table.products tr {
-        background-color: rgb(96 165 250);
-    }
-    table.products th {
-        color: #ffffff;
-        padding: 0.5rem;
-    }
-    table tr.items {
-        background-color: rgb(241 245 249);
-    }
-    table tr.items td {
-        padding: 0.5rem;
-    }
-    .total {
-        text-align: right;
-        margin-top: 1rem;
-        font-size: 0.875rem;
-    }
-</style>
-<table class="w-full">
-    <tr>
-        <td class="w-half">
-            <img src="" alt="laravel daily" width="200" />
-        </td>
-        <td class="w-half">
-            <h2>Invoice ID: 834847473</h2>
-        </td>
-    </tr>
-</table>
+    <body>
 
-<div class="margin-top">
-    <table class="w-full">
-        <tr>
-            <td class="w-half">
-                <div><h4>To:</h4></div>
-                <div>John Doe</div>
-                <div>123 Acme Str.</div>
-            </td>
-            <td class="w-half">
-                <div><h4>From:</h4></div>
-                <div>Laravel Daily</div>
-                <div>London</div>
-            </td>
-        </tr>
+    <style>
+        body{
+            margin-inline: 4rem;
+        }
+
+        h1{
+            margin: 0.75rem 0;
+        }
+
+        h2{
+            margin: 0.5rem 0;
+        }
+
+        p{
+            margin: 0.25rem 0;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <div style="display: flex; justify-content: space-between;">
+        <div>
+            <h2>{{ invoice.company.name }}</h2>
+            <p>{{ invoice.company.address.street }}</p>
+            <p>{{ invoice.company.address.postalCode }} {{ invoice.company.address.city }} - {{ invoice.company.address.country }}</p>
+            <p>{{ invoice.company.siret }}</p>
+        </div>
+
+        <div>
+            <h1>FACTURE</h1>
+            <h2>{{ invoice.updatedAt| date('d/m/Y') }}</h2>
+            <h2>FA{{ invoice.id }}</h2>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-around; margin-bottom: 2rem;">
+        <div>
+            <h2>Adresse de livraison</h2>
+            <p>{{ invoice.customer.firstName }} {{ invoice.customer.lastName }}</p>
+            <p>{{ invoice.customer.deliveryAddress.street }}</p>
+            <p>{{ invoice.customer.deliveryAddress.postalCode }} {{ invoice.customer.deliveryAddress.city }}</p>
+            <p>{{ invoice.customer.deliveryAddress.country }}</p>
+        </div>
+        <div>
+            <h2>Adresse de facturation</h2>
+            <p>{{ invoice.customer.firstName }} {{ invoice.customer.lastName }}</p>
+            <p>{{ invoice.customer.billingAddress.street }}</p>
+            <p>{{ invoice.customer.billingAddress.postalCode }} {{ invoice.customer.billingAddress.city }}</p>
+            <p>{{ invoice.customer.billingAddress.country }}</p>
+        </div>
+
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Numéro de facture</th>
+                <th>Date de facturation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>FA{{ invoice.id }}</td>
+                <td>{{ invoice.updatedAt| date('d/m/Y') }}</td>
+            </tr>
+        </tbody>
     </table>
-</div>
 
-<div class="margin-top">
-    <table class="products">
-        <tr>
-            <th>Qty</th>
-            <th>Description</th>
-            <th>Price</th>
-        </tr>
-        <tr class="items">
-
-            <td>
-                3
-            </td>
-            <td>
-                2
-            </td>
-            <td>
-                1
-            </td>
-            endforeach
-        </tr>
+    <table>
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Produit</th>
+                <th>Taux de taxe</th>
+                <th>Prix unitaire (HT)</th>
+                <th>Quantité</th>
+                <th>Total (HT)</th>
+                <th>Total (TTC)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in invoice.items %}
+            <tr>
+                <td>{{ item.product.reference }}</td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.taxes }}</td>
+                <td>{{ item.product.price }} €</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.quantity * item.product.price}} €</td>
+                <td>{{ item.quantity * item.product.price * (1 + item.taxes / 100) }} €</td>
+            </tr>
+            {% endfor %}
     </table>
-</div>
 
-<div class="total">
-    Total: $129.00 USD
-</div>
+    <div style="display: flex">
+        <div style="display: flex; flex-direction: column;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Moyen de paiement</td>
+                        <td>blabla</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Total HT</td>
+                    <td>{{ invoice.getTotalWithoutTaxes }} €</td>
+                </tr>
+                <tr>
+                    <td>Total TVA</td>
+                    <td>{{ invoice.getTaxesAmount }} €</td>
+                </tr>
+                <tr>
+                    <td>Total TTC</td>
+                    <td>{{ invoice.getAmount }}  €</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<div class="footer margin-top">
-    <div>Thank you</div>
-    <div>Laravel Daily</div>
-</div>
-</body>
+    </body>
 </html>

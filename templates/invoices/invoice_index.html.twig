@@ -32,6 +32,7 @@
                 <th class="border">Devis</th>
                 <th class="border">Items</th>
                 <th class="border">Rapports</th>
+                <th class="border">PDF</th>
             </tr>
             </thead>
             <tbody>
@@ -50,13 +51,18 @@
                     </td>
                     <td class="border">
                         {% for item in invoice.items %}
-                            {{ item.productLabel }}
                         {% endfor %}
                     </td>
                     <td class="border">
                         {% for deposit in invoice.deposits %}
                             {{ deposit.price }}
                         {% endfor %}
+                    </td>
+                    <td class="border">
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_invoice_genere_pdf', { 'id': invoice.id }),
+                            'fa': 'file'
+                        } %}
                     </td>
                 </tr>
             {% else %}

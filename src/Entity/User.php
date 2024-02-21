@@ -57,8 +57,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isVerified = false;
 
-    #[OneToOne(mappedBy: "user", targetEntity: Customer::class)]
-    private $customer;
+    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Customer $Customer = null;
 
     public function __construct()
     {
@@ -258,18 +258,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $companyMembershipsAccepted;
     }
 
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-
-    public function setCustomer($customer): self
-    {
-        $this->customer = $customer;
-
-        return $this;
-    }
-
     public function __serialize()
     {
         return [
@@ -288,4 +276,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         ) = $serialized;
     }
 
+    public function getCustomer(): ?Customer
+    {
+        return $this->Customer;
+    }
+
+    public function setCustomer(?Customer $Customer): static
+    {
+        $this->Customer = $Customer;
+
+        return $this;
+    }
 }

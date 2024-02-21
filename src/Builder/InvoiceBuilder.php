@@ -3,6 +3,7 @@
 namespace App\Builder;
 
 use App\Entity\Company;
+use App\Entity\Customer;
 use App\Entity\Deposit;
 use App\Entity\Item;
 use App\Entity\Quote;
@@ -27,6 +28,11 @@ class InvoiceBuilder implements BuilderInterface
      */
     private ?array $deposits = null;
 
+    /**
+     * @var array<Customer>|null
+     */
+    private ?array $customers = null;
+
     public function build(bool $persist = true): object
     {
         $invoice = InvoiceFactory::createOne(array_filter([
@@ -36,6 +42,7 @@ class InvoiceBuilder implements BuilderInterface
             'quote' => $this->quote,
             'items' => $this->items,
             'deposits' => $this->deposits,
+            'customer' => $this->customers,
         ]));
 
         if ($persist) {

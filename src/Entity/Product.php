@@ -29,7 +29,7 @@ class Product
     private string $name;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private string $ref;
+    private string $reference;
 
     #[ORM\Column(type: Types::FLOAT)]
     private float $price;
@@ -79,14 +79,14 @@ class Product
         return $this;
     }
 
-    public function getRef(): string
+    public function getReference(): string
     {
-        return $this->ref;
+        return $this->reference;
     }
 
-    public function setRef(string $ref): void
+    public function setReference(string $ref): void
     {
-        $this->ref = $ref;
+        $this->reference = $ref;
     }
 
     public function getPrice(): ?float

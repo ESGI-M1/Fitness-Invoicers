@@ -43,6 +43,10 @@ class Invoice
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
 
+    #[ORM\ManyToOne(inversedBy: 'invoices')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Customer $customer = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -110,7 +114,7 @@ class Invoice
         return $this->items;
     }
 
-    public function addItems(Item $item): static
+    public function addItem(Item $item): static
     {
         if (!$this->items->contains($item)) {
             $this->items->add($item);
@@ -120,7 +124,7 @@ class Invoice
         return $this;
     }
 
-    public function removeItems(Item $item): static
+    public function removeItem(Item $item): static
     {
         if ($this->items->removeElement($item)) {
             // set the owning side to null (unless already changed)
@@ -174,12 +178,44 @@ class Invoice
         return $this;
     }
 
-    public function getAmount()
+    public function getCustomer(): ?Customer
     {
-        $items = $this->getItems()->getValues();
+        return $this->customer;
+    }
+
+    public function setCustomer(?Customer $customer): static
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function getAmount() : float
+    {
+        $items = $this->getItems();
         $amount = 0;
         foreach ($items as $item) {
-            $amount += $item->getProductPrice() * $item->getQuantity();
+            $amount += $item->getProduct()->getPrice() * $item->getQuantity() * (1 - $item->getTaxes() / 100);
+        }
+        return $amount;
+    }
+
+    public function getTaxesAmount() : float
+    {
+        $items = $this->getItems();
+        $amount = 0;
+        foreach ($items as $item) {
+            $amount += $item->getProduct()->getPrice() * $item->getQuantity() * $item->getTaxes() / 100;
+        }
+        return $amount;
+    }
+
+    public function getTotalWithoutTaxes() : float
+    {
+        $items = $this->getItems();
+        $amount = 0;
+        foreach ($items as $item) {
+            $amount += $item->getProduct()->getPrice() * $item->getQuantity();
         }
         return $amount;
     }

@@ -22,7 +22,7 @@ class ProductFormType extends AbstractType
                 'required' => true,
                 'label' => 'Slug',
             ])
-            ->add('ref', TextType::class, [
+            ->add('reference', TextType::class, [
                 'required' => true,
                 'label' => 'Référence',
             ])

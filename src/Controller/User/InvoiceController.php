@@ -128,14 +128,19 @@ class InvoiceController extends MainController
     #[Route('invoice/generate-pdf/{id}', name: 'app_user_invoice_genere_pdf', methods: ['GET'])]
     public function generatePdf(Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
-        $dompdf = new Dompdf();
 
-        $company = $invoice->getCompany();
 
-        $html = $this->renderView('invoices/invoice_pdf_2.html.twig', [
+        $html = $this->renderView('invoices/invoice_pdf.html.twig', [
             'invoice' => $invoice,
-            'company' => $company
         ]);
+
+        dump(rand(1, 1000) . '.pdf');
+
+        return $this->render('invoices/invoice_pdf.html.twig', [
+            'invoice' => $invoice,
+        ]);
+
+        $dompdf = new Dompdf();
 
         $dompdf->loadHtml($html);
 

@@ -22,9 +22,6 @@ class Address
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\OneToOne(mappedBy: 'Address', cascade: ['persist', 'remove'])]
-    private ?Company $company = null;
-
     #[ORM\Column(length: 255)]
     private ?string $street = null;
 
@@ -65,23 +62,6 @@ class Address
     public function setCountry(string $country): static
     {
         $this->country = $country;
-
-        return $this;
-    }
-
-    public function getCompany(): ?Company
-    {
-        return $this->company;
-    }
-
-    public function setCompany(Company $company): static
-    {
-        // set the owning side of the relation if necessary
-        if ($company->getAddress() !== $this) {
-            $company->setAddress($this);
-        }
-
-        $this->company = $company;
 
         return $this;
     }

@@ -75,9 +75,8 @@ class Company implements \Serializable
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Quote::class, orphanRemoval: true)]
     private Collection $quotes;
 
-    #[ORM\OneToOne(inversedBy: 'company', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Address $Address = null;
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $address = null;
 
     public function __construct()
     {
@@ -320,14 +319,14 @@ class Company implements \Serializable
 
     public function getAddress(): ?Address
     {
-        return $this->Address;
+        return $this->address;
     }
 
-    public function setAddress(Address $Address): static
+    public function setAddress(?Address $address): static
     {
-        $this->Address = $Address;
+        $this->address = $address;
 
         return $this;
     }
-
+    
 }

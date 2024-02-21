@@ -12,12 +12,7 @@ class ItemBuilder implements BuilderInterface
     private ?int $quantity = null;
     private ?float $discountAmountOnItem = null;
     private ?float $discountAmountOnTotal = null;
-    private ?float $discountPercentOnItem = null;
-    private ?float $discountPercentOnTotal = null;
     private ?float $taxes = null;
-    private ?string $productLabel = null;
-    private ?string $productRef = null;
-    private ?float $productPrice = null;
     private ?Quote $quote = null;
     private ?Product $product = null;
     private ?Invoice $invoice = null;
@@ -28,12 +23,7 @@ class ItemBuilder implements BuilderInterface
             'quantity' => $this->quantity,
             'discountAmountOnItem' => $this->discountAmountOnItem,
             'discountAmountOnTotal' => $this->discountAmountOnTotal,
-            'discountPercentOnItem' => $this->discountPercentOnItem,
-            'discountPercentOnTotal' => $this->discountPercentOnTotal,
             'taxes' => $this->taxes,
-            'productLabel' => $this->productLabel,
-            'productRef' => $this->productRef,
-            'productPrice' => $this->productPrice,
             'quote' => $this->quote,
             'product' => $this->product,
             'invoice' => $this->invoice,

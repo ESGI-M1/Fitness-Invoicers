@@ -24,22 +24,7 @@ class Item
     private ?float $discountAmountOnTotal = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?float $discountPercentOnItem = null;
-
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?float $discountPercentOnTotal = null;
-
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $taxes = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $productLabel = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $productRef = null;
-
-    #[ORM\Column(type: Types::FLOAT)]
-    private ?float $productPrice = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
     private ?Quote $quote = null;
@@ -92,30 +77,6 @@ class Item
         return $this;
     }
 
-    public function getDiscountPercentOnItem(): ?float
-    {
-        return $this->discountPercentOnItem;
-    }
-
-    public function setDiscountPercentOnItem(?float $discountPercentOnItem): static
-    {
-        $this->discountPercentOnItem = $discountPercentOnItem;
-
-        return $this;
-    }
-
-    public function getDiscountPercentOnTotal(): ?float
-    {
-        return $this->discountPercentOnTotal;
-    }
-
-    public function setDiscountPercentOnTotal(?float $discountPercentOnTotal): static
-    {
-        $this->discountPercentOnTotal = $discountPercentOnTotal;
-
-        return $this;
-    }
-
     public function getTaxes(): ?float
     {
         return $this->taxes;
@@ -148,42 +109,6 @@ class Item
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
-
-        return $this;
-    }
-
-    public function getProductLabel(): ?string
-    {
-        return $this->productLabel;
-    }
-
-    public function setProductLabel(string $productLabel): static
-    {
-        $this->productLabel = $productLabel;
-
-        return $this;
-    }
-
-    public function getProductPrice(): ?float
-    {
-        return $this->productPrice;
-    }
-
-    public function setProductPrice(float $productPrice): static
-    {
-        $this->productPrice = $productPrice;
-
-        return $this;
-    }
-
-    public function getProductRef(): ?string
-    {
-        return $this->productRef;
-    }
-
-    public function setProductRef(string $productRef): static
-    {
-        $this->productRef = $productRef;
 
         return $this;
     }
