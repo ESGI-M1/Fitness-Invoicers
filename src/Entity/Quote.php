@@ -21,15 +21,11 @@ class Quote
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Item::class, orphanRemoval: true)]
-    private Collection $items;
-
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $discountAmount = null;
 
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?float $discountPercent = null;
-
+    #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Item::class, orphanRemoval: true)]
+    private Collection $items;
     #[ORM\Column(type: Types::STRING, length: 255, enumType: QuoteStatusEnum::class)]
     private ?QuoteStatusEnum $status = null;
 
@@ -93,18 +89,6 @@ class Quote
     public function setDiscountAmount(?float $discountAmount): static
     {
         $this->discountAmount = $discountAmount;
-
-        return $this;
-    }
-
-    public function getDiscountPercent(): ?float
-    {
-        return $this->discountPercent;
-    }
-
-    public function setDiscountPercent(?float $discountPercent): static
-    {
-        $this->discountPercent = $discountPercent;
 
         return $this;
     }

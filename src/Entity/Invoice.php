@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Item;
 use App\Enum\InvoiceStatusEnum;
 use App\Repository\InvoiceRepository;
 use App\Trait\TimestampableTrait;
@@ -33,9 +34,6 @@ class Invoice
     #[ORM\ManyToOne(inversedBy: 'invoices')]
     private ?Quote $quote = null;
 
-    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: Item::class)]
-    private Collection $items;
-
     #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: Deposit::class)]
     private Collection $deposits;
 
@@ -47,10 +45,13 @@ class Invoice
     #[ORM\JoinColumn(nullable: false)]
     private ?Customer $customer = null;
 
+    #[ORM\OneToMany(mappedBy: 'invoices', targetEntity: Item::class)]
+    private Collection $items;
+
     public function __construct()
     {
-        $this->items = new ArrayCollection();
         $this->deposits = new ArrayCollection();
+        $this->items = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -102,36 +103,6 @@ class Invoice
     public function setQuote(?Quote $quote): static
     {
         $this->quote = $quote;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Item>
-     */
-    public function getItems(): Collection
-    {
-        return $this->items;
-    }
-
-    public function addItem(Item $item): static
-    {
-        if (!$this->items->contains($item)) {
-            $this->items->add($item);
-            $item->setInvoice($this);
-        }
-
-        return $this;
-    }
-
-    public function removeItem(Item $item): static
-    {
-        if ($this->items->removeElement($item)) {
-            // set the owning side to null (unless already changed)
-            if ($item->getInvoice() === $this) {
-                $item->setInvoice(null);
-            }
-        }
 
         return $this;
     }
@@ -218,6 +189,36 @@ class Invoice
             $amount += $item->getProduct()->getPrice() * $item->getQuantity();
         }
         return $amount;
+    }
+
+    /**
+     * @return Collection<int, Item>
+     */
+    public function getItems(): Collection
+    {
+        return $this->items;
+    }
+
+    public function addItem(Item $item): static
+    {
+        if (!$this->items->contains($item)) {
+            $this->items->add($item);
+            $item->setInvoices($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItem(Item $item): static
+    {
+        if ($this->items->removeElement($item)) {
+            // set the owning side to null (unless already changed)
+            if ($item->getInvoices() === $this) {
+                $item->setInvoices(null);
+            }
+        }
+
+        return $this;
     }
 
 }

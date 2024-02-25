@@ -24,6 +24,7 @@
             </colgroup>
             <thead>
             <tr>
+                <td class="border">ID</td>
                 <th class="border">
                     Montant remise
                 </th>
@@ -32,12 +33,14 @@
                 <th class="border">Devis</th>
                 <th class="border">Items</th>
                 <th class="border">Rapports</th>
+                <th class="border">Actions</th>
                 <th class="border">PDF</th>
             </tr>
             </thead>
             <tbody>
             {% for invoice in invoices %}
                 <tr>
+                    <td class="border">{{ invoice.id }}</td>
                     <td class="border">{{ invoice.discountAmount ?? 0 }}%</td>
                     <td class="border">{{ invoice.discountPercent }}%</td>
                     <td class="border">{{ invoice.status.getStatusLabel() }}</td>
@@ -51,6 +54,7 @@
                     </td>
                     <td class="border">
                         {% for item in invoice.items %}
+                            {{ item.product.name }}
                         {% endfor %}
                     </td>
                     <td class="border">
@@ -58,6 +62,11 @@
                             {{ deposit.price }}
                         {% endfor %}
                     </td>
+                    <td class="border">
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_invoice_edit', { 'id': invoice.id }),
+                            'fa': 'edit'
+                        } %}
                     <td class="border">
                         {% include './components/a.html.twig' with {
                             'path': path('app_user_invoice_genere_pdf', { 'id': invoice.id }),

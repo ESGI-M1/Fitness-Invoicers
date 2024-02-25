@@ -7,18 +7,18 @@ use App\Form\Category\CategoryFormType;
 use App\Form\Category\CategorySearchAdminType;
 use App\Form\Category\CategorySearchType;
 use App\Service\CompanySession;
-use App\Security\RightSociete;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Controller\MainController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class CategoryController extends MainController
+
+class CategoryController extends AbstractController
 {
-    #[Route('/category-admin', name: 'app_admin_category_index', methods: ['GET', 'POST'], )]
+    #[Route('/category-admin', name: 'app_admin_category_index', methods: ['GET', 'POST'] )]
     public function listadmin(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
     {
         $form = $this->createForm(
@@ -46,6 +46,7 @@ class CategoryController extends MainController
         CompanySession $companySession,
         PaginatorInterface $paginator
     ): Response {
+        
         $company = $companySession->getCurrentCompany();
 
         $form = $this->createForm(
@@ -90,7 +91,7 @@ class CategoryController extends MainController
                 $entityManager->persist($category);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('app_user_category_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_user_category_index');
             }
 
         return $this->render('action.html.twig', [
@@ -121,7 +122,7 @@ class CategoryController extends MainController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_category_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_category_index');
         }
 
         return $this->render('action.html.twig', [
@@ -139,9 +140,11 @@ class CategoryController extends MainController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            dump($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_category_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_category_index');
         }
 
         return $this->render('action.html.twig', [
@@ -160,6 +163,6 @@ class CategoryController extends MainController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_user_category_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_user_category_index');
     }
 }

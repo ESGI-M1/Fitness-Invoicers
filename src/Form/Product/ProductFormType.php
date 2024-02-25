@@ -3,10 +3,13 @@
 namespace App\Form\Product;
 
 use App\Entity\Product;
+use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ProductFormType extends AbstractType
@@ -18,10 +21,6 @@ class ProductFormType extends AbstractType
                 'required' => true,
                 'label' => 'Nom',
             ])
-            ->add('slug', TextType::class, [
-                'required' => true,
-                'label' => 'Slug',
-            ])
             ->add('reference', TextType::class, [
                 'required' => true,
                 'label' => 'Référence',
@@ -29,6 +28,17 @@ class ProductFormType extends AbstractType
             ->add('price', TextType::class, [
                 'required' => true,
                 'label' => 'Prix',
+            ])
+            ->add('categories', EntityType::class, [
+                'class' => Category::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c');
+                },
+                'placeholder' => '-------',
+                'choice_label' => 'name',
+                'label' => 'Catégorie',
+                'required' => false,
+                'multiple' => true,
             ])
             ->add('imageFile', VichImageType::class, [
                 'required' => false,
@@ -49,7 +59,6 @@ class ProductFormType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => Product::class,
-                'allow_extra_fields' => true,
                 'attr' => [
                     'class' => 'add-form do-confirm',
                     'data-target' => '.modal-content',

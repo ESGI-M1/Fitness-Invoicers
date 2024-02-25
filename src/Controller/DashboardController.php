@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Form\User\ProfileFormType;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -18,12 +17,10 @@ class DashboardController extends AbstractController
 {
 
     #[Route('/', name: 'app_index')]
-    public function index(Request $request, CompanySession $companySession, Dashboard $dashboard): Response
+    public function index(Request $request, Dashboard $dashboard, CompanySession $companySession): Response
     {
+
         $company = $companySession->getCurrentCompany();
-        if($company instanceof RedirectResponse) {
-            return $company;
-        }
 
         $dateRangeForm = $this->createForm(DateRangeFormType::class);
         $dateRangeForm->handleRequest($request);
@@ -45,7 +42,7 @@ class DashboardController extends AbstractController
         
         return $this->render('dashboard/index.html.twig', [
             'dateRangeForm' => $dateRangeForm->createView(),
-            'statistics' => $dashboard->getDefaultStatistics($company)
+            'statistics' => $dashboard->getDefaultStatistics($company),
         ]);
     }
 

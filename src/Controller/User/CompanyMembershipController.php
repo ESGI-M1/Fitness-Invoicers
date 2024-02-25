@@ -13,7 +13,6 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
@@ -23,10 +22,8 @@ use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use App\Controller\MainController;
 
-
-class CompanyMembershipController extends MainController
+class CompanyMembershipController extends AbstractController
 {
     
     #[Route('/companymembership', name: 'app_user_company_membership_index', methods: ['GET', 'POST'])]
@@ -60,9 +57,6 @@ class CompanyMembershipController extends MainController
     public function add(NotifierInterface $notifier, LoginLinkHandlerInterface $loginLinkHandler, UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $entityManager, CompanySession $companySession, MailerInterface $mailer): Response
     {
         $company = $companySession->getCurrentCompany();
-        if ($company instanceof RedirectResponse) {
-            return $company;
-        }
 
         $user = new User();
         $form = $this->createForm(UserFormType::class, $user);

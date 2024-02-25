@@ -5,27 +5,32 @@ namespace App\Controller\User;
 use App\Entity\Product;
 use App\Form\Product\ProductFormType;
 use App\Form\Product\ProductSearchType;
+use App\Service\CompanySession;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\MainController;
 
-class ProductController extends MainController
+class ProductController extends AbstractController
 {
     #[Route('/product', name: 'app_user_product_index')]
-    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
+    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator, CompanySession $companySession): Response
     {
+
+        $company = $companySession->getCurrentCompany();
+
         $form = $this->createForm(
             ProductSearchType::class,
         );
 
         $form->handleRequest($request);
 
+        //$entityManager->getRepository(Product::class)->getProductsByFilters($form->getData()),
+
         $product = $paginator->paginate(
-            $entityManager->getRepository(Product::class)->getProductsByFilters($form->getData()),
+            $company->getProducts(),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 9)
         );
@@ -45,13 +50,18 @@ class ProductController extends MainController
     }
 
     #[Route('product/add', name: 'app_user_product_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, EntityManagerInterface $entityManager): Response
+    public function add(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
     {
+
+        $company = $companySession->getCurrentCompany();
+
         $product = new Product();
         $form = $this->createForm(ProductFormType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $product->setCompany($company);
             $entityManager->persist($product);
             $entityManager->flush();
             $this->addFlash('success', 'Le produit a bien été ajouté');

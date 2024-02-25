@@ -12,9 +12,8 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\MainController;
 
-class DepositController extends MainController
+class DepositController extends AbstractController
 {
 
     #[Route('/deposit', name: 'app_user_deposit_index')]

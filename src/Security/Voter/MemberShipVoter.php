@@ -2,17 +2,14 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\CompanyMembership;
+use App\Entity\Company;
 use App\Service\CompanySession;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class CompanyMembershipVoter extends Voter
+class MemberShipVoter extends Voter
 {
-    public const EDIT = 'edit';
-    public const DELETE = 'delete';
-
     private CompanySession $companySession;
 
     public function __construct(CompanySession $companySession)
@@ -22,8 +19,7 @@ class CompanyMembershipVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::DELETE])
-            && $subject instanceof \App\Entity\CompanyMembership;
+        return $attribute === 'Membership';
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -34,21 +30,19 @@ class CompanyMembershipVoter extends Voter
         }
 
         return match ($attribute) {
-            self::EDIT, self::DELETE => $this->canEdit($subject, $user),
-            default => false,
+            default => $this->canAccess($user),
         };
     }
 
-    private function canEdit(Category $category, UserInterface $user): bool
+    private function canAccess(UserInterface $user): bool
     {
         $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
         if(!$currentCompany && !in_array('ROLE_ADMIN', $user->getRoles())) {
             return false;
         }
 
-        // TODO: check if user is in company
         return true;
 
-        return in_array('ROLE_ADMIN', $user->getRoles()) || $currentCompany !== null && $currentCompany === $category->getCompany() && $currentCompany->userInCompany($user);
+        return $currentCompany->userAcceptedInCompany($user);
     }
 }

@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Factures{% endblock %}
+
+{% block main %}
+    {{ dump(invoice) }}
+
+    <h1>Sélection du client</h1>
+    <div>
+        <div>
+            {{ form_start(categoryForm) }}
+            {{ form_row(categoryForm.categories) }}
+            <button type="submit" class="btn btn-primary select2">Valider</button>
+            {{ form_end(categoryForm) }}
+            {% if formCategories %}
+                {% for formCategory in formCategories %}
+                    {{ form_start(formCategory) }}
+                    {{ form_row(formCategory.products) }}
+                    <button type="submit" class="btn btn-primary select2">Valider</button>
+                    {{ form_end(formCategory) }}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            {{ form_start(productWithoutCategoryForm) }}
+            {{ form_row(productWithoutCategoryForm.products) }}
+            <button type="submit" class="btn btn-primary select2">Valider</button>
+            {{ form_end(productWithoutCategoryForm) }}
+        </div>
+
+    </div>
+    <table style="width: 100%; border: 1px solid darkgrey; margin-bottom: 2rem">
+        <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Référence</th>
+            <th>Prix unitaire (HT)</th>
+            <th>Taux de taxe</th>
+            <th>Quantité</th>
+            <th>Remise par unité</th>
+            <th>Remise total</th>
+            <th>Total (HT)</th>
+            <th>Total (TTC)</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if invoice.items %}
+            {% for item in invoice.items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.product.reference }}</td>
+                    <td>{{ item.product.price }} €</td>
+                    <td>{{ item.taxes }} %</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.discountAmountOnItem }} €</td>
+                    <td>{{ item.discountAmountOnTotal }} €</td>
+                    <td>{{ item.quantity * item.product.price }} €</td>
+                    <td>{{ item.quantity * item.product.price * (1 + item.taxes / 100) }} €</td>
+                    <td>
+                        <a href="{{ path('app_user_invoice_remove_item', {'id_invoice': invoice.id, 'id_item': item.id}) }}"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">Aucun produit</td>
+            </tr>
+        {% endif %}
+    </table>
+    {% include './components/a.html.twig' with {
+        'path': path('app_user_invoice_step_two', {'id': invoice.id}),
+        'class': 'text-white font-bold py-2 px-4 rounded',
+        'label': 'Étape suivante',
+    } %}
+
+{% endblock %}

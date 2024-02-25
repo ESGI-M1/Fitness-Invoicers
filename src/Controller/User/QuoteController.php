@@ -13,13 +13,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\MainController;
 
-class QuoteController extends MainController
+class QuoteController extends AbstractController
 {
 
     #[Route('/quote', name: 'app_user_quote_index')]
-    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
+    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator, CompanySession $companySession): Response
     {
         $form = $this->createForm(
             QuoteSearchType::class,
@@ -27,7 +26,7 @@ class QuoteController extends MainController
 
         $form->handleRequest($request);
 
-        $company = $this->companySession->getCurrentCompany();
+        $company = $companySession->getCurrentCompany();
 
         $quotes = $paginator->paginate(
             $company->getQuotes(),
@@ -54,15 +53,18 @@ class QuoteController extends MainController
     }
 
     #[Route('quote/add', name: 'app_user_quote_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, EntityManagerInterface $entityManager): Response
+    public function add(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
     {
+
+        $company = $companySession->getCurrentCompany();
+
         $quote = new Quote();
         $form = $this->createForm(QuoteFormType::class, $quote);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $quote->setStatus(QuoteStatusEnum::DRAFT);
-            $quote->setCompany($this->companySession->getCurrentCompany());
+            $quote->setCompany($company);
             $entityManager->persist($quote);
             $entityManager->flush();
             $this->addFlash('success', 'Le devis a bien été ajouté.');

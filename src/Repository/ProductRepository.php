@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\Company;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -52,5 +53,15 @@ class ProductRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->getResult();
+    }
+
+    public function getWithoutCategory(Company $company)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.company = :company')
+            ->andWhere('p.categories IS EMPTY')
+            ->setParameter('company', $company)
+            ->getQuery()
+            ->getResult();
     }
 }

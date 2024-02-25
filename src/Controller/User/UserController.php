@@ -12,10 +12,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
-use App\Controller\MainController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
-class UserController extends MainController
+class UserController extends AbstractController
 {
     
     #[Route('/profile', name: 'app_user_profile', methods: ['GET', 'POST'])]

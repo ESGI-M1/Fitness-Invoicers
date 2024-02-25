@@ -13,11 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use App\Controller\MainController;
 
-
-class CompanyController extends MainController
+class CompanyController extends AbstractController
 {
     #[Route('/company', name: 'app_user_company_index')]
     public function list(CompanySession $companySession, EntityManagerInterface $entityManager): Response

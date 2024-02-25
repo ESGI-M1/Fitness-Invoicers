@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Factures{% endblock %}
+
+{% block main %}
+    {{ dump(invoice) }}
+
+    <h1>Sélection du client</h1>
+    <div class="flex ">
+        <div>
+            {{ form_start(form) }}
+            {{ form_row(form.customer) }}
+            <button type="submit" class="btn btn-primary select2">Valider</button>
+            {{ form_end(form) }}
+        </div>
+        {% if customer %}
+            <div>
+                <h2>{{ customer.fullName }}</h2>
+
+                <h3>Adresse de livraison</h3>
+                {% if customer.deliveryAddress %}
+                    <a href="{{ path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, 'invoice_id': invoice.id}) }}"
+                       class="fas fa-edit"></a>
+                    <p>{{ customer.deliveryAddress.street }}</p>
+                    <p>{{ customer.deliveryAddress.postalCode }} {{ customer.deliveryAddress.city }}</p>
+                    <p>{{ customer.deliveryAddress.country }}</p>
+                {% else %}
+                    <p>Pas d'adresse de livraison</p>
+                    <a href="{{ path('app_user_address_add', {'id': customer.id, 'invoice_id': invoice.id}) }}"
+                            class="fas fa-add"></a>
+                {% endif %}
+
+                <h3>Adresse de facturation</h3>
+                {% if customer.billingAddress %}
+                    <a href="{{ path('app_user_address_billingAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, 'invoice_id': invoice.id}) }}"
+                       class="fas fa-edit"></a>
+                    <p>{{ customer.billingAddress.street }}</p>
+                    <p>{{ customer.billingAddress.postalCode }} {{ customer.billingAddress.city }}</p>
+                    <p>{{ customer.billingAddress.country }}</p>
+                {% else %}
+                    <p>Pas d'adresse de facturation</p>
+                    <a href="{{ path('app_user_address_add', {'id': customer.id, 'invoice_id': invoice.id}) }}"
+                       class="fas fa-add"></a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    {% include './components/a.html.twig' with {
+        'path': path('app_user_invoice_step_two', {'id': invoice.id}),
+        'class': 'text-white font-bold py-2 px-4 rounded',
+        'label': 'Étape suivante',
+    } %}
+
+{% endblock %}

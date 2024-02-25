@@ -37,7 +37,6 @@
             {% for quote in quotes %}
                 <tr>
                     <td class="border">{{ quote.discountAmount ?? 0 }}%</td>
-                    <td class="border">{{ quote.discountPercent }}%</td>
                     <td class="border">{{ quote.status.getStatusLabel() }}</td>
                     <td class="border text-center">
                         {% for invoices in quote.invoices %}

@@ -30,9 +30,6 @@ class ItemFixtures extends Fixture implements DependentFixtureInterface
                     $item->onInvoice(ThereIs::anInvoice()->build());
                     break;
                 default:
-                    $quote = ThereIs::aQuote()->build();
-                    $item->onQuote($quote);
-                    $item->onInvoice(ThereIs::anInvoice()->onQuote($quote)->build());
                     break;
             }
 

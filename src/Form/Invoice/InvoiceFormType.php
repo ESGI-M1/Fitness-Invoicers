@@ -7,7 +7,7 @@ use App\Entity\Invoice;
 use App\Entity\Item;
 use App\Entity\Quote;
 use App\Service\CompanySession;
-use App\Service\TransformChoices;
+use App\Entity\Customer;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -33,10 +33,6 @@ class InvoiceFormType extends AbstractType
                 'required' => false,
                 'label' => 'Montant de la remise',
             ])
-                ->add('discountPercent', NumberType::class, [
-                'required' => true,
-                'label' => '%',
-            ])
             ->add('quote', EntityType::class,
                 [
                     'class' => Quote::class,
@@ -57,10 +53,23 @@ class InvoiceFormType extends AbstractType
                         return $er->createQueryBuilder('i');
                     },
                     'placeholder' => '-------',
-                    'choice_label' => 'productLabel',
+                    'choice_label' => 'product.name',
                     'label' => 'Item',
-                    'required' => false,
+                    'required' => true,
                     'multiple' => true
+                ])
+            ->add('customer', EntityType::class,
+                [
+                    'class' => Customer::class,
+                    'query_builder' => static function (EntityRepository $er) use ($company){
+                        return $er->createQueryBuilder('c')
+                            ->andWhere('c.company IN (:company)')
+                            ->setParameter('company', $company);
+                    },
+                    'placeholder' => '-------',
+                    'choice_label' => 'fullName',
+                    'label' => 'Client',
+                    'required' => false,
                 ])
             ->add('deposits', EntityType::class,
                 [

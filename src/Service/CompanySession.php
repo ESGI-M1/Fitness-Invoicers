@@ -24,7 +24,7 @@ class CompanySession
 
     }
 
-    public function getCurrentCompany(): Company | RedirectResponse
+    public function getCurrentCompany(): Company
     {
         $user = $this->security->getUser();
 
@@ -37,13 +37,15 @@ class CompanySession
         $companyId = $session->get('current_company');
 
         if (!$companyId && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
-            return new RedirectResponse($this->router->generate('app_user_company_set'), Response::HTTP_SEE_OTHER);
+            $response = new RedirectResponse($this->router->generate('app_user_company_set'), Response::HTTP_SEE_OTHER);
+            $response->send();
         }
 
         $company = $this->entityManager->getRepository(Company::class)->find($companyId);
 
         if (!$company) {
-            return new RedirectResponse($this->router->generate('app_user_company_set'), Response::HTTP_SEE_OTHER);
+            $response = new RedirectResponse($this->router->generate('app_user_company_set'), Response::HTTP_SEE_OTHER);
+            $response->send();
         }
 
         return $company;

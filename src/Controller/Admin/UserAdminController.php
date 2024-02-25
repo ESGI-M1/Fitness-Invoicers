@@ -10,9 +10,10 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\MainController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class UserAdminController extends MainController
+
+class UserAdminController extends AbstractController
 {
     #[Route('/user_admin', name: 'app_admin_user_index')]
     public function list(

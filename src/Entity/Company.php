@@ -78,12 +78,20 @@ class Company implements \Serializable
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Address $address = null;
 
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
+    private Collection $customers;
+
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Product::class)]
+    private Collection $products;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->companyMemberships = new ArrayCollection();
         $this->invoices = new ArrayCollection();
         $this->quotes = new ArrayCollection();
+        $this->customers = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -325,6 +333,66 @@ class Company implements \Serializable
     public function setAddress(?Address $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Customer>
+     */
+    public function getCustomers(): Collection
+    {
+        return $this->customers;
+    }
+
+    public function addCustomer(Customer $customer): static
+    {
+        if (!$this->customers->contains($customer)) {
+            $this->customers->add($customer);
+            $customer->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomer(Customer $customer): static
+    {
+        if ($this->customers->removeElement($customer)) {
+            // set the owning side to null (unless already changed)
+            if ($customer->getCompany() === $this) {
+                $customer->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getCompany() === $this) {
+                $product->setCompany(null);
+            }
+        }
 
         return $this;
     }

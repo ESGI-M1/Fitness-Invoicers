@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ItemRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,7 +36,7 @@ class Item
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
-    private ?Invoice $invoice = null;
+    private ?invoice $invoices = null;
 
     public function getId(): ?int
     {
@@ -113,15 +115,16 @@ class Item
         return $this;
     }
 
-    public function getInvoice(): ?Invoice
+    public function getInvoices(): ?invoice
     {
-        return $this->invoice;
+        return $this->invoices;
     }
 
-    public function setInvoice(?Invoice $invoice): static
+    public function setInvoices(?invoice $invoices): static
     {
-        $this->invoice = $invoice;
+        $this->invoices = $invoices;
 
         return $this;
     }
+
 }

@@ -12,7 +12,6 @@ use App\Factory\QuoteFactory;
 class QuoteBuilder implements BuilderInterface
 {
     private ?float $discountAmount = null;
-    private ?float $discountPercent = null;
     private ?QuoteStatusEnum $status = null;
     private ?Company $company = null;
 
@@ -36,7 +35,6 @@ class QuoteBuilder implements BuilderInterface
         $quote = QuoteFactory::createOne(array_filter([
             'items' => $this->items,
             'discountAmount' => $this->discountAmount,
-            'discountPercent' => $this->discountPercent,
             'status' => $this->status,
             'invoices' => $this->invoices,
             'deposits' => $this->deposits,
@@ -52,13 +50,6 @@ class QuoteBuilder implements BuilderInterface
     public function withDiscountAmount(float $discountAmount): self
     {
         $this->discountAmount = $discountAmount;
-
-        return $this;
-    }
-
-    public function withDiscountPercent(float $discountPercent): self
-    {
-        $this->discountPercent = $discountPercent;
 
         return $this;
     }

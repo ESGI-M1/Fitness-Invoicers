@@ -20,8 +20,10 @@ final class CustomerFactory extends ModelFactory
         return [
             'firstName' => self::faker()->firstName,
             'lastName' => self::faker()->lastName,
+            'email' => self::faker()->email,
             'deliveryaddress' => AddressFactory::createOne(),
             'billingAddress' => AddressFactory::createOne(),
+            'company' => CompanyFactory::random(),
         ];
     }
 

@@ -279,4 +279,9 @@ class SecurityController extends AbstractController
         throw new \LogicException('This code should never be reached');
     }
 
+    public function someAction()
+    {
+        dd('test');
+    }
+
 }

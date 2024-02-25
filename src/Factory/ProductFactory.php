@@ -22,6 +22,7 @@ final class ProductFactory extends ModelFactory
             'name' => self::faker()->words(random_int(1, 3), true),
             'price' => self::faker()->randomFloat(),
             'reference' => self::faker()->uuid(),
+            'company' => CompanyFactory::random(),
         ];
     }
 
