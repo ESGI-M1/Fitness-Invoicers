@@ -48,9 +48,13 @@ class Customer
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Quote::class)]
+    private Collection $quotes;
+
     public function __construct()
     {
         $this->invoices = new ArrayCollection();
+        $this->quotes = new ArrayCollection();
     }
 
 
@@ -187,4 +191,68 @@ class Customer
 
         return $this;
     }
+
+    public function isValid() : bool
+    {
+        return $this->firstName !== ''
+            && $this->lastName !== ''
+            && $this->email !== ''
+            && $this->deliveryAddress->isValid()
+            && $this->billingAddress->isValid();
+    }
+
+    public function getIsNotValidErrors(): array
+    {
+        $errors = [];
+        if ($this->firstName === '') {
+            $errors[] = 'customer.firstName.required';
+        }
+        if ($this->lastName === '') {
+            $errors[] = 'customer.lastName.required';
+        }
+        if ($this->email === '') {
+            $errors[] = 'customer.email.required';
+        }
+        if (!$this->deliveryAddress->isValid()) {
+            $errors = array_merge($errors, $this->deliveryAddress->getIsNotValidErrors());
+        }
+        if (!$this->billingAddress->isValid()) {
+            $errors = array_merge($errors, $this->billingAddress->getIsNotValidErrors());
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @return Collection<int, Quote>
+     */
+    public function getQuotes(): Collection
+    {
+        return $this->quotes;
+    }
+
+    public function addQuote(Quote $quote): static
+    {
+        if (!$this->quotes->contains($quote)) {
+            $this->quotes->add($quote);
+            $quote->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuote(Quote $quote): static
+    {
+        if ($this->quotes->removeElement($quote)) {
+            // set the owning side to null (unless already changed)
+            if ($quote->getCustomer() === $this) {
+                $quote->setCustomer(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
 }

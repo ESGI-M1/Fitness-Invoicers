@@ -45,14 +45,6 @@ class CategoryRepository extends ServiceEntityRepository
             $query
                 ->andWhere('(' . implode(' AND ', $subAnd) . ')');
         }
-        if (isset($options['company']) && $options['company']) {
-            $query->andWhere('c.company IN (:company)')
-                ->setParameter('company', $options['company']);
-        }
-//        if (isset($filters['name']) && $filters['name']) {
-//            $query->andWhere('c.name LIKE :name')
-//                ->setParameter('name', '%' . $filters['name'] . '%');
-//        }
 
         return $query->getQuery()->getResult();
     }

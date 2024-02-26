@@ -23,13 +23,54 @@ class CompanyMembershipRepository extends ServiceEntityRepository
         parent::__construct($registry, CompanyMembership::class);
     }
 
-    public function getCompanyMembershipsByCompany(Company $company)
+    public function getUsersMembershipsByFilters(Company $company, $sortField, $sortDirection)
     {
-        return $this->createQueryBuilder('cm')
+        $query = $this->createQueryBuilder('cm')
+            ->leftJoin('cm.relatedUser', 'users')
             ->andWhere('cm.company = :company')
-            ->setParameter('company', $company)
+            ->setParameter('company', $company);
+
+        if (isset($options['alias']) && $options['alias'] !== '') {
+            $parts = explode(' ', $options['alias']);
+            $subAnd = [];
+            foreach ($parts as $k => $p) {
+                $tag = 'alias_' . $k;
+                $subOr = [];
+                foreach (['users.lastName', 'users.firstName'] as $f) {
+                    $subOr[] = "{$f} LIKE :{$tag}";
+                }
+                $subAnd[] = '(' . implode(' OR ', $subOr) . ')';
+                $query->setParameter($tag, "%$p%");
+            }
+            $query
+                ->andWhere('(' . implode(' AND ', $subAnd) . ')');
+        }
+        if (isset($options['email']) && $options['email']) {
+            $query
+                ->andWhere('users.email LIKE :email')
+                ->setParameter('email', '%' . $options['email'] . '%');
+        }
+        if (isset($options['sexe']) && $options['sexe']) {
+            $query
+                ->andWhere('users.sexe = :sexe')
+                ->setParameter('sexe', $options['sexe']->name);
+        }
+
+        if ($sortField) {
+            if (in_array($sortField, ['users.lastName', 'users.firstName', 'users.email'])) {
+                $query->orderBy($sortField, $sortDirection);
+            } else {
+                $query->orderBy('users.lastName', 'ASC')
+                    ->addOrderBy('users.firstName', 'ASC');
+            }
+        } else {
+            $query->orderBy('users.lastName', 'ASC')
+                ->addOrderBy('users.firstName', 'ASC');
+        }
+
+        return $query
             ->getQuery()
-        ;
+            ->getResult();
     }
 
     public function getCompanyMembershipsByCompanyAndUser(Company $company, User $user)

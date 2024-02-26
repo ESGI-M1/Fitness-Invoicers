@@ -1,0 +1,2 @@
+{% set sortField = app.request.query.get('sort_field') in tab ? app.request.query.get('sort_field') : default %}
+{% set sortDirection = app.request.query.get('sort_direction') ?: 'asc' %}

@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 function fancyConfirm(opts) {
     opts = Object.assign({
         type: 'green',
@@ -13,6 +15,11 @@ function fancyConfirm(opts) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    $('.select2').select2({
+        closeOnSelect: false,
+        style: 'min-width: 150px',
+        dropdownCssClass: 'instant-search',
+    });
 
     const ajaxFunctions = document.querySelectorAll('.ajax-function');
 
@@ -70,11 +77,4 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
-
-    document.querySelectorAll('.select2').forEach(function (element) {
-        element.addEventListener('change', function () {
-            this.closest('form').submit();
-        });
-    });
-
 });

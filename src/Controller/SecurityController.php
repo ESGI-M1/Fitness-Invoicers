@@ -13,14 +13,17 @@ use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
@@ -36,7 +39,8 @@ class SecurityController extends AbstractController
         private readonly string $supportEmail,
         private readonly string $supportName,
         private ResetPasswordHelperInterface $resetPasswordHelper,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -89,7 +93,13 @@ class SecurityController extends AbstractController
                     ->htmlTemplate('security/confirmation_email.html.twig')
             );
 
-            return $this->redirectToRoute('app_login');
+            $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+
+            $event = new InteractiveLoginEvent($request, $token);
+
+            $this->eventDispatcher->dispatch($event);
+
+            return $this->redirectToRoute('app_user_profile');
         }
 
         return $this->render('security/register.html.twig', [

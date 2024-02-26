@@ -31,9 +31,8 @@ class DepositController extends AbstractController
 
         $company = $companySession->getCurrentCompany();
 
-        $allDep = $entityManager->getRepository(Deposit::class)->getDepositFromCompany($company,$form->getData());
         $deposits = $paginator->paginate(
-            $allDep,
+            $entityManager->getRepository(Deposit::class)->getDepositsByFilters($company,$form->getData()),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );

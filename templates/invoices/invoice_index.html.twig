@@ -7,31 +7,21 @@
         'form': form,
         'entity': 'Factures',
         'values': invoices,
-        'path': path('app_user_invoice_add'),
+        'path': path('app_user_invoice_step_one'),
         'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
         'label': 'Ajouter une facture'
     } %}
     <div class="mt-4">
         <table class="table table-bordered table-striped table-hover w-full">
-            <colgroup>
-                <col/>
-                <col/>
-                <col/>
-                <col/>
-                <col/>
-                <col/>
-                <col/>
-            </colgroup>
             <thead>
             <tr>
                 <td class="border">ID</td>
-                <th class="border">
-                    Montant remise
-                </th>
+                <td class="border">Client</td>
+                <th class="border">Montant total</th>
+                <th class="border">Montant remise</th>
                 <th class="border">% réduction</th>
                 <th class="border">Statut</th>
                 <th class="border">Devis</th>
-                <th class="border">Items</th>
                 <th class="border">Rapports</th>
                 <th class="border">Actions</th>
                 <th class="border">PDF</th>
@@ -41,7 +31,9 @@
             {% for invoice in invoices %}
                 <tr>
                     <td class="border">{{ invoice.id }}</td>
-                    <td class="border">{{ invoice.discountAmount ?? 0 }}%</td>
+                    <td class="border">{{ invoice.customer ? invoice.customer.name : 'Aucun client' }}</td>
+                    <td class="border">{{ invoice.totalAmount }}€</td>
+                    <td class="border">{{ invoice.discountAmount ?? 0 }}€</td>
                     <td class="border">{{ invoice.discountPercent }}%</td>
                     <td class="border">{{ invoice.status.getStatusLabel() }}</td>
                     <td class="border text-center">
@@ -50,12 +42,10 @@
                                 'path': path('app_user_quote_show', { 'id': invoice.quote.id }),
                                 'fa': 'eye'
                             } %}
+                        {% else %}
+                            <span class="text-center">Aucun devis</span>
                         {% endif %}
-                    </td>
-                    <td class="border">
-                        {% for item in invoice.items %}
-                            {{ item.product.name }}
-                        {% endfor %}
+                        {{ invoice.isValid ? 'Validé' : 'Non validé' }}
                     </td>
                     <td class="border">
                         {% for deposit in invoice.deposits %}
@@ -63,20 +53,30 @@
                         {% endfor %}
                     </td>
                     <td class="border">
-                        {% include './components/a.html.twig' with {
-                            'path': path('app_user_invoice_edit', { 'id': invoice.id }),
-                            'fa': 'edit'
-                        } %}
+                        {% if is_granted('edit', invoice) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_step_one', { 'id': invoice.id }),
+                                'fa': 'edit'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('delete', invoice) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_delete', { 'id': invoice.id, 'token': csrf_token('delete' ~ invoice.id) }),
+                                'fa': 'trash'
+                            } %}
+                        {% endif %}
                     <td class="border">
-                        {% include './components/a.html.twig' with {
-                            'path': path('app_user_invoice_genere_pdf', { 'id': invoice.id }),
-                            'fa': 'file'
-                        } %}
+                        {% if is_granted('see', invoice) and invoice.isValid %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_pdf', { 'id': invoice.id }),
+                                'fa': 'file-pdf'
+                            } %}
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5" class="text-center border">Aucune facture</td>
+                    <td colspan="9" class="text-center border">Aucune facture</td>
                 </tr>
             {% endfor %}
             </tbody>

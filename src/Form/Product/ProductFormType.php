@@ -34,6 +34,10 @@ class ProductFormType extends AbstractType
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('c');
                 },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'by_reference' => false,
                 'placeholder' => '-------',
                 'choice_label' => 'name',
                 'label' => 'Catégorie',
@@ -61,7 +65,6 @@ class ProductFormType extends AbstractType
                 'data_class' => Product::class,
                 'attr' => [
                     'class' => 'add-form do-confirm',
-                    'data-target' => '.modal-content',
                 ],
                 'update' => true,
             ]

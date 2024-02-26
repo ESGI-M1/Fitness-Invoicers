@@ -22,6 +22,33 @@ class QuoteRepository extends ServiceEntityRepository
         parent::__construct($registry, Quote::class);
     }
 
+    public function getQuotesByFilters($company = null, $options = [])
+    {
+        $query = $this->createQueryBuilder('q');
+
+        if ($company) {
+            $query->andWhere('q.company = :company')
+                ->setParameter('company', $company);
+        }
+        if (isset($options['discountAmount']) && $options['discountAmount']) {
+            $query
+                ->andWhere('q.discountAmount LIKE :discountAmount')
+                ->setParameter('discountAmount', '%' . $options['discountAmount'] . '%');
+        }
+        if (isset($options['discountPercent']) && $options['discountPercent']) {
+            $query
+                ->andWhere('q.discountPercent LIKE :discountPercent')
+                ->setParameter('discountPercent', '%' . $options['discountPercent'] . '%');
+        }
+        if (isset($options['status']) && $options['status']) {
+            $query
+                ->andWhere('q.status LIKE :status')
+                ->setParameter('status', '%' . $options['status']->name . '%');
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
     public function findByDateRange(Company $company, \DateTime $startDate, \DateTime $endDate)
     {
         return $this->createQueryBuilder('q')

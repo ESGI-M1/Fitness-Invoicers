@@ -28,7 +28,8 @@ class UserAdminController extends AbstractController
         $form->handleRequest($request);
 
         $users = $paginator->paginate(
-            $entityManager->getRepository(User::class)->getUsersByFilters($form->getData()),
+            $entityManager->getRepository(User::class)
+                ->getUsersByFilters($form->get('company')->getData(), $form->getData()),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );

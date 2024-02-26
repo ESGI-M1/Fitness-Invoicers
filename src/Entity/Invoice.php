@@ -10,6 +10,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Ignore;
+
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
 class Invoice
@@ -42,11 +45,22 @@ class Invoice
     private ?Company $company = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Customer $customer = null;
 
     #[ORM\OneToMany(mappedBy: 'invoices', targetEntity: Item::class)]
     private Collection $items;
+
+    #[Vich\UploadableField(mapping: 'invoicePdf', fileNameProperty: 'pdfName')]
+    #[Assert\File(
+        mimeTypes: ['application/pdf'],
+        mimeTypesMessage: 'Le fichier doit être au format PDF')
+    ]
+    #[Ignore]
+    private ?File $pdfFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $pdfName = null;
 
     public function __construct()
     {
@@ -161,7 +175,7 @@ class Invoice
         return $this;
     }
 
-    public function getAmount() : float
+    public function getTotalAmount() : float
     {
         $items = $this->getItems();
         $amount = 0;
@@ -220,5 +234,159 @@ class Invoice
 
         return $this;
     }
+
+    public function getPdfFile(): ?File
+    {
+        return $this->pdfFile;
+    }
+
+    public function setPdfFile(?File $pdfFile): static
+    {
+        $this->pdfFile = $pdfFile;
+
+        if ($pdfFile) {
+            $this->updatedAt = new \DateTime();
+        }
+
+        return $this;
+    }
+
+    public function getPdfName(): ?string
+    {
+        return $this->pdfName;
+    }
+
+    public function setPdfName(?string $pdfName): static
+    {
+        $this->pdfName = $pdfName;
+
+        return $this;
+    }
+
+    public function isValid(): bool
+    {
+        foreach ($this->getItems() as $item) {
+            if (!$item->isValid()) {
+                return false;
+            }
+        }
+
+        return $this->getCustomer() !== null
+            && $this->getCompany() !== null
+            && $this->getItems()->count() > 0
+            && $this->getTotalAmount() > 0
+            && $this->getTotalWithoutTaxes() > 0
+            && $this->getTaxesAmount() >= 0
+            && $this->getCustomer()->isValid()
+            && $this->getCompany()->isValid();
+    }
+
+    public function getIsNotValidErrors(): array
+    {
+
+        $errors = [];
+        if ($this->getCustomer() === null) {
+            $errors[] = 'customer.not.valid';
+        }
+
+        if ($this->getCompany() === null) {
+            $errors[] = 'company.not.valid';
+        }
+
+        if ($this->getItems()->count() === 0) {
+            $errors[] = 'items.are.required';
+        }
+
+        if ($this->getTotalAmount() <= 0) {
+            $errors[] = 'items.total.amount.must.be.greater.than.0';
+        }
+
+        if ($this->getTotalWithoutTaxes() <= 0) {
+            $errors[] = 'items.total.without.taxes.must.be.greater.than.0';
+        }
+
+        if ($this->getTaxesAmount() < 0) {
+            $errors[] = 'items.taxes.amount.must.be.greater.or.equal.to.0';
+        }
+
+        if ($this->getCustomer() !== null) {
+            $errors = array_merge($errors, $this->getCustomer()->getIsNotValidErrors());
+        }
+
+        if ($this->getCompany() !== null) {
+            $errors = array_merge($errors, $this->getCompany()->getIsNotValidErrors());
+        }
+
+        foreach ($this->getItems() as $item) {
+            if (!$item->isValid()) {
+                $errors[] = $item->getIsNotValidErrors();
+            }
+        }
+
+        return $errors;
+    }
+
+    public function isValidStepOne(): bool
+    {
+        return $this->getCustomer() !== null
+            && $this->getCustomer()->isValid();
+    }
+
+    public function getIsNotValidStepOneErrors(): array
+    {
+        $errors = [];
+        if ($this->getCustomer() === null) {
+            $errors[] = 'customer.not.valid';
+        }
+
+        if ($this->getCustomer() !== null) {
+            $errors = array_merge($errors, $this->getCustomer()->getIsNotValidErrors());
+        }
+
+        return $errors;
+    }
+
+    public function isValidStepTwo(): bool
+    {
+        foreach ($this->getItems() as $item) {
+            if (!$item->isValid()) {
+                return false;
+            }
+        }
+
+        return $this->getItems()->count() > 0
+            && $this->getTotalAmount() > 0
+            && $this->getTotalWithoutTaxes() > 0
+            && $this->getTaxesAmount() >= 0;
+    }
+
+    public function getIsNotValidStepTwoErrors(): array
+    {
+        $errors = [];
+        if ($this->getItems()->count() === 0) {
+            $errors[] = 'items.are.required';
+        }
+
+        if ($this->getTotalAmount() <= 0) {
+            $errors[] = 'items.total.amount.must.be.greater.than.0';
+        }
+
+        if ($this->getTotalWithoutTaxes() <= 0) {
+            $errors[] = 'items.total.without.taxes.must.be.greater.than.0';
+        }
+
+        if ($this->getTaxesAmount() < 0) {
+            $errors[] = 'items.taxes.amount.must.be.greater.or.equal.to.0';
+        }
+
+        foreach ($this->getItems() as $item) {
+            if (!$item->isValid()) {
+                $errors = array_merge($errors, $item->getIsNotValidErrors());
+            }
+        }
+
+        return $errors;
+    }
+
 
 }

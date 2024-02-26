@@ -15,13 +15,9 @@ class CustomerSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstName', TextType::class, [
+            ->add('alias', TextType::class, [
                 'required' => false,
-                'label' => 'First Name',
-            ])
-            ->add('lastName', TextType::class, [
-                'required' => false,
-                'label' => 'Last Name',
+                'label' => 'Nom',
             ])
         ;
     }

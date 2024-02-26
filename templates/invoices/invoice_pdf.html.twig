@@ -68,14 +68,14 @@
     <tr>
         <td>
             <h2>Adresse de livraison</h2>
-            <p>{{ invoice.customer.firstName }} {{ invoice.customer.lastName }}</p>
+            <p>{{ invoice.customer.fullName }}</p>
             <p>{{ invoice.customer.deliveryAddress.street }}</p>
             <p>{{ invoice.customer.deliveryAddress.postalCode }} {{ invoice.customer.deliveryAddress.city }}</p>
             <p>{{ invoice.customer.deliveryAddress.country }}</p>
         </td>
         <td>
             <h2>Adresse de facturation</h2>
-            <p>{{ invoice.customer.firstName }} {{ invoice.customer.lastName }}</p>
+            <p>{{ invoice.customer.fullName }}</p>
             <p>{{ invoice.customer.billingAddress.street }}</p>
             <p>{{ invoice.customer.billingAddress.postalCode }} {{ invoice.customer.billingAddress.city }}</p>
             <p>{{ invoice.customer.billingAddress.country }}</p>
@@ -127,7 +127,7 @@
     </tr>
     <tr>
         <th>Total TTC</th>
-        <td>{{ invoice.getAmount }} €</td>
+        <td>{{ invoice.getTotalAmount }} €</td>
     </tr>
     </tbody>
 </table>

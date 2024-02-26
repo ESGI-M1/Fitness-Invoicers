@@ -1,0 +1,135 @@
+<style>
+    body {
+        margin-inline: 4rem;
+        width: 100%;
+    }
+
+    h1 {
+        margin: 0.75rem 0;
+    }
+
+    h2 {
+        margin: 0.5rem 0;
+    }
+
+    h3 {
+        margin: 0.25rem 0;
+        color: #adadad;
+    }
+
+    p {
+        margin: 0.25rem 0;
+        font-weight: 600;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<div>
+    <table style="width: 100%">
+        <tbody>
+        <tr>
+            <td>
+                <h2>{{ quote.company.name }}</h2>
+                <p>{{ quote.company.address.street }}</p>
+                <p>{{ quote.company.address.postalCode }} {{ quote.company.address.city }}
+                    - {{ quote.company.address.country }}</p>
+                <p>{{ quote.company.siret }}</p>
+            </td>
+            <td style="text-align: right">
+                <h1>Devis</h1>
+                <h3>{{ quote.updatedAt| date('d/m/Y') }}</h3>
+                <h3>#DE{{ quote.id }}</h3>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table style="margin: 0 auto;margin-bottom: 2rem; ">
+        <tbody>
+        <tr>
+            <td>
+                <h2>Adresse de livraison</h2>
+                <p>{{ quote.customer.firstName }} {{ quote.customer.lastName }}</p>
+                <p>{{ quote.customer.deliveryAddress.street }}</p>
+                <p>{{ quote.customer.deliveryAddress.postalCode }} {{ quote.customer.deliveryAddress.city }}</p>
+                <p>{{ quote.customer.deliveryAddress.country }}</p>
+            </td>
+            <td>
+                <h2>Adresse de facturation</h2>
+                <p>{{ quote.customer.firstName }} {{ quote.customer.lastName }}</p>
+                <p>{{ quote.customer.billingAddress.street }}</p>
+                <p>{{ quote.customer.billingAddress.postalCode }} {{ quote.customer.billingAddress.city }}</p>
+                <p>{{ quote.customer.billingAddress.country }}</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table style="width: 100%; border: 1px solid darkgrey; margin-bottom: 2rem">
+        <thead>
+        <tr>
+            <th>Référence</th>
+            <th>Produit</th>
+            <th>Taux de taxe</th>
+            <th>Prix unitaire (HT)</th>
+            <th>Quantité</th>
+            <th>Total (HT)</th>
+            <th>Total (TTC)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in quote.items %}
+            <tr>
+                <td>{{ item.product.reference }}</td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.taxes }} %</td>
+                <td>{{ item.product.price }} €</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.quantity * item.product.price }} €</td>
+                <td>{{ item.quantity * item.product.price * (1 + item.taxes / 100) }} €</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+    <table style="border: 1px solid darkgrey; float: right">
+        <tbody>
+        <tr>
+            <th>Moyen de paiement</th>
+            <td>blabla</td>
+        </tr>
+        <tr>
+            <th>Total HT</th>
+            <td>{{ quote.getTotalWithoutTaxes }} €</td>
+        </tr>
+        <tr>
+            <th>Total TVA</th>
+            <td>{{ quote.getTaxesAmount }} €</td>
+        </tr>
+        <tr>
+            <th>Total TTC</th>
+            <td>{{ quote.getTotalAmount }} €</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <footer style="margin: 0 auto; bottom: 0; text-align: center;">
+        <p>SIRET: {{ quote.company.siret }}</p>
+        <p>{{ quote.company.name }} - {{ quote.company.siret }}</p>
+        <p>{{ quote.company.address.street }}
+            - {{ quote.company.address.postalCode }} {{ quote.company.address.city }}
+            - {{ quote.company.address.country }}</p>
+
+    </footer>
+</div>

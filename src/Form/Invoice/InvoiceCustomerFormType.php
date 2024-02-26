@@ -31,7 +31,9 @@ class InvoiceCustomerFormType extends AbstractType
                     'query_builder' => static function (EntityRepository $er) use ($company) {
                         return $er->createQueryBuilder('c')
                             ->andWhere('c.company IN (:company)')
-                            ->setParameter('company', $company);
+                            ->setParameter('company', $company)
+                            ->orderBy('c.lastName', 'DESC')
+                            ->orderBy('c.firstName', 'DESC');
                     },
                     'placeholder' => '-------',
                     'choice_label' => 'fullName',

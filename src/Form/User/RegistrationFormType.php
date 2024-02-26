@@ -21,9 +21,11 @@ class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $civilities = [];
         foreach (CivilityEnum::cases() as $civility) {
-            $civilities[$civility->name] = $civility->name;
+            $civilities[$civility->name] = $civility;
         }
+
         $builder
             ->add('lastName', TextType::class, [
                 'required' => true,
@@ -39,7 +41,10 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('civility', ChoiceType::class, [
                 'choices' => $civilities,
-                'label' => 'Sexe'
+                'label' => 'Sexe',
+                'choice_label' => function ($civility) {
+                    return $civility->name;
+                }
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,

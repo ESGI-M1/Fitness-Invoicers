@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis{% endblock %}
+
+{% block main %}
+
+    <h1>Sélection du statut du devis</h1>
+
+    {% if quote.isValid %}
+        <h2>La devis est valide</h2>
+
+        {{ form_start(form) }}
+        {{ form_row(form.status) }}
+        <button type="submit" class="btn btn-primary">Valider</button>
+        {{ form_end(form) }}
+
+    {% else %}
+
+        <h2>La devis n'est pas valide</h2>
+        {% for error in quote.IsNotValidErrors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+
+    {% endif %}
+
+
+
+    {% include './quotes/quote_preview.html.twig' with {
+        'quote': quote,
+    } %}
+
+    {% include './components/a.html.twig' with {
+        'path': path('app_user_quote_step_two', {'id': quote.id}),
+        'class': 'text-white font-bold py-2 px-4 rounded',
+        'label': 'Étape Précédente',
+    } %}
+
+{% endblock %}

@@ -27,10 +27,9 @@ class ProductController extends AbstractController
 
         $form->handleRequest($request);
 
-        //$entityManager->getRepository(Product::class)->getProductsByFilters($form->getData()),
 
         $product = $paginator->paginate(
-            $company->getProducts(),
+            $entityManager->getRepository(Product::class)->getProductsByFilters($company, $form->getData()),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 9)
         );

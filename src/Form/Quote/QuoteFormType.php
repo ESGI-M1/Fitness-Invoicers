@@ -44,7 +44,10 @@ class QuoteFormType extends AbstractType
                     'choice_label' => 'product.name',
                     'label' => 'Item',
                     'required' => true,
-                    'multiple' => true
+                    'multiple' => true,
+                    'attr' => [
+                        'class' => 'select2'
+                    ]
                 ])
             ->add('deposits', EntityType::class,
                 [
@@ -56,7 +59,10 @@ class QuoteFormType extends AbstractType
                     'choice_label' => 'price',
                     'label' => 'Rapports',
                     'required' => false,
-                    'multiple' => true
+                    'multiple' => true,
+                    'attr' => [
+                        'class' => 'select2'
+                    ]
                 ]);
     }
 

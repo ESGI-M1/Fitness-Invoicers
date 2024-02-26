@@ -3,30 +3,70 @@
 {% block title %}Factures{% endblock %}
 
 {% block main %}
-    {{ dump(invoice) }}
-
-    <h1>Sélection du client</h1>
+    <h1>Sélection des produits</h1>
     <div>
         <div>
             {{ form_start(categoryForm) }}
             {{ form_row(categoryForm.categories) }}
             <button type="submit" class="btn btn-primary select2">Valider</button>
             {{ form_end(categoryForm) }}
-            {% if formCategories %}
-                {% for formCategory in formCategories %}
-                    {{ form_start(formCategory) }}
-                    {{ form_row(formCategory.products) }}
-                    <button type="submit" class="btn btn-primary select2">Valider</button>
-                    {{ form_end(formCategory) }}
-                {% endfor %}
-            {% endif %}
         </div>
-        <div>
-            {{ form_start(productWithoutCategoryForm) }}
-            {{ form_row(productWithoutCategoryForm.products) }}
-            <button type="submit" class="btn btn-primary select2">Valider</button>
-            {{ form_end(productWithoutCategoryForm) }}
-        </div>
+        {% if productFromCategory %}
+            {% for category in productFromCategory %}
+                <div>
+                    <h2>{{ category.name }}</h2>
+                    <table style="width: 100%; border: 1px solid darkgrey; margin-bottom: 2rem">
+                        <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Référence</th>
+                            <th>Prix unitaire (HT)</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for product in category.products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.reference }}</td>
+                                <td>{{ product.price }} €</td>
+                                <td>
+                                    <a href="{{ path('app_user_invoice_add_item', {'id_invoice': invoice.id, 'id_product': product.id}) }}"><i class="fas fa-plus"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endfor %}
+
+        {% endif %}
+
+        {% if productWithoutCategory %}
+            <div>
+                <h2>Produits sans catégorie</h2>
+                <table style="width: 100%; border: 1px solid darkgrey; margin-bottom: 2rem">
+                    <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Référence</th>
+                        <th>Prix unitaire (HT)</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product in productWithoutCategory %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.reference }}</td>
+                            <td>{{ product.price }} €</td>
+                            <td>
+                                <a href="{{ path('app_user_invoice_add_item', {'id_invoice': invoice.id, 'id_product': product.id}) }}"><i class="fas fa-plus"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
 
     </div>
     <table style="width: 100%; border: 1px solid darkgrey; margin-bottom: 2rem">
@@ -45,22 +85,30 @@
         </tr>
         </thead>
         <tbody>
-        {% if invoice.items %}
-            {% for item in invoice.items %}
+        {% if invoiceItems %}
+            {% for row in invoiceItems %}
+                {{ form_start(row.form) }}
+
                 <tr>
-                    <td>{{ item.product.name }}</td>
-                    <td>{{ item.product.reference }}</td>
-                    <td>{{ item.product.price }} €</td>
-                    <td>{{ item.taxes }} %</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.discountAmountOnItem }} €</td>
-                    <td>{{ item.discountAmountOnTotal }} €</td>
-                    <td>{{ item.quantity * item.product.price }} €</td>
-                    <td>{{ item.quantity * item.product.price * (1 + item.taxes / 100) }} €</td>
+                    <td>{{ row.item.product.name }}</td>
+                    <td>{{ row.item.product.reference }}</td>
+                    <td>{{ row.item.product.price }} €</td>
+                    <td>{{ form_row(row.form.taxes) }}</td>
                     <td>
-                        <a href="{{ path('app_user_invoice_remove_item', {'id_invoice': invoice.id, 'id_item': item.id}) }}"><i class="fas fa-trash-alt"></i></a>
+                        <a href="{{ path('app_user_invoice_decrease_quantity_item', {'id_item': row.item.id}) }}"><i class="fas fa-minus"></i></a>
+                        {{ form_row(row.form.quantity) }}
+                        <a href="{{ path('app_user_invoice_increase_quantity_item', {'id_item': row.item.id}) }}"><i class="fas fa-plus"></i></a>
+                    </td>
+                    <td>{{ form_row(row.form.discountAmountOnItem) }} €</td>
+                    <td>{{ form_row(row.form.discountAmountOnTotal) }} €</td>
+                    <td>{{ row.item.quantity * row.item.product.price }} €</td>
+                    <td>{{ row.item.quantity * row.item.product.price * (1 + row.item.taxes / 100) }} €</td>
+                    <td>
+                        <a href="{{ path('app_user_invoice_remove_item', {'id_invoice': invoice.id, 'id_item': row.item.id}) }}"><i class="fas fa-trash-alt"></i></a>
+                        <button type="submit" class="btn btn-primary">Modifier</button>
                     </td>
                 </tr>
+                {{ form_end(row.form) }}
             {% endfor %}
         {% else %}
             <tr>
@@ -69,9 +117,20 @@
         {% endif %}
     </table>
     {% include './components/a.html.twig' with {
-        'path': path('app_user_invoice_step_two', {'id': invoice.id}),
+        'path': path('app_user_invoice_step_one', {'id': invoice.id}),
         'class': 'text-white font-bold py-2 px-4 rounded',
-        'label': 'Étape suivante',
+        'label': 'Étape précédente',
     } %}
+    {% if invoice.isValidStepTwo %}
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_invoice_step_three', {'id': invoice.id}),
+            'class': 'text-white font-bold py-2 px-4 rounded',
+            'label': 'Étape suivante',
+        } %}
+    {% else %}
+        {% for error in invoice.IsNotValidStepTwoErrors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}

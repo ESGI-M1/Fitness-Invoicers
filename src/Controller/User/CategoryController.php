@@ -19,8 +19,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class CategoryController extends AbstractController
 {
     #[Route('/category-admin', name: 'app_admin_category_index', methods: ['GET', 'POST'] )]
-    public function listadmin(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator): Response
-    {
+    public function listadmin(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        PaginatorInterface $paginator,
+        CompanySession         $companySession,
+    ): Response {
+        $company = $companySession->getCurrentCompany();
+
         $form = $this->createForm(
             CategorySearchAdminType::class,
         );
@@ -28,7 +34,7 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
 
         $category = $paginator->paginate(
-            $entityManager->getRepository(Category::class)->getCategoriesByFilters($form->getData()),
+            $entityManager->getRepository(Category::class)->getCategoriesByFilters($company, $form->getData()),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );

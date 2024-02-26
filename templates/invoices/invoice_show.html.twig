@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Factures{% endblock %}
+
+{% block main %}$
+
+    <h1>Facture {{ invoice.id }}</h1>
+
+    {% include './invoices/invoice_preview.html.twig' with {
+        'invoice': invoice,
+    } %}
+    
+{% endblock %}

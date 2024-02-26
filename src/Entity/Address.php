@@ -77,4 +77,31 @@ class Address
 
         return $this;
     }
+
+    public function isValid() : bool
+    {
+        return $this->postal_code !== null
+            && $this->city !== null
+            && $this->country !== null
+            && $this->street !== null;
+    }
+
+    public function getIsNotValidErrors() : array
+    {
+        $error = [];
+        if ($this->postal_code === null) {
+            $error[] = "address.postal_code.required";
+        }
+        if ($this->city === null) {
+            $error[] = "address.city.required";
+        }
+        if ($this->country === null) {
+            $error[] = "address.country.required";
+        }
+        if ($this->street === null) {
+            $error[] = "address.street.required";
+        }
+        return $error;
+    }
+
 }

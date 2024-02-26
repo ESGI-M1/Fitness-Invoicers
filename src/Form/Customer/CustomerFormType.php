@@ -17,10 +17,10 @@ class CustomerFormType extends AbstractType
     {
         $builder
             ->add('firstName', TextType::class, [
-                'label' => 'First Name',
+                'label' => 'Prénom',
             ])
             ->add('lastName', TextType::class, [
-                'label' => 'Last Name',
+                'label' => 'Nom',
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',

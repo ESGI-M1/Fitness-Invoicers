@@ -1,0 +1,9 @@
+{% set sortField = app.request.query.get('sort_field') in tab ? app.request.query.get('sort_field') : 'users.lastName' %}
+{% set sortDirection = app.request.query.get('sort_direction') ?: 'asc' %}
+{% set direction = sortField == 'users.lastName' or sortField == 'users.firstName' or sortField == 'users.email' ? sortDirection : 'asc' %}
+
+<th class="border">
+    <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'sort_field': value, 'sort_direction': direction == 'asc' ? 'desc' : 'asc'})) }}">
+        {{ type }} {% if value == sortField %}<i class="fas fa-sort-{{ direction }}"></i>{% endif %}
+    </a>
+</th>

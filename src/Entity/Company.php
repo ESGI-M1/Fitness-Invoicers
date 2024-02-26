@@ -396,5 +396,40 @@ class Company implements \Serializable
 
         return $this;
     }
+
+    public function isValid(): bool
+    {
+        return $this->getName() !== null
+            && $this->getSiret() !== null
+            && $this->getAddress() !== null
+            && $this->getReferent() !== null
+            && $this->getAddress()->isValid();
+    }
+
+    public function getIsNotValidErrors(): array
+    {
+        $errors = [];
+        if ($this->getName() === null) {
+            $errors[] = 'company.name.not_blank';
+        }
+
+        if ($this->getSiret() === null) {
+            $errors[] = 'company.siret.not_blank';
+        }
+
+        if ($this->getAddress() === null) {
+            $errors[] = 'company.address.not_blank';
+        }
+
+        if ($this->getReferent() === null) {
+            $errors[] = 'company.referent.not_blank';
+        }
+
+        if ($this->getAddress() !== null && !$this->getAddress()->isValid()) {
+            $errors = array_merge($errors, $this->getAddress()->getIsNotValidErrors());
+        }
+
+        return $errors;
+    }
     
 }

@@ -15,3 +15,10 @@ vich_uploader:
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             delete_on_remove: true
             delete_on_update: true
+
+        invoicePdf:
+            uri_prefix: /pdf/invoices
+            upload_destination: '%kernel.project_dir%/public/pdf/invoices'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_remove: true
+            delete_on_update: true

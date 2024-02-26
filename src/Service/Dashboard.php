@@ -60,7 +60,7 @@ class Dashboard
         $invoicesByStatus = $this->initInvoicesByStatus();
         foreach ($invoices as $invoice) {
 
-            $invoicesByStatus['amount'][$invoice->getStatus()->name] += $invoice->getAmount();
+            $invoicesByStatus['amount'][$invoice->getStatus()->name] += $invoice->getTotalAmount();
             $invoicesByStatus['invoices'][$invoice->getStatus()->name][] = $invoice;
         }
 
@@ -95,7 +95,7 @@ class Dashboard
         $invoicesByStatus = $this->initInvoicesByStatus();
         foreach ($invoices as $invoice) {
 
-            $invoicesByStatus['amount'][$invoice->getStatus()->name] += $invoice->getAmount();
+            $invoicesByStatus['amount'][$invoice->getStatus()->name] += $invoice->getTotalAmount();
             $invoicesByStatus['invoices'][$invoice->getStatus()->name][] = $invoice;
         }
 

@@ -24,7 +24,7 @@ class DepositRepository extends ServiceEntityRepository
     /**
      * @return Deposit[] Returns an array of Deposit objects
      */
-    public function getDepositFromCompany($company, $options = []): array
+    public function getDepositsByFilters($company, $options = []): array
     {
         $query = $this->createQueryBuilder('d')
             ->leftJoin('d.quote', 'quotes')

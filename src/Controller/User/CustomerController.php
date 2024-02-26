@@ -17,9 +17,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CustomerController extends AbstractController
 {
 
-    #[Route('/customer', name: 'app_user_customer_index', methods: ['GET'])]
-    public function index(Request $request, PaginatorInterface $paginator, CompanySession $companySession): Response
-    {
+    #[Route('/customer', name: 'app_user_customer_index', methods: ['GET', 'POST'])]
+    public function index(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        PaginatorInterface $paginator,
+        CompanySession $companySession
+    ): Response {
         $company = $companySession->getCurrentCompany();
 
         $form = $this->createForm(
@@ -28,8 +32,11 @@ class CustomerController extends AbstractController
 
         $form->handleRequest($request);
 
-        $customers = $company->getCustomers();
-        $customers = $paginator->paginate($customers, $request->query->getInt('page', 1), 10);
+        $customers = $paginator->paginate(
+            $entityManager->getRepository(Customer::class)->getCustomersByFilters($company, $form->getData()),
+            $request->query->getInt('page', 1),
+            $request->query->getInt('items', 9)
+        );
 
         return $this->render('customers/customer_index.html.twig', [
             'customers' => $customers,

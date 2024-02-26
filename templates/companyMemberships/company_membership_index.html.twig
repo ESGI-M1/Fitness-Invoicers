@@ -3,28 +3,37 @@
 {% block title %}Utilisateurs{% endblock %}
 
 {% block main %}
-    {% if is_granted('company_referent') %}
-        {% include './layout/search_border.html.twig' with {
-            'form': form,
-            'entity': 'Utilisateurs',
-            'values': users,
-            'path': path('app_user_company_membership_add'),
-            'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
-            'label': 'Ajouter un utilisateur'
-        } %}
-    {% endif %}
-
+    {% include './layout/import_sorted.html.twig' with {
+        'tab': ['users.lastName', 'users.firstName', 'users.email'],
+        'default': 'users.lastName',
+    } %}
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Utilisateurs',
+        'values': users,
+        'path': path('app_user_company_membership_add'),
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'label': 'Ajouter un utilisateur'
+    } %}
     <div class="mt-4">
         <table class="table table-bordered table-striped table-hover w-full">
             <thead>
-            <tr>
-                <th class="border">Nom</th>
-                <th class="border">Prénom</th>
-                <th class="border">Email</th>
-                <th class="border">Status</th>
-                {% if is_granted('company_referent') %}
-                    <th class="border">Action</th>
-                {% endif %}
+            {% include './components/sorted.html.twig' with {
+                'value': 'users.lastName',
+                'type': 'Nom',
+            } %}
+            {% include './components/sorted.html.twig' with {
+                'value': 'users.firstName',
+                'type': 'Prénom',
+            } %}
+            {% include './components/sorted.html.twig' with {
+                'value': 'users.email',
+                'type': 'Email',
+            } %}
+            <th class="border">Statut</th>
+            {% if is_granted('company_referent') %}
+                <th class="border">Action</th>
+            {% endif %}
             </tr>
             </thead>
             <tbody>

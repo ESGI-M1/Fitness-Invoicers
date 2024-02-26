@@ -22,9 +22,14 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function getProductsByFilters($options = [])
+    public function getProductsByFilters($company = null, $options = [])
     {
         $query = $this->createQueryBuilder('p');
+
+        if ($company) {
+            $query->andWhere('p.company = :company')
+                ->setParameter('company', $company);
+        }
 
         if (isset($options['alias']) && $options['alias'] !== '') {
             $parts = explode(' ', $options['alias']);

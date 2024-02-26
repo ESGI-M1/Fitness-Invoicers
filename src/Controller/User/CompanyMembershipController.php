@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Enum\CompanyMembershipStatusEnum;
 use App\Form\User\UserFormType;
 use App\Form\CompanyMembership\CompanyMembershipFormType;
+use App\Form\User\UserSearchType;
 use App\Service\CompanySession;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -27,28 +28,31 @@ class CompanyMembershipController extends AbstractController
 {
     
     #[Route('/companymembership', name: 'app_user_company_membership_index', methods: ['GET', 'POST'])]
-    public function list(Request $request, CompanySession $companySession, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
-    {
+    public function list(
+        Request $request,
+        CompanySession $companySession,
+        EntityManagerInterface $entityManager,
+        PaginatorInterface $paginator
+    ): Response {
         $company = $companySession->getCurrentCompany();
 
-        //dd($entityManager->getRepository(CompanyMembership::class)->getCompanyMembershipsByCompany($company));
+        $form = $this->createForm(UserSearchType::class);
+
+        $sortField = $request->query->get('sort_field');
+        $sortDirection = $request->query->get('sort_direction');
 
         $users = $paginator->paginate(
-            $entityManager->getRepository(CompanyMembership::class)->getCompanyMembershipsByCompany($company),
+            $entityManager->getRepository(CompanyMembership::class)
+                ->getUsersMembershipsByFilters($company, $sortField, $sortDirection),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );
 
-        $form = null;
-        if ($this->isGranted('add_user')) {
-            $form = $this->createForm(UserFormType::class);
-        }
 
         return $this->render('companyMemberships/company_membership_index.html.twig', [
             'users' => $users,
             'form' => $form
         ]);
-
     }
 
 

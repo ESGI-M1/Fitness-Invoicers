@@ -7,54 +7,78 @@
         'form': form,
         'entity': 'Devis',
         'values': quotes,
-        'path': path('app_user_quote_add'),
+        'path': path('app_user_quote_step_one'),
         'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
         'label': 'Ajouter un devis'
     } %}
     <div class="mt-4">
         <table class="table table-bordered table-striped table-hover w-full">
-            <colgroup>
-                <col/>
-                <col/>
-                <col/>
-                <col/>
-                <col/>
-                <col/>
-                <col/>
-            </colgroup>
             <thead>
             <tr>
-                <th class="border">
-                    Montant remise
-                </th>
+                <td class="border">ID</td>
+                <th class="border">Client</th>
+                <th class="border">Montant total</th>
+                <th class="border">Montant remise</th>
                 <th class="border">% réduction</th>
                 <th class="border">Statut</th>
                 <th class="border">Factures</th>
                 <th class="border">Rapports</th>
+                <th class="border">Actions</th>
+                <th class="border">PDF</th>
             </tr>
             </thead>
             <tbody>
             {% for quote in quotes %}
                 <tr>
+                    <td class="border">{{ quote.id }}</td>
+                    <td class="border">{{ quote.customer ? quote.customer.getFullName() : 'Aucun client' }}</td>
+                    <td class="border">{{ quote.totalAmount }} €</td>
                     <td class="border">{{ quote.discountAmount ?? 0 }}%</td>
+                    <td class="border">{{ quote.discountPercent ?? 0 }}%</td>
                     <td class="border">{{ quote.status.getStatusLabel() }}</td>
                     <td class="border text-center">
-                        {% for invoices in quote.invoices %}
-                            {% include './components/a.html.twig' with {
-                                'path': path('app_user_invoice_show', { 'id': invoices.id }),
-                                'fa': 'eye'
-                            } %}
-                        {% endfor %}
+                        {% if quote.invoices %}
+                            {% for invoice in quote.invoices %}
+                                {% include './components/a.html.twig' with {
+                                    'path': path('app_user_invoice_show', { 'id': invoice.quote.id }),
+                                    'fa': 'eye'
+                                } %}
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-center">Aucune facture</span>
+                        {% endif %}
+                        !!! validé à faire
                     </td>
                     <td class="border">
                         {% for deposit in quote.deposits %}
                             {{ deposit.price }}
                         {% endfor %}
                     </td>
+                    <td class="border">
+                        {% if is_granted('edit', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_step_one', { 'id': quote.id }),
+                                'fa': 'edit'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('delete', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_delete', { 'id': quote.id, 'token': csrf_token('delete' ~ quote.id) }),
+                                'fa': 'trash'
+                            } %}
+                        {% endif %}
+                    <td class="border">
+                        {% if is_granted('see', quote) and quote.isValid %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_pdf', { 'id': quote.id }),
+                                'fa': 'file-pdf'
+                            } %}
+                        {% endif %}
+                    </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="5" class="text-center border">Aucun devis</td>
+                    <td colspan="10" class="text-center border">Aucun devis</td>
                 </tr>
             {% endfor %}
             </tbody>

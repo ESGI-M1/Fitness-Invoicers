@@ -56,7 +56,10 @@ class InvoiceFormType extends AbstractType
                     'choice_label' => 'product.name',
                     'label' => 'Item',
                     'required' => true,
-                    'multiple' => true
+                    'multiple' => true,
+                    'attr' => [
+                        'class' => 'select2'
+                    ]
                 ])
             ->add('customer', EntityType::class,
                 [
@@ -82,6 +85,9 @@ class InvoiceFormType extends AbstractType
                     'label' => 'Rapports',
                     'required' => false,
                     'multiple' => true,
+                    'attr' => [
+                        'class' => 'select2'
+                    ]
                 ])
         ;
     }

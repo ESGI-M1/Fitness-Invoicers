@@ -23,4 +23,32 @@ class CustomerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Customer::class);
     }
+
+    public function getCustomersByFilters($company = null, $options = [])
+    {
+        $query = $this->createQueryBuilder('c');
+
+        if ($company) {
+            $query->andWhere('c.company = :company')
+                ->setParameter('company', $company);
+        }
+
+        if (isset($options['alias']) && $options['alias'] !== '') {
+            $parts = explode(' ', $options['alias']);
+            $subAnd = [];
+            foreach ($parts as $k => $p) {
+                $tag = 'alias_' . $k;
+                $subOr = [];
+                foreach (['c.firstName', 'c.lastName'] as $f) {
+                    $subOr[] = "{$f} LIKE :{$tag}";
+                }
+                $subAnd[] = '(' . implode(' OR ', $subOr) . ')';
+                $query->setParameter($tag, "%$p%");
+            }
+            $query
+                ->andWhere('(' . implode(' AND ', $subAnd) . ')');
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }
