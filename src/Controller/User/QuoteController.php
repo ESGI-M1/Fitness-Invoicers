@@ -2,9 +2,12 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Deposit;
 use App\Entity\Quote;
+use App\Entity\Invoice;
 use App\Entity\Product;
 use App\Entity\Item;
+use App\Enum\InvoiceStatusEnum;
 use App\Enum\QuoteStatusEnum;
 use App\Form\Quote\QuoteCustomerFormType;
 use App\Form\Quote\QuoteFormType;
@@ -12,6 +15,7 @@ use App\Form\Quote\QuoteSearchType;
 use App\Form\Quote\QuoteCategoryFormType;
 use App\Form\Quote\QuoteStatusFormType;
 use App\Form\Item\ItemStepTwoFormType;
+use App\Form\Quote\QuoteConvertFormType;
 use App\Service\CompanySession;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -28,7 +32,12 @@ class QuoteController extends AbstractController
 {
 
     #[Route('/quote', name: 'app_user_quote_index')]
-    public function list(EntityManagerInterface $entityManager, Request $request, PaginatorInterface $paginator, CompanySession $companySession): Response
+    public function list(
+        EntityManagerInterface $entityManager,
+        Request                $request,
+        PaginatorInterface     $paginator,
+        CompanySession         $companySession
+    ): Response
     {
         $form = $this->createForm(
             QuoteSearchType::class,
@@ -90,9 +99,11 @@ class QuoteController extends AbstractController
     {
 
         if (!$quote) {
+            $company = $companySession->getCurrentCompany();
             $quote = new quote();
-            $quote->setCompany($companySession->getCurrentCompany());
+            $quote->setCompany($company);
             $quote->setStatus(QuoteStatusEnum::DRAFT);
+            $quote->setDetails($company->getInvoiceDetails());
 
             $entityManager->persist($quote);
             $entityManager->flush();
@@ -208,9 +219,14 @@ class QuoteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            dump($quote);
-            $entityManager->flush();
+            if ($quote->getStatus() == QuoteStatusEnum::ACCEPTED) {
+                $quote->setDate(new \DateTimeImmutable());
+            }
 
+            $entityManager->flush();
+            $this->addFlash('success', 'Le devis a bien été modifié.');
+
+            return $this->redirectToRoute('app_user_quote_show', ['id' => $quote->getId()]);
         }
 
         return $this->render('quotes/quote_step_three.html.twig', [
@@ -223,7 +239,7 @@ class QuoteController extends AbstractController
     #[IsGranted('edit', 'quote')]
     public function addItem(
         EntityManagerInterface                 $entityManager,
-        #[MapEntity(id: 'id_quote')] Quote $quote,
+        #[MapEntity(id: 'id_quote')] Quote     $quote,
         #[MapEntity(id: 'id_product')] Product $product
     ): Response
     {
@@ -238,6 +254,7 @@ class QuoteController extends AbstractController
             $item = new Item();
             $item->setProduct($product);
             $item->setQuantity(1);
+            $item->setPrice($product->getPrice());
 
             $quote->addItem($item);
 
@@ -253,9 +270,9 @@ class QuoteController extends AbstractController
     #[Route('quote/remove-item/{id_quote}/{id_item}', name: 'app_user_quote_remove_item', methods: ['GET'])]
     #[IsGranted('edit', 'quote')]
     public function removeItem(
-        EntityManagerInterface                 $entityManager,
+        EntityManagerInterface             $entityManager,
         #[MapEntity(id: 'id_quote')] Quote $quote,
-        #[MapEntity(id: 'id_item')] Item       $item
+        #[MapEntity(id: 'id_item')] Item   $item
     ): Response
     {
         $quote->removeItem($item);
@@ -266,7 +283,7 @@ class QuoteController extends AbstractController
     }
 
     #[Route('quote/increase-quantity-item/{id_item}', name: 'app_user_quote_increase_quantity_item', methods: ['GET'])]
-    #[IsGranted('edit', 'quote')]
+    #[IsGranted('edit', 'item')]
     public function increaseQuantityItem(
         EntityManagerInterface           $entityManager,
         #[MapEntity(id: 'id_item')] Item $item
@@ -278,11 +295,11 @@ class QuoteController extends AbstractController
 
         $quote = $item->getQuote();
 
-        return $this->redirectToRoute('app_user_invoice_step_two', ['id' => $quote->getId()]);
+        return $this->redirectToRoute('app_user_quote_step_two', ['id' => $quote->getId()]);
     }
 
     #[Route('quote/decrease-quantity-item/{id_item}', name: 'app_user_quote_decrease_quantity_item', methods: ['GET'])]
-    #[IsGranted('edit', 'quote')]
+    #[IsGranted('edit', 'item')]
     public function decreaseQuantityItem(
         EntityManagerInterface           $entityManager,
         #[MapEntity(id: 'id_item')] Item $item
@@ -331,6 +348,92 @@ class QuoteController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_quote_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('quote/convert/{id}/{token}', name: 'app_user_quote_convert', methods: ['GET', 'POST'])]
+    #[IsGranted('convert', 'quote')]
+    public function convertQuote(EntityManagerInterface $entityManager, Request $request, Quote $quote, string $token): Response
+    {
+
+        if (!$quote->isValid()) {
+            $this->addFlash('danger', 'Le devis n°' . $quote->getId() . ' n\'est pas valide');
+            return $this->redirectToRoute('app_user_quote_index');
+        }
+
+        if ($quote->getStatus() != QuoteStatusEnum::ACCEPTED) {
+            $this->addFlash('danger', 'Le devis n°' . $quote->getId() . ' ne peut pas être converti car il n\'est pas accepté');
+            return $this->redirectToRoute('app_user_quote_index');
+        }
+
+        if (!$this->isCsrfTokenValid('convert' . $quote->getId(), $token)) {
+            $this->addFlash('danger', 'Le token est invalide');
+            return $this->redirectToRoute('app_user_quote_index');
+        }
+
+        $form = $this->createForm(QuoteConvertFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $invoice = new Invoice();
+            $invoice->setCompany($quote->getCompany());
+            $invoice->setCustomer($quote->getCustomer());
+            $invoice->setQuote($quote);
+            $invoice->setDetails($quote->getDetails());
+            $invoice->setDate(new \DateTimeImmutable());
+            $invoice->setStatus(InvoiceStatusEnum::SENT);
+            $items = $quote->getItems();
+            foreach ($items as $item) {
+                $invoice->addItem($item);
+            }
+
+            switch ($form->get('convertType')->getData()->name) {
+                case 'WITHOUT_MODIFICATION':
+                    $invoice->setTotalAmount($quote->getTotalAmount());
+                    $invoice->setDiscountAmount(0);
+                    break;
+                case 'WITH_DISCOUNT':
+                    $invoice->setTotalAmount(($quote->getTotalAmount() - $form->get('amount')->getData()));
+                    $invoice->setDiscountAmount(($quote->getDiscountAmount() + $form->get('amount')->getData()));
+                    break;
+                case 'WITH_DEPOSIT':
+                    $deposit = new Deposit();
+                    $deposit->setInvoice($invoice);
+                    $deposit->setAmount($form->get('amount')->getData());
+
+                    $entityManager->persist($deposit);
+
+                    $invoice->setTotalAmount($quote->getTotalAmount());
+                    $invoice->setDeposit($deposit);
+                    break;
+                case 'WITH_DEPOSIT_PERCENTAGE':
+                    $deposit = new Deposit();
+                    $deposit->setInvoice($invoice);
+                    $deposit->setAmount($quote->getTotalAmount() * $form->get('amount')->getData() / 100);
+
+                    $entityManager->persist($deposit);
+
+                    $invoice->setTotalAmount($quote->getTotalAmount());
+                    $invoice->setDeposit($deposit);
+                    break;
+                default:
+                    $this->addFlash('danger', 'L\'action n\'est pas valide');
+                    return $this->redirectToRoute('app_user_quote_index');
+                    break;
+            }
+
+            $entityManager->persist($invoice);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le devis n°' . $quote->getId() . ' a bien été converti en facture n°' . $invoice->getId());
+            return $this->redirectToRoute('app_user_invoice_index');
+        }
+
+        return $this->render('quotes/quote_convert.html.twig', [
+            'quote' => $quote,
+            'form' => $form
+        ]);
+
     }
 
     #[Route('quote/pdf/{id}', name: 'app_user_quote_pdf', methods: ['GET'])]

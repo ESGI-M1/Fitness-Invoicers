@@ -7,9 +7,9 @@
         <div class="alert alert-danger">{{ error.message }}</div>
     {% endif %}
 
-    <div class="flex h-screen">
-        {% include './components/welcome_nav.html.twig' %}
-        <div class="w-3/4">
+    <div class="flex h-screen lg:flex-row lg:flex-wrap lg:flex-col">
+        {% include './layout/welcome_nav.html.twig' %}
+        <div class="w-full lg:w-3/4">
             <div class="flex min-h-full flex-col px-6 py-12 lg:px-8">
                 <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                     {% include './components/title.html.twig' with {

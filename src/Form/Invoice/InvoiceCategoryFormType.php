@@ -37,6 +37,9 @@ class InvoiceCategoryFormType extends AbstractType
                     'label' => 'Categories',
                     'required' => false,
                     'multiple' => true,
+                    'attr' => [
+                        'class' => 'select2'
+                    ]
                 ])
         ;
     }

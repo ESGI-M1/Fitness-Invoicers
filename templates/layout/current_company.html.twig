@@ -1,0 +1,12 @@
+<div class="flex justify-around bg-grey rounded-md items-center p-2">
+    <img src="{{ vich_uploader_asset(companySession.getCurrentCompanyTwig, 'imageFile') }}"
+         alt="{{ companySession.getCurrentCompanyTwig.slug }}"
+         class="w-14 h-14 rounded-md aspect-square object-cover">
+    <h1 class="text-base font-bold uppercase">
+        <a href="{{ path('app_user_company_set') }}">{{ companySession.getCurrentCompanyTwig.slug }}</a>
+        {% if is_granted('company_referent') %}
+            <a href="{{ path('app_user_company_show', { 'id': companySession.getCurrentCompanyTwig.id }) }}"><i
+                        class="fa-solid fa-pen-to-square"></i></a></i>
+        {% endif %}
+    </h1>
+</div>

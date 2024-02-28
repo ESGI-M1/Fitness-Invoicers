@@ -38,6 +38,9 @@ class Item
     #[ORM\ManyToOne(inversedBy: 'items')]
     private ?invoice $invoices = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $price = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -146,6 +149,7 @@ class Item
     {
         return $this->getProduct() !== null
             && $this->getQuantity() > 0
+            && $this->getPrice() > 0
             && $this->getTaxes() >= 0
             && $this->getDiscountAmountOnItem() >= 0
             && $this->getDiscountAmountOnTotal() >= 0
@@ -164,6 +168,10 @@ class Item
 
         if ($this->getQuantity() <= 0) {
             $errors[] = 'item.quantity.must.be.greater.than.0';
+        }
+
+        if ($this->getPrice() <= 0) {
+            $errors[] = 'item.price.must.be.greater.than.0';
         }
 
         if ($this->getTaxes() < 0) {
@@ -195,6 +203,18 @@ class Item
         }
 
         return $errors;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): static
+    {
+        $this->price = $price;
+
+        return $this;
     }
 
 }

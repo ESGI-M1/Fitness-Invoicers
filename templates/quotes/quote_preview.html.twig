@@ -36,6 +36,10 @@
 </style>
 
 <div>
+    <div class="text-right">
+        {% include './components/back.html.twig' with {
+        } %}
+    </div>
     <table style="width: 100%">
         <tbody>
         <tr>
@@ -60,17 +64,35 @@
         <tr>
             <td>
                 <h2>Adresse de livraison</h2>
-                <p>{{ quote.customer.firstName }} {{ quote.customer.lastName }}</p>
-                <p>{{ quote.customer.deliveryAddress.street }}</p>
-                <p>{{ quote.customer.deliveryAddress.postalCode }} {{ quote.customer.deliveryAddress.city }}</p>
-                <p>{{ quote.customer.deliveryAddress.country }}</p>
+                {% if quote.customer %}
+                    <p>{{ quote.customer.fullName }}</p>
+                    <p>{{ quote.customer.deliveryAddress.street }}</p>
+                    <p>{{ quote.customer.deliveryAddress.postalCode }} {{ quote.customer.deliveryAddress.city }}</p>
+                    <p>{{ quote.customer.deliveryAddress.country }}</p>
+                {% else %}
+                    <p>Pas de client associé</p>
+                    <p>-----------------</p>
+                    <p>-----------------</p>
+                    <p>-----------------</p>
+                {% endif %}
             </td>
             <td>
                 <h2>Adresse de facturation</h2>
-                <p>{{ quote.customer.firstName }} {{ quote.customer.lastName }}</p>
-                <p>{{ quote.customer.billingAddress.street }}</p>
-                <p>{{ quote.customer.billingAddress.postalCode }} {{ quote.customer.billingAddress.city }}</p>
-                <p>{{ quote.customer.billingAddress.country }}</p>
+                {% if quote.customer %}
+                    <p>{{ quote.customer.fullName }}</p>
+                    <p>{{ quote.customer.billingAddress.street }}</p>
+                    <p>{{ quote.customer.billingAddress.postalCode }} {{ quote.customer.billingAddress.city }}</p>
+                    <p>{{ quote.customer.billingAddress.country }}</p>
+                {% else %}
+                    <p>Pas de client associé</p>
+                    <p>-----------------</p>
+                    <p>-----------------</p>
+                    <p>-----------------</p>
+                {% endif %}
+            </td>
+            <td style="vertical-align: baseline">
+                <h2>Date de validité</h2>
+                <p>{{ quote.expirationDate| date('d/m/Y') }}</p>
             </td>
         </tr>
         </tbody>
@@ -123,6 +145,8 @@
         </tr>
         </tbody>
     </table>
+
+    <p>{{ quote.details }}</p>
 
     <footer style="margin: 0 auto; bottom: 0; text-align: center;">
         <p>SIRET: {{ quote.company.siret }}</p>

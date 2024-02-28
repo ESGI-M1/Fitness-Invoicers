@@ -3,34 +3,41 @@
 {% block title %}Utilisateurs{% endblock %}
 
 {% block main %}
-    {% include './layout/import_sorted.html.twig' with {
-        'tab': ['users.lastName', 'users.firstName', 'users.email'],
-        'default': 'users.lastName',
-    } %}
     {% include './layout/search_border.html.twig' with {
         'form': form,
         'entity': 'Utilisateurs',
         'values': users,
         'path': path('app_user_company_membership_add'),
         'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
-        'label': 'Ajouter un utilisateur'
+        'label': 'Ajouter un utilisateur',
+        'right': 'ROLE_ADMIN'
     } %}
+
+    {% set direction = users.getDirection() %}
+
     <div class="mt-4">
-        <table class="table table-bordered table-striped table-hover w-full">
+        <table class="table table-bordered table-striped table-hover w-full sorted">
             <thead>
             {% include './components/sorted.html.twig' with {
+                'title': 'Nom',
+                'entity': users,
                 'value': 'users.lastName',
-                'type': 'Nom',
             } %}
             {% include './components/sorted.html.twig' with {
+                'title': 'Prénom',
+                'entity': users,
                 'value': 'users.firstName',
-                'type': 'Prénom',
             } %}
             {% include './components/sorted.html.twig' with {
+                'title': 'Email',
+                'entity': users,
                 'value': 'users.email',
-                'type': 'Email',
             } %}
-            <th class="border">Statut</th>
+            {% include './components/sorted.html.twig' with {
+                'title': 'Statut',
+                'entity': users,
+                'value': 'status.statusLabel',
+            } %}
             {% if is_granted('company_referent') %}
                 <th class="border">Action</th>
             {% endif %}

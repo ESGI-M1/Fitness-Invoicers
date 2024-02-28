@@ -15,39 +15,24 @@ class Deposit
     private ?int $id = null;
 
     #[ORM\Column(type: Types::FLOAT)]
-    private ?float $price = null;
+    private ?float $amount = null;
 
-    #[ORM\ManyToOne(inversedBy: 'deposits')]
-    private ?Quote $quote = null;
-
-    #[ORM\ManyToOne(inversedBy: 'deposits')]
+    #[ORM\OneToOne(mappedBy: 'deposit', cascade: ['persist', 'remove'])]
     private ?Invoice $invoice = null;
-
+    
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPrice(): ?float
+    public function getAmount(): ?float
     {
-        return $this->price;
+        return $this->amount;
     }
 
-    public function setPrice(float $price): static
+    public function setAmount(float $amount): static
     {
-        $this->price = $price;
-
-        return $this;
-    }
-
-    public function getQuote(): ?Quote
-    {
-        return $this->quote;
-    }
-
-    public function setQuote(?Quote $quote): static
-    {
-        $this->quote = $quote;
+        $this->amount = $amount;
 
         return $this;
     }
@@ -59,8 +44,19 @@ class Deposit
 
     public function setInvoice(?Invoice $invoice): static
     {
+        // unset the owning side of the relation if necessary
+        if ($invoice === null && $this->invoice !== null) {
+            $this->invoice->setDeposit(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($invoice !== null && $invoice->getDeposit() !== $this) {
+            $invoice->setDeposit($this);
+        }
+
         $this->invoice = $invoice;
 
         return $this;
     }
+
 }

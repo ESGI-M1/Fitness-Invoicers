@@ -23,11 +23,7 @@ class InvoiceListener
         
         $status = $eventChange['status'];
 
-        if ($status[1] === InvoiceStatusEnum::ARCHIVED->value && count($eventChange) === 2 && isset($eventChange['updatedAt'])) {
-            $updateAt = $eventChange['updatedAt'];
-            $invoice->setUpdatedAt($updateAt[0]);
-        }
-        elseif ($status[0] != InvoiceStatusEnum::DRAFT->value) {
+        if ($status[0] != InvoiceStatusEnum::DRAFT->value) {
             throw new \Exception('You can not change status of an invoice already sent');
         }
     }

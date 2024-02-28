@@ -30,6 +30,8 @@ use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
+
 class SecurityController extends AbstractController
 {
     use ResetPasswordControllerTrait;
@@ -66,7 +68,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -93,11 +95,12 @@ class SecurityController extends AbstractController
                     ->htmlTemplate('security/confirmation_email.html.twig')
             );
 
-            $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
-
-            $event = new InteractiveLoginEvent($request, $token);
-
-            $this->eventDispatcher->dispatch($event);
+            return $guardHandler->authenticateUserAndHandleSuccess(
+                $user,
+                $request,
+                $authenticator,
+//                'main'
+            );
 
             return $this->redirectToRoute('app_user_profile');
         }

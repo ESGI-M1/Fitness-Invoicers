@@ -15,7 +15,6 @@ class InvoiceStatusFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder
             ->add('status', EnumType::class, [
                 'class' => InvoiceStatusEnum::class,

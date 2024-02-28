@@ -30,10 +30,15 @@
                 <div class="flex justify-between gap-8 mb-4">
                     <p>{{ companyMemberShip.company.name }}</p>
                     <p>{{ companyMemberShip.status.name }}</p>
+                    {% if is_granted('referent', companyMemberShip) and companySession.getCurrentCompanyTwig %}
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_company_edit', { 'id': companySession.getCurrentCompanyTwig.id }),
+                            'fa': 'edit',
+                        } %}
+                    {% endif %}
                     {% include './components/a.html.twig' with {
                         'path': path('app_user_company_membership_delete', {'id': companyMemberShip.id, 'token': csrf_token('delete-user-company-membership' ~ companyMemberShip.id)}),
-                        'class': '',
-                        'label': 'SVG/FA',
+                        'fa': 'trash',
                     } %}
                 </div>
             {% endfor %}

@@ -17,9 +17,13 @@ class UserFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('alias', TextType::class, [
+            ->add('lastName', TextType::class, [
                 'required' => true,
                 'label' => 'Nom',
+            ])
+            ->add('firstName', TextType::class, [
+                'required' => true,
+                'label' => 'Prénom',
             ])
             ->add('email', EmailType::class, [
                 'required' => true,
@@ -31,7 +35,10 @@ class UserFormType extends AbstractType
                     'Femme' => CivilityEnum::FEMALE,
                     'Autre' => CivilityEnum::OTHER,
                 ],
-                'label' => 'Sexe'
+                'label' => 'Sexe',
+                'attr' => [
+                    'class' => 'select2'
+                ]
             ])
         ;
     }

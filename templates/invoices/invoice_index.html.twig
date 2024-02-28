@@ -9,18 +9,32 @@
         'values': invoices,
         'path': path('app_user_invoice_step_one'),
         'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
-        'label': 'Ajouter une facture'
+        'label': 'Ajouter une facture',
+        'right': 'ROLE_USER'
     } %}
     <div class="mt-4">
         <table class="table table-bordered table-striped table-hover w-full">
             <thead>
             <tr>
                 <td class="border">ID</td>
-                <td class="border">Client</td>
-                <th class="border">Montant total</th>
-                <th class="border">Montant remise</th>
-                <th class="border">% réduction</th>
-                <th class="border">Statut</th>
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Client',
+                    'entity': invoices,
+                    'value': ['customer.lastName', 'customer.firstName'],
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Montant total',
+                    'entity': invoices,
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Montant remise',
+                    'entity': invoices,
+                    'value': 'i.discountAmount' ?? 0,
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Statut',
+                    'entity': invoices,
+                } %}
                 <th class="border">Devis</th>
                 <th class="border">Rapports</th>
                 <th class="border">Actions</th>
@@ -31,10 +45,11 @@
             {% for invoice in invoices %}
                 <tr>
                     <td class="border">{{ invoice.id }}</td>
-                    <td class="border">{{ invoice.customer ? invoice.customer.name : 'Aucun client' }}</td>
+                    <td class="border">{{ invoice.customer ? invoice.customer.fullname : '' }}</td>
                     <td class="border">{{ invoice.totalAmount }}€</td>
-                    <td class="border">{{ invoice.discountAmount ?? 0 }}€</td>
-                    <td class="border">{{ invoice.discountPercent }}%</td>
+                    <td class="border">
+                        {{ invoice.discountAmount is not null ? invoice.discountAmount ~ '€' : 0 }}
+                    </td>
                     <td class="border">{{ invoice.status.getStatusLabel() }}</td>
                     <td class="border text-center">
                         {% if invoice.quote %}
@@ -48,11 +63,15 @@
                         {{ invoice.isValid ? 'Validé' : 'Non validé' }}
                     </td>
                     <td class="border">
-                        {% for deposit in invoice.deposits %}
-                            {{ deposit.price }}
-                        {% endfor %}
+                        {{ invoice.deposit ? 'Acompte' : 'Solde' }}
                     </td>
                     <td class="border">
+                        {% if is_granted('see', invoice)%}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_show', { 'id': invoice.id }),
+                                'fa': 'eye'
+                            } %}
+                        {% endif %}
                         {% if is_granted('edit', invoice) %}
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_invoice_step_one', { 'id': invoice.id }),

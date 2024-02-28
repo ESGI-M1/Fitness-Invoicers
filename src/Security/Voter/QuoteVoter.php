@@ -15,6 +15,8 @@ class QuoteVoter extends Voter
     public const SEE = 'see';
     public const ADD = 'add';
     public const EDIT = 'edit';
+    public const CONVERT = 'convert';
+
     public const DELETE = 'delete';
 
     private CompanySession $companySession;
@@ -33,7 +35,7 @@ class QuoteVoter extends Voter
             return true;
         }
 
-        return in_array($attribute, [self::SEE, self::EDIT, self::DELETE])
+        return in_array($attribute, [self::SEE, self::EDIT, self::CONVERT, self::DELETE])
             && $subject instanceof \App\Entity\Quote;
     }
 
@@ -48,6 +50,7 @@ class QuoteVoter extends Voter
             self::SEE => $this->canAddOrSee($subject, $user),
             self::ADD => $this->canAddOrSee($subject, $user),
             self::EDIT => $this->canEdit($subject, $user),
+            self::CONVERT => $this->canConvert($subject, $user),
             self::DELETE => $this->canDelete($subject, $user),
             default => false,
         };
@@ -61,7 +64,11 @@ class QuoteVoter extends Voter
             return true;
         }
 
-        return in_array('ROLE_ADMIN', $user->getRoles()) || $currentCompany !== null && $currentCompany === $quote->getCompany() && $currentCompany->userInCompany($user);
+        if(!$currentCompany || $currentCompany !== $quote->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return true;
     }
 
     private function canEdit(Quote $quote, UserInterface $user): bool
@@ -72,7 +79,26 @@ class QuoteVoter extends Voter
             return true;
         }
 
-        return in_array('ROLE_ADMIN', $user->getRoles()) || $currentCompany !== null && $currentCompany === $quote->getCompany() && $currentCompany->userInCompany($user) && $quote->getStatus() === QuoteStatusEnum::DRAFT;
+        if(!$currentCompany || $currentCompany !== $quote->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return $quote->getStatus() === QuoteStatusEnum::DRAFT;
+    }
+
+    public function canConvert(Quote $quote, UserInterface $user): bool
+    {
+        $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
+
+        if($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        if(!$currentCompany || $currentCompany !== $quote->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return $quote->getStatus() === QuoteStatusEnum::ACCEPTED && $quote->isValid();
     }
 
     private function canDelete(Quote $quote, UserInterface $user): bool
@@ -83,7 +109,11 @@ class QuoteVoter extends Voter
             return true;
         }
 
-        return in_array('ROLE_ADMIN', $user->getRoles()) || $currentCompany !== null && $currentCompany === $quote->getCompany() && $currentCompany->userInCompany($user) && $quote->getStatus() === QuoteStatusEnum::DRAFT;
+        if(!$currentCompany || $currentCompany !== $quote->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return $quote->getStatus() === QuoteStatusEnum::DRAFT;
     }
 
 }

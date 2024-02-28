@@ -38,23 +38,18 @@ class CompanyMembershipController extends AbstractController
 
         $form = $this->createForm(UserSearchType::class);
 
-        $sortField = $request->query->get('sort_field');
-        $sortDirection = $request->query->get('sort_direction');
-
         $users = $paginator->paginate(
             $entityManager->getRepository(CompanyMembership::class)
-                ->getUsersMembershipsByFilters($company, $sortField, $sortDirection),
+                ->getUsersMembershipsByFilters($company),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );
-
 
         return $this->render('companyMemberships/company_membership_index.html.twig', [
             'users' => $users,
             'form' => $form
         ]);
     }
-
 
     #[Route('companymembership/add', name: 'app_user_company_membership_add', methods: ['GET', 'POST'])]
     #[IsGranted('company_referent')]

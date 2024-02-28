@@ -26,15 +26,12 @@ class Quote
 
     #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Item::class, orphanRemoval: true)]
     private Collection $items;
+
     #[ORM\Column(type: Types::STRING, length: 255, enumType: QuoteStatusEnum::class)]
     private ?QuoteStatusEnum $status = null;
 
     #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Invoice::class)]
     private Collection $invoices;
-
-    #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Deposit::class)]
-    private Collection $deposits;
-
     #[ORM\ManyToOne(inversedBy: 'quotes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
@@ -42,11 +39,19 @@ class Quote
     #[ORM\ManyToOne(inversedBy: 'quotes')]
     private ?Customer $customer = null;
 
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $date = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $expirationDate = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $details = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
         $this->invoices = new ArrayCollection();
-        $this->deposits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -137,37 +142,7 @@ class Quote
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Deposit>
-     */
-    public function getDeposits(): Collection
-    {
-        return $this->deposits;
-    }
-
-    public function addDeposit(Deposit $deposit): static
-    {
-        if (!$this->deposits->contains($deposit)) {
-            $this->deposits->add($deposit);
-            $deposit->setQuote($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDeposit(Deposit $deposit): static
-    {
-        if ($this->deposits->removeElement($deposit)) {
-            // set the owning side to null (unless already changed)
-            if ($deposit->getQuote() === $this) {
-                $deposit->setQuote(null);
-            }
-        }
-
-        return $this;
-    }
-
+    
     public function getInvoice(): ?Invoice
     {
         return $this->invoice;
@@ -197,7 +172,7 @@ class Quote
         $items = $this->getItems()->getValues();
         $amount = 0;
         foreach ($items as $item) {
-            $amount += $item->getProductPrice() * $item->getQuantity();
+            $amount += $item->getTotalAmountWithoutTaxes();
         }
 
         return $amount;
@@ -256,6 +231,7 @@ class Quote
 
         return $this->getCustomer() !== null
             && $this->getCompany() !== null
+            && $this->getDetails() !== null
             && $this->getItems()->count() > 0
             && $this->getTotalAmount() > 0
             && $this->getTotalWithoutTaxes() > 0
@@ -274,6 +250,10 @@ class Quote
 
         if ($this->getCompany() === null) {
             $errors[] = 'company.not.valid';
+        }
+
+        if ($this->getDetails() === null) {
+            $errors[] = 'details.are.required';
         }
 
         if ($this->getItems()->count() === 0) {
@@ -369,6 +349,42 @@ class Quote
         }
 
         return $errors;
+    }
+
+    public function getDate(): ?\DateTimeImmutable
+    {
+        return $this->date;
+    }
+
+    public function setDate(?\DateTimeImmutable $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getExpirationDate(): ?\DateTimeImmutable
+    {
+        return $this->expirationDate;
+    }
+
+    public function setExpirationDate(?\DateTimeImmutable $expirationDate): static
+    {
+        $this->expirationDate = $expirationDate;
+
+        return $this;
+    }
+
+    public function getDetails(): ?string
+    {
+        return $this->details;
+    }
+
+    public function setDetails(?string $details): static
+    {
+        $this->details = $details;
+
+        return $this;
     }
 
 

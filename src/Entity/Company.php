@@ -84,6 +84,9 @@ class Company implements \Serializable
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Product::class)]
     private Collection $products;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $invoiceDetails = null;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -430,6 +433,18 @@ class Company implements \Serializable
         }
 
         return $errors;
+    }
+
+    public function getInvoiceDetails(): ?string
+    {
+        return $this->invoiceDetails;
+    }
+
+    public function setInvoiceDetails(?string $invoiceDetails): static
+    {
+        $this->invoiceDetails = $invoiceDetails;
+
+        return $this;
     }
     
 }

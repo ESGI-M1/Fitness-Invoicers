@@ -46,6 +46,6 @@ class CategoryRepository extends ServiceEntityRepository
                 ->andWhere('(' . implode(' AND ', $subAnd) . ')');
         }
 
-        return $query->getQuery()->getResult();
+        return $query->getQuery();
     }
 }

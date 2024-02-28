@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
         style: 'min-width: 150px',
         dropdownCssClass: 'instant-search',
     });
-
+    $('.search .select2').on('change', function (e) {
+        $(this).closest('form').trigger('submit');
+    });
     const ajaxFunctions = document.querySelectorAll('.ajax-function');
 
     ajaxFunctions.forEach(element => {

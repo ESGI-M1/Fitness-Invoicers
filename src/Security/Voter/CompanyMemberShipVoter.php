@@ -3,23 +3,35 @@
 namespace App\Security\Voter;
 
 use App\Entity\Company;
+use App\Entity\CompanyMembership;
 use App\Service\CompanySession;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class MemberShipVoter extends Voter
+class CompanyMemberShipVoter extends Voter
 {
+
+    public const MEMBERSHIP = 'membership';
+    public const REFERENT = 'referent';
+
     private CompanySession $companySession;
 
-    public function __construct(CompanySession $companySession)
+    public function __construct(CompanySession $companySession, Security $security)
     {
         $this->companySession = $companySession;
+        $this->security = $security;
     }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === 'Membership';
+
+        if($attribute === 'membership' && $subject === null) {
+            return true;
+        }
+
+        return self::REFERENT === $attribute && $subject instanceof CompanyMembership;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -30,18 +42,23 @@ class MemberShipVoter extends Voter
         }
 
         return match ($attribute) {
-            default => $this->canAccess($user),
+            self::MEMBERSHIP => $this->canAccess($user),
+            self::REFERENT => $this->isReferent($subject, $user),
+            default => false,
         };
+    }
+
+    private function isReferent(CompanyMembership $companyMembership, UserInterface $user): bool
+    {
+        return $companyMembership->getCompany()->getReferent() === $user;
     }
 
     private function canAccess(UserInterface $user): bool
     {
         $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
-        if(!$currentCompany && !in_array('ROLE_ADMIN', $user->getRoles())) {
-            return false;
+        if($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
         }
-
-        return true;
 
         return $currentCompany->userAcceptedInCompany($user);
     }

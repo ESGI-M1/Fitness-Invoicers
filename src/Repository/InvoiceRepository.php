@@ -24,7 +24,8 @@ class InvoiceRepository extends ServiceEntityRepository
 
     public function getInvoicesByFilters($company = null, $options = [])
     {
-        $query = $this->createQueryBuilder('i');
+        $query = $this->createQueryBuilder('i')
+        ->leftJoin('i.customer', 'customer');
 
         if ($company) {
             $query->andWhere('i.company = :company')
@@ -53,7 +54,9 @@ class InvoiceRepository extends ServiceEntityRepository
                 ->setParameter('status', '%' . $options['status']->name . '%');
         }
 
-        return $query->getQuery()->getResult();
+        $query->orderBy('i.createdAt', 'DESC');
+
+        return $query->getQuery();
     }
 
     public function findByDateRange(Company $company, \DateTime $startDate, \DateTime $endDate)

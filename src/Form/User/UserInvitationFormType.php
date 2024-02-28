@@ -38,7 +38,10 @@ class UserInvitationFormType extends AbstractType
                     'Femme' => CivilityEnum::FEMALE,
                     'Autre' => CivilityEnum::OTHER,
                 ],
-                'label' => 'Sexe'
+                'label' => 'Sexe',
+                'attr' => [
+                    'class' => 'select2'
+                ]
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,

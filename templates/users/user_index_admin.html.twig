@@ -9,7 +9,8 @@
         'values': users,
         'path': path('app_admin_user_add'),
         'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
-        'label': 'Ajouter un utilisateur'
+        'label': 'Ajouter un utilisateur',
+        'right': 'ROLE_ADMIN'
     } %}
 
 <div class="mt-4">
@@ -37,13 +38,10 @@
         {% for user in users %}
             <tr>
                 <td class="text-center border">
-                    <a data-type="ajax" class="fancy-add"
-                       href="{{ path('app_admin_user_edit', {'id' : user.id }) }}">
-                        <svg class="feather feather-edit h-4 w-4 mx-auto align-middle" viewBox="0 0 24 24" fill="none"
-                             stroke="blue" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M19 1L23 5L5 23H1V19L19 1Z"></path>
-                        </svg>
-                    </a>
+                    {% include './components/a.html.twig' with {
+                        'path': path('app_admin_user_edit', { 'id': user.id }),
+                        'fa': 'edit'
+                    } %}
                 </td>
                 <td class="border">{{ user.lastName }}</td>
                 <td class="border">{{ user.firstName }}</td>

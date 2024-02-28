@@ -37,7 +37,6 @@ class ProductFormType extends AbstractType
                 'attr' => [
                     'class' => 'select2'
                 ],
-                'by_reference' => false,
                 'placeholder' => '-------',
                 'choice_label' => 'name',
                 'label' => 'Catégorie',
@@ -63,9 +62,6 @@ class ProductFormType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => Product::class,
-                'attr' => [
-                    'class' => 'add-form do-confirm',
-                ],
                 'update' => true,
             ]
         );

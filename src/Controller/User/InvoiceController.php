@@ -46,7 +46,8 @@ class InvoiceController extends AbstractController
         $company = $companySession->getCurrentCompany();
 
         $invoices = $paginator->paginate(
-            $entityManager->getRepository(Invoice::class)->getInvoicesByFilters($company, $form->getData()),
+            $entityManager->getRepository(Invoice::class)
+                ->getInvoicesByFilters($company, $form->getData()),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );
@@ -100,9 +101,11 @@ class InvoiceController extends AbstractController
     {
 
         if (!$invoice) {
+            $company = $companySession->getCurrentCompany();
             $invoice = new Invoice();
-            $invoice->setCompany($companySession->getCurrentCompany());
+            $invoice->setCompany($company);
             $invoice->setStatus(InvoiceStatusEnum::DRAFT);
+            $invoice->setDetails($company->getInvoiceDetails());
 
             $entityManager->persist($invoice);
             $entityManager->flush();
@@ -218,9 +221,13 @@ class InvoiceController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            dump($invoice);
+            if($invoice->getStatus() == InvoiceStatusEnum::SENT) {
+                $invoice->setDate(new \DateTimeImmutable());
+            }
+
             $entityManager->flush();
 
+            return $this->redirectToRoute('app_user_invoice_show', ['id' => $invoice->getId()]);
         }
 
         return $this->render('invoices/invoice_step_three.html.twig', [
@@ -249,6 +256,7 @@ class InvoiceController extends AbstractController
             $item = new Item();
             $item->setProduct($product);
             $item->setQuantity(1);
+            $item->setPrice($product->getPrice());
 
             $invoice->addItem($item);
 
@@ -277,7 +285,7 @@ class InvoiceController extends AbstractController
     }
 
     #[Route('invoice/increase-quantity-item/{id_item}', name: 'app_user_invoice_increase_quantity_item', methods: ['GET'])]
-    #[IsGranted('edit', 'invoice')]
+    #[IsGranted('edit', 'item')]
     public function increaseQuantityItem(
         EntityManagerInterface           $entityManager,
         #[MapEntity(id: 'id_item')] Item $item
@@ -293,7 +301,7 @@ class InvoiceController extends AbstractController
     }
 
     #[Route('invoice/decrease-quantity-item/{id_item}', name: 'app_user_invoice_decrease_quantity_item', methods: ['GET'])]
-    #[IsGranted('edit', 'invoice')]
+    #[IsGranted('edit', 'item')]
     public function decreaseQuantityItem(
         EntityManagerInterface           $entityManager,
         #[MapEntity(id: 'id_item')] Item $item
@@ -337,6 +345,7 @@ class InvoiceController extends AbstractController
     public function delete(Invoice $invoice, EntityManagerInterface $entityManager, string $token): Response
     {
         if ($invoice->getStatus() === InvoiceStatusEnum::DRAFT && $this->isCsrfTokenValid('delete' . $invoice->getId(), $token)) {
+            $this->addFlash('success', 'La facture n°' . $invoice->getId() . ' a été supprimée');
             $entityManager->remove($invoice);
             $entityManager->flush();
         }

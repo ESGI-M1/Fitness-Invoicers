@@ -23,7 +23,7 @@ class CompanyMembershipRepository extends ServiceEntityRepository
         parent::__construct($registry, CompanyMembership::class);
     }
 
-    public function getUsersMembershipsByFilters(Company $company, $sortField, $sortDirection)
+    public function getUsersMembershipsByFilters(Company $company)
     {
         $query = $this->createQueryBuilder('cm')
             ->leftJoin('cm.relatedUser', 'users')
@@ -56,21 +56,11 @@ class CompanyMembershipRepository extends ServiceEntityRepository
                 ->setParameter('sexe', $options['sexe']->name);
         }
 
-        if ($sortField) {
-            if (in_array($sortField, ['users.lastName', 'users.firstName', 'users.email'])) {
-                $query->orderBy($sortField, $sortDirection);
-            } else {
-                $query->orderBy('users.lastName', 'ASC')
-                    ->addOrderBy('users.firstName', 'ASC');
-            }
-        } else {
-            $query->orderBy('users.lastName', 'ASC')
-                ->addOrderBy('users.firstName', 'ASC');
-        }
+        $query->orderBy('users.lastName', 'ASC')
+            ->orderBy('users.firstName', 'ASC');
 
         return $query
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
 
     public function getCompanyMembershipsByCompanyAndUser(Company $company, User $user)
@@ -81,8 +71,7 @@ class CompanyMembershipRepository extends ServiceEntityRepository
             ->setParameter('company', $company)
             ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
     //    /**

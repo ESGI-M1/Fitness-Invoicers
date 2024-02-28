@@ -4,10 +4,22 @@
 
 {% block main %}
 
-    {% for com in company %}
-        {{ com.name }}
-        {{ com.slug }}
-        {{ com.siret }}
-    {% endfor %}
+    {% include './components/a.html.twig' with {
+        'path': path('app_user_quote_edit', { 'id': company.id }),
+        'fa': 'edit'
+    } %}
+    {% if company.address %}
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_address_company_edit', { 'company_id': company.id , 'address_id': company.address.id }),
+            'label': 'Modifier l\'adresse',
+            'fa': 'edit'
+        } %}
+    {% else %}
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_address_add_company', { 'id': company.id}),
+            'label': 'Ajouter une adresse',
+            'fa': 'edit'
+        } %}
+    {% endif %}
 
 {% endblock %}

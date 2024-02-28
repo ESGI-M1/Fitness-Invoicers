@@ -39,6 +39,9 @@ class InvoiceCustomerFormType extends AbstractType
                     'choice_label' => 'fullName',
                     'label' => 'Client',
                     'required' => false,
+                    'attr' => [
+                        'class' => 'select2'
+                    ]
                 ])
         ;
     }

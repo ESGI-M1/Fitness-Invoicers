@@ -33,15 +33,17 @@ class CategoryController extends AbstractController
 
         $form->handleRequest($request);
 
+        $categories = $entityManager->getRepository(Category::class);
+
         $category = $paginator->paginate(
-            $entityManager->getRepository(Category::class)->getCategoriesByFilters($company, $form->getData()),
+            $categories->getCategoriesByFilters($company, $form->getData()),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );
 
         return $this->render('categories/category_index_admin.html.twig', [
             'categories' => $category,
-            'form' => $form
+            'form' => $form,
         ]);
     }
 
@@ -60,15 +62,17 @@ class CategoryController extends AbstractController
         );
 
         $form->handleRequest($request);
-        
+
+        $categories = $entityManager->getRepository(Category::class);
+
         $pagination = $paginator->paginate(
-            $entityManager->getRepository(Category::class)->getCategoriesByFilters($company, $form->getData()),
+            $categories->getCategoriesByFilters($company, $form->getData()),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );
 
         return $this->render('categories/category_index.html.twig', [
-            'pagination' => $pagination,
+            'categories' => $pagination,
             'form' => $form,
         ]);
     }

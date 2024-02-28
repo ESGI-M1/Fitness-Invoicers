@@ -4,6 +4,7 @@ namespace App\Form\Company;
 
 use App\Entity\Company;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,6 +23,10 @@ class CompanyFormType extends AbstractType
             ->add('siret', TextType::class, [
                 'required' => true,
                 'label' => 'Siret'
+            ])
+            ->add('invoiceDetails', TextareaType::class, [
+                'required' => true,
+                'label' => 'Détails de facturation',
             ])
             ->add('imageFile', VichImageType::class, [
                 'required' => false,

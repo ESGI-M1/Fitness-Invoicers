@@ -3,6 +3,10 @@
 namespace App\Entity;
 
 use App\Entity\Item;
+use App\Entity\Quote;
+use App\Entity\Company;
+use App\Entity\Customer;
+use App\Entity\Deposit;
 use App\Enum\InvoiceStatusEnum;
 use App\Repository\InvoiceRepository;
 use App\Trait\TimestampableTrait;
@@ -12,6 +16,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Validator\Constraints\Date;
 
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
@@ -28,17 +33,11 @@ class Invoice
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $discountAmount = null;
 
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?float $discountPercent = null;
-
     #[ORM\Column(type: Types::STRING, length: 255, enumType: InvoiceStatusEnum::class)]
     private ?InvoiceStatusEnum $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
     private ?Quote $quote = null;
-
-    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: Deposit::class)]
-    private Collection $deposits;
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
     #[ORM\JoinColumn(nullable: false)]
@@ -62,9 +61,20 @@ class Invoice
     #[ORM\Column(nullable: true)]
     private ?string $pdfName = null;
 
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $date = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $details = null;
+
+    #[ORM\OneToOne(inversedBy: 'invoice', cascade: ['persist', 'remove'])]
+    private ?deposit $deposit = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $totalAmount = null;
+
     public function __construct()
     {
-        $this->deposits = new ArrayCollection();
         $this->items = new ArrayCollection();
     }
 
@@ -81,18 +91,6 @@ class Invoice
     public function setDiscountAmount(?float $discountAmount): static
     {
         $this->discountAmount = $discountAmount;
-
-        return $this;
-    }
-
-    public function getDiscountPercent(): ?float
-    {
-        return $this->discountPercent;
-    }
-
-    public function setDiscountPercent(?float $discountPercent): static
-    {
-        $this->discountPercent = $discountPercent;
 
         return $this;
     }
@@ -121,36 +119,6 @@ class Invoice
         return $this;
     }
 
-    /**
-     * @return Collection<int, Deposit>
-     */
-    public function getDeposits(): Collection
-    {
-        return $this->deposits;
-    }
-
-    public function addDeposit(Deposit $deposit): static
-    {
-        if (!$this->deposits->contains($deposit)) {
-            $this->deposits->add($deposit);
-            $deposit->setInvoice($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDeposit(Deposit $deposit): static
-    {
-        if ($this->deposits->removeElement($deposit)) {
-            // set the owning side to null (unless already changed)
-            if ($deposit->getInvoice() === $this) {
-                $deposit->setInvoice(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getCompany(): ?Company
     {
         return $this->company;
@@ -173,16 +141,6 @@ class Invoice
         $this->customer = $customer;
 
         return $this;
-    }
-
-    public function getTotalAmount() : float
-    {
-        $items = $this->getItems();
-        $amount = 0;
-        foreach ($items as $item) {
-            $amount += $item->getProduct()->getPrice() * $item->getQuantity() * (1 - $item->getTaxes() / 100);
-        }
-        return $amount;
     }
 
     public function getTaxesAmount() : float
@@ -273,6 +231,7 @@ class Invoice
 
         return $this->getCustomer() !== null
             && $this->getCompany() !== null
+            && $this->getDetails() !== null
             && $this->getItems()->count() > 0
             && $this->getTotalAmount() > 0
             && $this->getTotalWithoutTaxes() > 0
@@ -291,6 +250,10 @@ class Invoice
 
         if ($this->getCompany() === null) {
             $errors[] = 'company.not.valid';
+        }
+
+        if ($this->getDetails() === null) {
+            $errors[] = 'details.are.required';
         }
 
         if ($this->getItems()->count() === 0) {
@@ -388,5 +351,51 @@ class Invoice
         return $errors;
     }
 
+    public function getDate(): ?\DateTimeImmutable
+    {
+        return $this->date;
+    }
 
+    public function setDate(?\DateTimeImmutable $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getDetails(): ?string
+    {
+        return $this->details;
+    }
+
+    public function setDetails(?string $details): static
+    {
+        $this->details = $details;
+
+        return $this;
+    }
+
+    public function getDeposit(): ?deposit
+    {
+        return $this->deposit;
+    }
+
+    public function setDeposit(?deposit $deposit): static
+    {
+        $this->deposit = $deposit;
+
+        return $this;
+    }
+
+    public function getTotalAmount(): ?float
+    {
+        return $this->totalAmount;
+    }
+
+    public function setTotalAmount(?float $totalAmount): static
+    {
+        $this->totalAmount = $totalAmount;
+
+        return $this;
+    }
 }

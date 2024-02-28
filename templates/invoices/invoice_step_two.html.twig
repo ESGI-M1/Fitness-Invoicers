@@ -101,8 +101,8 @@
                     </td>
                     <td>{{ form_row(row.form.discountAmountOnItem) }} €</td>
                     <td>{{ form_row(row.form.discountAmountOnTotal) }} €</td>
-                    <td>{{ row.item.quantity * row.item.product.price }} €</td>
-                    <td>{{ row.item.quantity * row.item.product.price * (1 + row.item.taxes / 100) }} €</td>
+                    <td>{{ row.item.quantity * row.item.price }} €</td>
+                    <td>{{ row.item.quantity * row.item.price * (1 + row.item.taxes / 100) }} €</td>
                     <td>
                         <a href="{{ path('app_user_invoice_remove_item', {'id_invoice': invoice.id, 'id_item': row.item.id}) }}"><i class="fas fa-trash-alt"></i></a>
                         <button type="submit" class="btn btn-primary">Modifier</button>

@@ -62,7 +62,10 @@ class ProfileFormType extends AbstractType
                     'Femme' => CivilityEnum::FEMALE,
                     'Autre' => CivilityEnum::OTHER,
                 ],
-                'label' => 'Sexe'
+                'label' => 'Sexe',
+                'attr' => [
+                    'class' => 'select2'
+                ]
             ])
         ;
     }

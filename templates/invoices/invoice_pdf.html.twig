@@ -56,7 +56,7 @@
         </td>
         <td style="text-align: right">
             <h1>FACTURE</h1>
-            <h3>{{ invoice.updatedAt| date('d/m/Y') }}</h3>
+            <h3>{{ invoice.date| date('d/m/Y') }}</h3>
             <h3>#FA{{ invoice.id }}</h3>
         </td>
     </tr>
@@ -110,8 +110,7 @@
     {% endfor %}
 </table>
 
-
-<table style="border: 1px solid darkgrey; float: right">
+<table style="border: 1px solid darkgrey;margin-bottom: 2rem">
     <tbody>
     <tr>
         <th>Moyen de paiement</th>
@@ -131,6 +130,8 @@
     </tr>
     </tbody>
 </table>
+
+<p>{{ invoice.details }}</p>
 
 <footer style="position: absolute; left: 30%; right: 30%; margin: 0 auto; bottom: 0; text-align: center;">
     <p>SIRET: {{ invoice.company.siret }}</p>

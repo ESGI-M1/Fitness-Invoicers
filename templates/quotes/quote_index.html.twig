@@ -9,20 +9,33 @@
         'values': quotes,
         'path': path('app_user_quote_step_one'),
         'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
-        'label': 'Ajouter un devis'
+        'label': 'Ajouter un devis',
+        'right': 'ROLE_USER'
     } %}
     <div class="mt-4">
         <table class="table table-bordered table-striped table-hover w-full">
             <thead>
             <tr>
                 <td class="border">ID</td>
-                <th class="border">Client</th>
-                <th class="border">Montant total</th>
-                <th class="border">Montant remise</th>
-                <th class="border">% réduction</th>
-                <th class="border">Statut</th>
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Client',
+                    'entity': quotes,
+                    'value': ['customer.lastName', 'customer.firstName'],
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Montant total',
+                    'entity': quotes,
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Montant remise',
+                    'entity': quotes,
+                    'value': 'q.discountAmount' ?? 0,
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Statut',
+                    'entity': quotes,
+                } %}
                 <th class="border">Factures</th>
-                <th class="border">Rapports</th>
                 <th class="border">Actions</th>
                 <th class="border">PDF</th>
             </tr>
@@ -31,30 +44,32 @@
             {% for quote in quotes %}
                 <tr>
                     <td class="border">{{ quote.id }}</td>
-                    <td class="border">{{ quote.customer ? quote.customer.getFullName() : 'Aucun client' }}</td>
-                    <td class="border">{{ quote.totalAmount }} €</td>
-                    <td class="border">{{ quote.discountAmount ?? 0 }}%</td>
-                    <td class="border">{{ quote.discountPercent ?? 0 }}%</td>
+                    <td class="border">{{ quote.customer ? quote.customer.fullname : '' }}</td>
+                    <td class="border">{{ quote.totalAmount ?? 0 }} €</td>
+                    <td class="border">
+                        {{ quote.discountAmount is not null ? quote.discountAmount ~ '€' : 0 }}
+                    </td>
                     <td class="border">{{ quote.status.getStatusLabel() }}</td>
                     <td class="border text-center">
                         {% if quote.invoices %}
                             {% for invoice in quote.invoices %}
                                 {% include './components/a.html.twig' with {
-                                    'path': path('app_user_invoice_show', { 'id': invoice.quote.id }),
+                                    'path': path('app_user_invoice_show', { 'id': invoice.id }),
+                                    'label': invoice.id ~ ' ' ~ invoice.status.value,
                                     'fa': 'eye'
                                 } %}
                             {% endfor %}
                         {% else %}
                             <span class="text-center">Aucune facture</span>
                         {% endif %}
-                        !!! validé à faire
                     </td>
                     <td class="border">
-                        {% for deposit in quote.deposits %}
-                            {{ deposit.price }}
-                        {% endfor %}
-                    </td>
-                    <td class="border">
+                        {% if is_granted('see', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_show', { 'id': quote.id }),
+                                'fa': 'eye'
+                            } %}
+                        {% endif %}
                         {% if is_granted('edit', quote) %}
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_quote_step_one', { 'id': quote.id }),
@@ -65,6 +80,12 @@
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_quote_delete', { 'id': quote.id, 'token': csrf_token('delete' ~ quote.id) }),
                                 'fa': 'trash'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('convert', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_convert', { 'id': quote.id, 'token': csrf_token('convert' ~ quote.id) }),
+                                'fa': 'paperclip'
                             } %}
                         {% endif %}
                     <td class="border">
@@ -78,7 +99,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="10" class="text-center border">Aucun devis</td>
+                    <td colspan="11" class="text-center border">Aucun devis</td>
                 </tr>
             {% endfor %}
             </tbody>

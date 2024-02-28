@@ -24,7 +24,8 @@ class QuoteRepository extends ServiceEntityRepository
 
     public function getQuotesByFilters($company = null, $options = [])
     {
-        $query = $this->createQueryBuilder('q');
+        $query = $this->createQueryBuilder('q')
+            ->leftJoin('q.customer', 'customer');
 
         if ($company) {
             $query->andWhere('q.company = :company')
@@ -46,7 +47,9 @@ class QuoteRepository extends ServiceEntityRepository
                 ->setParameter('status', '%' . $options['status']->name . '%');
         }
 
-        return $query->getQuery()->getResult();
+        $query->orderBy('q.createdAt', 'DESC');
+
+        return $query->getQuery();
     }
 
     public function findByDateRange(Company $company, \DateTime $startDate, \DateTime $endDate)

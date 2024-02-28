@@ -45,6 +45,9 @@ class InvoiceFormType extends AbstractType
                     'choice_label' => 'id',
                     'label' => 'Devis',
                     'required' => false,
+                    'attr' => [
+                        'class' => 'select2'
+                    ]
                 ])
             ->add('items', EntityType::class,
                 [
@@ -73,6 +76,9 @@ class InvoiceFormType extends AbstractType
                     'choice_label' => 'fullName',
                     'label' => 'Client',
                     'required' => false,
+                    'attr' => [
+                        'class' => 'select2'
+                    ]
                 ])
             ->add('deposits', EntityType::class,
                 [

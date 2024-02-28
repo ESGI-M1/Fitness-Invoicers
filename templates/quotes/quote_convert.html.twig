@@ -6,6 +6,13 @@
 
     <h1>Devis {{ quote.id }}</h1>
 
+    {{ form_start(form) }}
+        {{ form_row(form.convertType) }}
+        {{ form_row(form.amount) }}
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    {{ form_end(form) }}
+
+
     {% include './quotes/quote_preview.html.twig' with {
         'quote': quote,
     } %}

@@ -253,6 +253,7 @@ class Customer
         return $this;
     }
 
-
-
+    public function getName() {
+        return $this->lastName .  ' ' . $this->firstName;
+    }
 }

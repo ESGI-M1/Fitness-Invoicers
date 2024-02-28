@@ -58,7 +58,11 @@ class InvoiceVoter extends Voter
             return true;
         }
 
-        return in_array('ROLE_ADMIN', $user->getRoles()) || $currentCompany !== null && $currentCompany === $invoice->getCompany() && $currentCompany->userInCompany($user);
+        if(!$currentCompany || $currentCompany !== $invoice->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return true;
     }
 
     private function canEdit(Invoice $invoice, UserInterface $user): bool
@@ -68,7 +72,11 @@ class InvoiceVoter extends Voter
             return true;
         }
 
-        return in_array('ROLE_ADMIN', $user->getRoles()) || $currentCompany !== null && $currentCompany === $invoice->getCompany() && $currentCompany->userInCompany($user) && $invoice->getStatus() === InvoiceStatusEnum::DRAFT;
+        if(!$currentCompany || $currentCompany !== $invoice->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return $invoice->getStatus() === InvoiceStatusEnum::DRAFT;
     }
 
     private function canDelete(Invoice $invoice, UserInterface $user): bool
@@ -78,7 +86,11 @@ class InvoiceVoter extends Voter
             return true;
         }
 
-        return in_array('ROLE_ADMIN', $user->getRoles()) || $currentCompany !== null && $currentCompany === $invoice->getCompany() && $currentCompany->userInCompany($user) && $invoice->getStatus() === InvoiceStatusEnum::DRAFT;
+        if(!$currentCompany || $currentCompany !== $invoice->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return $invoice->getStatus() === InvoiceStatusEnum::DRAFT;
     }
 
 }

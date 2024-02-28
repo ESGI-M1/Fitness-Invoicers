@@ -13,23 +13,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CompanyController extends AbstractController
 {
-    #[Route('/company', name: 'app_user_company_index')]
-    public function list(CompanySession $companySession, EntityManagerInterface $entityManager): Response
-    {
-        $company = $companySession->getCurrentCompany();
-
-        return $this->render('companies/company_index.html.twig', [
-            'company' => $company,
-        ]);
-    }
 
     #[Route('/company/show/{id}', name: 'app_user_company_show')]
+    #[IsGranted('referent', 'company')]
     public function show(Company $company): Response
     {
-        return $this->render('companies/company_show.html.twig', [
+        return $this->render('companies/company_index.html.twig', [
             'company' => $company,
         ]);
     }
@@ -68,6 +61,7 @@ class CompanyController extends AbstractController
     }
 
     #[Route('company/edit/{id}', name: 'app_user_company_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('referent', 'company')]
     public function edit(Request $request, Company $company, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CompanyFormType::class, $company);
@@ -88,6 +82,7 @@ class CompanyController extends AbstractController
     }
 
     #[Route('company/delete/{id}/{token}', name: 'app_user_company_delete', methods: ['POST'])]
+    #[IsGranted('referent', 'company')]
     public function delete(Request $request, Company $company, EntityManagerInterface $entityManager, string $token): Response
     {
         if ($this->isCsrfTokenValid('delete'.$company->getId(), $token)) {

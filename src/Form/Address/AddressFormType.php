@@ -14,19 +14,19 @@ class AddressFormType extends AbstractType
     {
         $builder
             ->add('street', TextType::class, [
-                'label' => 'Street',
+                'label' => 'Rue',
                 'required' => true,
             ])
             ->add('city', TextType::class, [
-                'label' => 'City',
+                'label' => 'Ville',
                 'required' => true,
             ])
             ->add('postalCode', TextType::class, [
-                'label' => 'Postal code',
+                'label' => 'Code postal',
                 'required' => true,
             ])
             ->add('country', TextType::class, [
-                'label' => 'Country',
+                'label' => 'Pays',
                 'required' => true,
             ])
         ;

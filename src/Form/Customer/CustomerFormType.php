@@ -25,7 +25,6 @@ class CustomerFormType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
             ])
-
         ;
     }
 

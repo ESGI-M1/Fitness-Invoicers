@@ -45,6 +45,14 @@ class UserController extends AbstractController
 
         if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
 
+            $currentPassword = $passwordForm->get('currentPassword')->getData();
+            $checkPass = $passwordHasher->isPasswordValid($user, $currentPassword);
+
+            if(($checkPass) === false) {
+                $this->addFlash('error', 'The current password is incorrect');
+                return $this->redirectToRoute('app_user_profile');
+            }
+
             $user->setPassword(
                 $passwordHasher->hashPassword(
                     $user,
