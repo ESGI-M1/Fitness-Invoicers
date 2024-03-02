@@ -33,11 +33,7 @@
                 'entity': users,
                 'value': 'users.email',
             } %}
-            {% include './components/sorted.html.twig' with {
-                'title': 'Statut',
-                'entity': users,
-                'value': 'status.statusLabel',
-            } %}
+            <th class="border">Statut</th>
             {% if is_granted('company_referent') %}
                 <th class="border">Action</th>
             {% endif %}

@@ -6,19 +6,24 @@
 
     {% include './components/a.html.twig' with {
         'path': path('app_user_company_edit', { 'id': company.id }),
+        'label': 'Modifier les informations de l\'entreprise',
+        'class': 'flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600',
         'fa': 'edit'
     } %}
+
     {% if company.address %}
         {% include './components/a.html.twig' with {
             'path': path('app_user_address_company_edit', { 'company_id': company.id , 'address_id': company.address.id }),
-            'label': 'Modifier l\'adresse',
+            'label': 'Modifier l\'adresse de l\'entreprise',
+            'class': 'flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-4',
             'fa': 'edit'
         } %}
     {% else %}
         {% include './components/a.html.twig' with {
             'path': path('app_user_address_add_company', { 'id': company.id}),
-            'label': 'Ajouter une adresse',
-            'fa': 'edit'
+            'label': 'Ajouter une adresse à l\'entreprise',
+            'class': 'flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-4',
+            'fa': 'plus-circle'
         } %}
     {% endif %}
 

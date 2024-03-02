@@ -21,13 +21,19 @@ class CompanyChoiceType extends AbstractType
                 'placeholder' => 'Choisir une société',
                 'required' => true,
                 'multiple' => false,
+                'data' => $options['company']
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'companies' => [],
-        ]);
+        $resolver->setDefaults(
+            [
+                'csrf_protection' => false,
+                'allow_extra_fields' => true,
+                'companies' => [],
+                'company' => null,
+            ]
+        );
     }
 }

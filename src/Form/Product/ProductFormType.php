@@ -4,6 +4,7 @@ namespace App\Form\Product;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Service\CompanySession;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,8 +15,17 @@ use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ProductFormType extends AbstractType
 {
+    private $companySession;
+
+    public function __construct(CompanySession $companySession)
+    {
+        $this->companySession = $companySession;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $company = $this->companySession->getCurrentCompany();
+
         $builder
             ->add('name', TextType::class, [
                 'required' => true,
@@ -31,8 +41,10 @@ class ProductFormType extends AbstractType
             ])
             ->add('categories', EntityType::class, [
                 'class' => Category::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('c');
+                'query_builder' => function (EntityRepository $er) use ($company) {
+                    return $er->createQueryBuilder('c')
+                        ->andWhere('c.company = :company')
+                        ->setParameter('company', $company);
                 },
                 'attr' => [
                     'class' => 'select2 w-full'

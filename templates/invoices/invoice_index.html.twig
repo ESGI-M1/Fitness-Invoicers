@@ -16,7 +16,16 @@
         <table class="table table-bordered table-striped table-hover w-full">
             <thead>
             <tr>
-                <td class="border">ID</td>
+                {% include './components/sorted.html.twig' with {
+                    'title': 'ID',
+                    'entity': invoices,
+                    'value': 'i.id',
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Date de création',
+                    'entity': invoices,
+                    'value': 'i.createdAt',
+                } %}
                 {% include './components/sorted.html.twig' with {
                     'title': 'Client',
                     'entity': invoices,
@@ -45,6 +54,7 @@
             {% for invoice in invoices %}
                 <tr>
                     <td class="border">{{ invoice.id }}</td>
+                    <td class="border">{{ invoice.date|date('d/m/Y') }}</td>
                     <td class="border">{{ invoice.customer ? invoice.customer.fullname : '' }}</td>
                     <td class="border">{{ invoice.totalAmount }}€</td>
                     <td class="border">
@@ -66,7 +76,7 @@
                         {{ invoice.deposit ? 'Acompte' : 'Solde' }}
                     </td>
                     <td class="border">
-                        {% if is_granted('see', invoice)%}
+                        {% if is_granted('see', invoice) %}
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_invoice_show', { 'id': invoice.id }),
                                 'fa': 'eye'
@@ -107,11 +117,7 @@
             </tbody>
         </table>
         {% if invoices is not empty %}
-            <div class="box-footer">
-                <div class="navigation">
-                    {{ knp_pagination_render(invoices) }}
-                </div>
-            </div>
+            {{ knp_pagination_render(invoices) }}
         {% endif %}
     </div>
 {% endblock %}

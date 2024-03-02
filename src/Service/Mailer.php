@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Invoice;
 use App\Entity\Mail;
 use App\Entity\Quote;
+use App\Enum\InvoiceStatusEnum;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -38,16 +39,7 @@ class Mailer
     public function sendInvoice(Invoice $invoice, Mail $mail, bool $pdf = true)
     {
 
-        $dompdf = new Dompdf();
-
-        $html = $this->twig->render('invoices/invoice_pdf.html.twig', [
-            'invoice' => $invoice
-        ]);
-
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $pdf = $dompdf->output();
+        $pdf = $this->generatePdfInvoice($invoice);
 
         $email = (new TemplatedEmail())
             ->from($this->supportEmail)
@@ -68,17 +60,7 @@ class Mailer
 
     public function sendQuote(Quote $quote, Mail $mail, bool $pdf = true)
     {
-
-        $dompdf = new Dompdf();
-
-        $html = $this->twig->render('quotes/quote_pdf.html.twig', [
-            'quote' => $quote
-        ]);
-
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $pdf = $dompdf->output();
+        $pdf = $this->generatePdfQuote($quote);
 
         $email = (new TemplatedEmail())
             ->from($this->supportEmail)
@@ -95,6 +77,70 @@ class Mailer
             ]);
 
         $this->mailer->send($email);
+    }
+
+    public function sendConfirmationDeletedCustomer($customer, $company)
+    {
+
+        $mail = new Mail();
+        $mail->setObject('Suppression de vos données : ' . $company->getName());
+        $mail->setContent('Madame, Monsieur,
+        
+        Nous vous informons que vos données ont été supprimées de notre base de données.
+        Vous trouverez en pièce jointe l\'ensemble de vos factures.');
+
+        $user = $this->security->getUser();
+        $mail->setSignature($user->getMailSignature());
+        $invoices = $customer->getInvoices();
+
+        $email = (new TemplatedEmail())
+            ->from($this->supportEmail)
+            ->to($customer->getEmail())
+            ->subject($mail->getObject())
+            ->text($mail->getContent())
+
+            ->htmlTemplate('mails/customer_deleted.html.twig')
+            ->context([
+                'mail' => $mail,
+                'user' => $this->security->getUser()
+            ]);
+
+        foreach ($invoices as $invoice) {
+            if($invoice->getStatus() === InvoiceStatusEnum::VALIDATED || $invoice->getStatus() === InvoiceStatusEnum::SENT) {
+                $pdf = $this->generatePdfInvoice($invoice);
+                $email->addPart(new DataPart($pdf, 'facture_' . $invoice->getId() . '.pdf', 'application/pdf'));
+            }
+        }
+
+        $this->mailer->send($email);
+    }
+
+    private function generatePdfInvoice(Invoice $invoice)
+    {
+        $dompdf = new Dompdf();
+
+        $html = $this->twig->render('invoices/invoice_pdf.html.twig', [
+            'invoice' => $invoice
+        ]);
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        return $dompdf->output();
+    }
+
+    private function generatePdfQuote(Quote $quote)
+    {
+        $dompdf = new Dompdf();
+
+        $html = $this->twig->render('quotes/quote_pdf.html.twig', [
+            'quote' => $quote
+        ]);
+
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        return $dompdf->output();
     }
 
 }

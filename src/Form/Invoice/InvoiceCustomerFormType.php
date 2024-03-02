@@ -3,6 +3,7 @@
 namespace App\Form\Invoice;
 
 use App\Entity\Invoice;
+use App\Enum\CustomerStatutEnum;
 use App\Service\CompanySession;
 use App\Entity\Customer;
 use Doctrine\ORM\EntityRepository;
@@ -32,6 +33,8 @@ class InvoiceCustomerFormType extends AbstractType
                         return $er->createQueryBuilder('c')
                             ->andWhere('c.company IN (:company)')
                             ->setParameter('company', $company)
+                            ->andWhere('c.status = :status')
+                            ->setParameter('status', CustomerStatutEnum::VALIDATED)
                             ->orderBy('c.lastName', 'DESC')
                             ->orderBy('c.firstName', 'DESC');
                     },

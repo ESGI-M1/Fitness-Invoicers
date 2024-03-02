@@ -32,6 +32,7 @@ class Quote
 
     #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Invoice::class)]
     private Collection $invoices;
+
     #[ORM\ManyToOne(inversedBy: 'quotes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
@@ -143,18 +144,6 @@ class Quote
                 $invoice->setQuote(null);
             }
         }
-
-        return $this;
-    }
-    
-    public function getInvoice(): ?Invoice
-    {
-        return $this->invoice;
-    }
-
-    public function setInvoice(?Invoice $invoice): static
-    {
-        $this->invoice = $invoice;
 
         return $this;
     }

@@ -31,6 +31,11 @@ class InvoiceRepository extends ServiceEntityRepository
             $query->andWhere('i.company = :company')
                 ->setParameter('company', $company);
         }
+        if (isset($options['id']) && $options['id']) {
+            $query
+                ->andWhere('i.id LIKE :id')
+                ->setParameter('id', '%' . $options['id'] . '%');
+        }
         if (isset($options['discountTotal']) && $options['discountTotal']) {
             $query
                 ->leftJoin('i.items', 'items')
@@ -54,7 +59,7 @@ class InvoiceRepository extends ServiceEntityRepository
                 ->setParameter('status', '%' . $options['status']->name . '%');
         }
 
-        $query->orderBy('i.createdAt', 'DESC');
+        $query->orderBy('i.id', 'DESC');
 
         return $query->getQuery();
     }

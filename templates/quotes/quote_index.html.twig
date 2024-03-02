@@ -16,7 +16,16 @@
         <table class="table table-bordered table-striped table-hover w-full">
             <thead>
             <tr>
-                <td class="border">ID</td>
+                {% include './components/sorted.html.twig' with {
+                    'title': 'ID',
+                    'entity': quotes,
+                    'value': 'q.id',
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Date de création',
+                    'entity': quotes,
+                    'value': 'q.createdAt',
+                } %}
                 {% include './components/sorted.html.twig' with {
                     'title': 'Client',
                     'entity': quotes,
@@ -44,6 +53,7 @@
             {% for quote in quotes %}
                 <tr>
                     <td class="border">{{ quote.id }}</td>
+                    <td class="border">{{ quote.date|date('d/m/Y') }}</td>
                     <td class="border">{{ quote.customer ? quote.customer.fullname : '' }}</td>
                     <td class="border">{{ quote.totalAmount ?? 0 }} €</td>
                     <td class="border">

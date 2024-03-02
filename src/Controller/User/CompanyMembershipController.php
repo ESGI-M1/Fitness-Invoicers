@@ -26,7 +26,6 @@ use Symfony\Component\Mime\Email;
 
 class CompanyMembershipController extends AbstractController
 {
-    
     #[Route('/companymembership', name: 'app_user_company_membership_index', methods: ['GET', 'POST'])]
     public function list(
         Request $request,
@@ -38,9 +37,11 @@ class CompanyMembershipController extends AbstractController
 
         $form = $this->createForm(UserSearchType::class);
 
+        $form->handleRequest($request);
+
         $users = $paginator->paginate(
             $entityManager->getRepository(CompanyMembership::class)
-                ->getUsersMembershipsByFilters($company),
+                ->getUsersMembershipsByFilters($company, $form->getData() ?? []),
             $request->query->getInt('page', 1),
             $request->query->getInt('items', 20)
         );

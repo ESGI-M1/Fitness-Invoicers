@@ -31,7 +31,11 @@ class QuoteCustomerFormType extends AbstractType
                     'query_builder' => static function (EntityRepository $er) use ($company) {
                         return $er->createQueryBuilder('c')
                             ->andWhere('c.company IN (:company)')
-                            ->setParameter('company', $company);
+                            ->setParameter('company', $company)
+                            ->andWhere('c.status = :status')
+                            ->setParameter('status', CustomerStatutEnum::VALIDATED)
+                            ->orderBy('c.lastName', 'DESC')
+                            ->orderBy('c.firstName', 'DESC');
                     },
                     'placeholder' => '-------',
                     'choice_label' => 'fullName',

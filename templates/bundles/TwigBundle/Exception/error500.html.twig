@@ -1,0 +1,12 @@
+{# templates/bundles/TwigBundle/Exception/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <h1>500 - INTERNAL SERVER ERROR</h1>
+    <h2>Une erreur est survenue</h2>
+    <p>C'est vraiment pas ce qu'on voulait, mais on a eu un problème :(</p>
+    {% include './components/a.html.twig' with {
+        'path': path('app_index'),
+        'label': 'Retour à l\'accueil'
+    } %}
+{% endblock %}

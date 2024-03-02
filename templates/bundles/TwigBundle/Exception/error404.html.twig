@@ -1,0 +1,12 @@
+{# templates/bundles/TwigBundle/Exception/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <h1>404 - NOT FOUND</h1>
+    <h2>La page n'a pas été trouvé</h2>
+    <p>L'url de la requête est invalide. Merci de vérifier l'url pour accéder à la page.</p>
+    {% include './components/a.html.twig' with {
+        'path': path('app_index'),
+        'label': 'Retour à l\'accueil'
+    } %}
+{% endblock %}

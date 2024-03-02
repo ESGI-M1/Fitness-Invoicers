@@ -31,6 +31,11 @@ class QuoteRepository extends ServiceEntityRepository
             $query->andWhere('q.company = :company')
                 ->setParameter('company', $company);
         }
+        if (isset($options['id']) && $options['id']) {
+            $query
+                ->andWhere('q.id LIKE :id')
+                ->setParameter('id', '%' . $options['id'] . '%');
+        }
         if (isset($options['discountAmount']) && $options['discountAmount']) {
             $query
                 ->andWhere('q.discountAmount LIKE :discountAmount')
@@ -47,7 +52,7 @@ class QuoteRepository extends ServiceEntityRepository
                 ->setParameter('status', '%' . $options['status']->name . '%');
         }
 
-        $query->orderBy('q.createdAt', 'DESC');
+        $query->orderBy('q.id', 'DESC');
 
         return $query->getQuery();
     }
@@ -61,7 +66,7 @@ class QuoteRepository extends ServiceEntityRepository
             ->setParameter('company', $company)
             ->setParameter('startDate', $startDate->format('Y-m-d'))
             ->setParameter('endDate', $endDate->format('Y-m-d'))
-            ->orderBy('q.createdAt', 'desc')
+            ->orderBy('q.id', 'desc')
             ->getQuery()
             ->getResult()
         ;

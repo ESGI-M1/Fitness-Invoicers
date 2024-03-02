@@ -5,15 +5,14 @@
     'Catégories': {'path': '/category', 'fa': 'folder'},
     'Factures': {'path': '/invoice', 'fa': 'file-invoice'},
     'Devis': {'path': '/quote', 'fa': 'file-alt'},
-    'Rapport': {'path': '/deposit', 'fa': 'chart-bar'}
+    'Design': {'path': '/design_guide', 'fa': 'book'}
 } %}
 
 <nav id="left-menu"
      class="transition-all duration-1000 bg-white text-white h-full max-w-full overflow-hidden top-0 shrink-0">
     <div class="w-56 px-6 pt-4">
         {% if companySession.getCurrentCompanyTwig %}
-            {% include './layout/current_company.html.twig' with {
-            } %}
+            {% include './layout/current_company.html.twig' %}
         {% endif %}
         <h2 class="text-base font-bold uppercase text-grey mt-8 mb-4">Général</h2>
         <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey mb-10">

@@ -23,7 +23,7 @@ class CompanyMembershipRepository extends ServiceEntityRepository
         parent::__construct($registry, CompanyMembership::class);
     }
 
-    public function getUsersMembershipsByFilters(Company $company)
+    public function getUsersMembershipsByFilters(Company $company, array $options = [])
     {
         $query = $this->createQueryBuilder('cm')
             ->leftJoin('cm.relatedUser', 'users')
@@ -50,10 +50,15 @@ class CompanyMembershipRepository extends ServiceEntityRepository
                 ->andWhere('users.email LIKE :email')
                 ->setParameter('email', '%' . $options['email'] . '%');
         }
-        if (isset($options['sexe']) && $options['sexe']) {
+        if (isset($options['civility']) && $options['civility']) {
             $query
-                ->andWhere('users.sexe = :sexe')
-                ->setParameter('sexe', $options['sexe']->name);
+                ->andWhere('users.civility = :civility')
+                ->setParameter('civility', $options['civility']->name);
+        }
+        if (isset($options['status']) && $options['status']) {
+            $query
+                ->andWhere('cm.status = :status')
+                ->setParameter('status', $options['status']);
         }
 
         $query->orderBy('users.lastName', 'ASC')

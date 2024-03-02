@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Factures{% endblock %}
+{% block title %}{{ name.title }}{% endblock %}
 
 {% block main %}
     <div class="flex flex-col">
@@ -22,41 +22,45 @@
                 <div class="flex flex-col items-center md:w-1/2 md:pl-8">
                     <h3 class="text-xl font-semibold mb-2">Adresse de livraison</h3>
                     {% if customer.deliveryAddress %}
-                        <a href="{{ path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, 'invoice_id': invoice.id}) }}" class="fas fa-edit text-blue-600 hover:text-blue-800"></a>
+                        <a href="{{ path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, (name.entity ~ '_id'): value.id}) }}"
+                           class="fas fa-edit text-blue-600 hover:text-blue-800"></a>
                         <p class="mb-2">{{ customer.deliveryAddress.street }}</p>
                         <p class="mb-2">{{ customer.deliveryAddress.postalCode }} {{ customer.deliveryAddress.city }}</p>
                         <p>{{ customer.deliveryAddress.country }}</p>
                     {% else %}
                         <p>Pas d'adresse de livraison</p>
-                        <a href="{{ path('app_user_address_add', {'id': customer.id, 'invoice_id': invoice.id}) }}" class="fas fa-plus text-blue-600 hover:text-blue-800"></a>
+                        <a href="{{ path('app_user_address_add', {'id': customer.id, (name.entity ~ '_id'): value.id}) }}"
+                           class="fas fa-plus text-blue-600 hover:text-blue-800"></a>
                     {% endif %}
                 </div>
 
                 <div class="flex flex-col md:w-1/2 items-center md:pl-8">
                     <h3 class="text-xl font-semibold mb-2">Adresse de facturation</h3>
                     {% if customer.billingAddress %}
-                        <a href="{{ path('app_user_address_billingAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, 'invoice_id': invoice.id}) }}" class="fas fa-edit text-blue-600 hover:text-blue-800"></a>
+                        <a href="{{ path('app_user_address_billingAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, (name.entity ~ '_id'): value.id}) }}"
+                           class="fas fa-edit text-blue-600 hover:text-blue-800"></a>
                         <p class="mb-2">{{ customer.billingAddress.street }}</p>
                         <p class="mb-2">{{ customer.billingAddress.postalCode }} {{ customer.billingAddress.city }}</p>
                         <p>{{ customer.billingAddress.country }}</p>
                     {% else %}
                         <p>Pas d'adresse de facturation</p>
-                        <a href="{{ path('app_user_address_add', {'id': customer.id, 'invoice_id': invoice.id}) }}" class="fas fa-plus text-blue-600 hover:text-blue-800"></a>
+                        <a href="{{ path('app_user_address_add', {'id': customer.id, (name.entity ~ '_id'): value.id}) }}"
+                           class="fas fa-plus text-blue-600 hover:text-blue-800"></a>
                     {% endif %}
                 </div>
             </div>
         {% endif %}
     </div>
 
-    {% if invoice.isValidStepOne %}
+    {% if value.isValidStepOne %}
         {% include './components/a.html.twig' with {
-            'path': path('app_user_invoice_step_two', {'id': invoice.id}),
-            'class': 'text-white font-bold py-2 px-4 rounded',
+            'path': path('app_user_' ~ name.entity ~ '_step_two', {'id': value.id}),
+            'class': 'w-fit text-white font-bold rounded mt-6',
             'label': 'Étape suivante',
             'fa': 'arrow-right'
         } %}
     {% else %}
-        {% for error in invoice.IsNotValidStepOneErrors %}
+        {% for error in value.IsNotValidStepOneErrors %}
             <p class="text-red-600">{{ error }}</p>
         {% endfor %}
     {% endif %}

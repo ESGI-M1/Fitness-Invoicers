@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<div style="width: 800px; border: 2px solid; font-size: 13px;">
+
+    <div style="padding: 12px; font-weight: bold; font-size: 20px; background-color: #e5e7eb;">
+        {{ mail.object }}
+    </div>
+    <hr>
+
+    <div style="font-size: 16px;min-height: 250px; padding: 15px;">
+        {{ mail.content|nl2br }}
+    </div>
+
+    <hr>
+    <div style="margin: 10px 0 10px 15px; font-weight: bold;">
+        {{ mail.signature|nl2br }}
+    </div>
+</div>
+</body>
+</html>

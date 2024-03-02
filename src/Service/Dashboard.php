@@ -17,7 +17,6 @@ class Dashboard
     ) { }
 
     public function handleForm(Form $form, Company $company){
-        dump("handleForm", $form->getclickedButton()->getName());
 
         switch ($form->getclickedButton()->getName()) {
             case 'submitDay':

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Customer;
+use App\Enum\CustomerStatutEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -32,6 +33,9 @@ class CustomerRepository extends ServiceEntityRepository
             $query->andWhere('c.company = :company')
                 ->setParameter('company', $company);
         }
+
+        $query->andWhere('c.status = :status')
+            ->setParameter('status', CustomerStatutEnum::VALIDATED);
 
         if (isset($options['alias']) && $options['alias'] !== '') {
             $parts = explode(' ', $options['alias']);

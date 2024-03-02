@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Interaction{% endblock %}
+
+{% block main %}
+    <div class="flex justify-around">
+        {% for type, object in interactions %}
+            <div>
+                <h2>{{ type }}</h2>
+                {% for date, object in object %}
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>{{ date|date('Y-m-d') }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

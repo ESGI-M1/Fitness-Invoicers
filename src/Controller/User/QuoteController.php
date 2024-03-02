@@ -8,6 +8,7 @@ use App\Entity\Invoice;
 use App\Entity\Product;
 use App\Entity\Item;
 use App\Entity\Mail;
+use App\Entity\Payment;
 use App\Enum\InvoiceStatusEnum;
 use App\Enum\QuoteStatusEnum;
 use App\Form\Quote\QuoteCustomerFormType;
@@ -34,7 +35,6 @@ use Dompdf\Dompdf;
 
 class QuoteController extends AbstractController
 {
-
     #[Route('/quote', name: 'app_user_quote_index')]
     public function list(
         EntityManagerInterface $entityManager,
@@ -101,7 +101,6 @@ class QuoteController extends AbstractController
     #[Route('quote/step_one/{id}', name: 'app_user_quote_step_one', defaults: ['id' => null], methods: ['GET', 'POST'])]
     public function stepOne(Request $request, EntityManagerInterface $entityManager, Quote $quote = null, CompanySession $companySession): Response
     {
-
         if (!$quote) {
             $company = $companySession->getCurrentCompany();
             $quote = new quote();
@@ -127,9 +126,13 @@ class QuoteController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->render('quotes/quote_step_one.html.twig', [
+        return $this->render('layout/step_one.html.twig', [
             'form' => $form,
-            'quote' => $quote,
+            'name' => [
+               'title' => 'Devis',
+               'entity' => 'quote'
+            ],
+            'value' => $quote,
             'customer' => $quote->getCustomer()
         ]);
     }
@@ -138,7 +141,6 @@ class QuoteController extends AbstractController
     #[IsGranted('edit', 'quote')]
     public function stepTwo(Request $request, EntityManagerInterface $entityManager, Quote $quote, CompanySession $companySession): Response
     {
-
         if ($quote->getStatus() != QuoteStatusEnum::DRAFT) {
             $this->addFlash('danger', 'Le devis ' . $quote->getId() . ' ne peut être modifiée');
             return $this->redirectToRoute('app_user_quote_index');
@@ -194,12 +196,16 @@ class QuoteController extends AbstractController
             $quoteItems[$item->getId()]['form'] = $this->createForm(ItemStepTwoFormType::class, $item)->createView();
         }
 
-        return $this->render('quotes/quote_step_two.html.twig', [
+        return $this->render('layout/step_two.html.twig', [
             'productFromCategory' => $productFromCategory,
             'productWithoutCategory' => $productWithoutCategory,
             'categoryForm' => $categoryForm,
-            'quoteItems' => $quoteItems,
-            'quote' => $quote,
+            'items' => $quoteItems,
+            'name' => [
+                'title' => 'Devis',
+                'entity' => 'quote'
+            ],
+            'value' => $quote,
         ]);
     }
 
@@ -239,8 +245,12 @@ class QuoteController extends AbstractController
             $this->addFlash('success', 'La date d\'expiration a bien été modifiée.');
         }
 
-        return $this->render('quotes/quote_step_three.html.twig', [
-            'quote' => $quote,
+        return $this->render('layout/step_three.html.twig', [
+            'name' => [
+                'title' => 'Devis',
+                'entity' => 'quote'
+            ],
+            'value' => $quote,
             'formStatus' => $formStatus,
             'formExpirationDate' => $formExpirationDate
         ]);
@@ -269,11 +279,17 @@ class QuoteController extends AbstractController
 
             if($form->getClickedButton() && 'send' === $form->getClickedButton()->getName()) {
                 $mailer->sendQuote($quote, $mail);
+                $mail->setDate(new \DateTimeImmutable());
+                $mail->setQuote($quote);
+                $mail->setCustomer($quote->getCustomer());
+                $entityManager->persist($mail);
+
                 $quote->setStatus(QuoteStatusEnum::SENT);
+                $entityManager->flush();
+
                 $this->addFlash('success', 'Le devis a été envoyée');
             }
 
-            $entityManager->flush();
         }
 
         return $this->render('quotes/quote_step_four.html.twig', [
@@ -429,52 +445,105 @@ class QuoteController extends AbstractController
             $invoice->setQuote($quote);
             $invoice->setDetails($quote->getDetails());
             $invoice->setDate(new \DateTimeImmutable());
+            //$invoice->setDueDate($form->get('dueDate')->getData());
             $invoice->setStatus(InvoiceStatusEnum::SENT);
             $items = $quote->getItems();
             foreach ($items as $item) {
                 $invoice->addItem($item);
             }
 
+            $amount = $form->get('amount')->getData();
+            $paymentMethod = $form->get('paymentMethod')->getData();
+            $success = false;
+
             switch ($form->get('convertType')->getData()->name) {
                 case 'WITHOUT_MODIFICATION':
+
                     $invoice->setTotalAmount($quote->getTotalAmount());
                     $invoice->setDiscountAmount(0);
+                    $success = true;
                     break;
+
+
                 case 'WITH_DISCOUNT':
-                    $invoice->setTotalAmount(($quote->getTotalAmount() - $form->get('amount')->getData()));
-                    $invoice->setDiscountAmount(($quote->getDiscountAmount() + $form->get('amount')->getData()));
+
+                    $invoice->setTotalAmount(($quote->getTotalAmount() - $amount));
+                    $invoice->setDiscountAmount(($quote->getDiscountAmount() + $amount));
+                    $success = true;
                     break;
+
                 case 'WITH_DEPOSIT':
+
+                    if(!$amount || $amount > $quote->getTotalAmount()) {
+                        $this->addFlash('danger', 'Le montant du dépôt ne peut pas être supérieur au montant total');
+                        break;
+                    }
+
+                    if($paymentMethod == null) {
+                        $this->addFlash('danger', 'Le mode de paiement est obligatoire');
+                        break;
+                    }
+
                     $deposit = new Deposit();
                     $deposit->setInvoice($invoice);
-                    $deposit->setAmount($form->get('amount')->getData());
+                    $deposit->setAmount($amount);
+                    $payment = new Payment();
+                    $payment->setInvoice($invoice);
+                    $payment->setAmount($amount);
+                    $payment->setDate(new \DateTimeImmutable());
+                    $payment->setMethod($paymentMethod);
 
                     $entityManager->persist($deposit);
+                    $entityManager->persist($payment);
 
                     $invoice->setTotalAmount($quote->getTotalAmount());
                     $invoice->setDeposit($deposit);
+                    $success = true;
                     break;
+
                 case 'WITH_DEPOSIT_PERCENTAGE':
+                    $amountPercent = $quote->getTotalAmount() * $amount / 100;
+
+                    if(!$amount || $amountPercent > $quote->getTotalAmount()) {
+                        $this->addFlash('danger', 'Le montant du dépôt ne peut pas être supérieur au montant total');
+                        break;
+                    }
+                    if($paymentMethod == null) {
+                        $this->addFlash('danger', 'Le mode de paiement est obligatoire');
+                        break;
+                    }
+
                     $deposit = new Deposit();
                     $deposit->setInvoice($invoice);
-                    $deposit->setAmount($quote->getTotalAmount() * $form->get('amount')->getData() / 100);
+                    $deposit->setAmount($amountPercent);
+                    $payment = new Payment();
+                    $payment->setInvoice($invoice);
+                    $payment->setAmount($amountPercent);
+                    $payment->setDate(new \DateTimeImmutable());
+                    $payment->setMethod($paymentMethod);
 
                     $entityManager->persist($deposit);
+                    $entityManager->persist($payment);
 
                     $invoice->setTotalAmount($quote->getTotalAmount());
                     $invoice->setDeposit($deposit);
+                    $success = true;
                     break;
+
                 default:
                     $this->addFlash('danger', 'L\'action n\'est pas valide');
                     return $this->redirectToRoute('app_user_quote_index');
-                    break;
             }
 
-            $entityManager->persist($invoice);
-            $entityManager->flush();
+            dump($form->getData());
 
-            $this->addFlash('success', 'Le devis n°' . $quote->getId() . ' a bien été converti en facture n°' . $invoice->getId());
-            return $this->redirectToRoute('app_user_invoice_index');
+            if($success) {
+                $this->addFlash('success', 'Le devis n°' . $quote->getId() . ' a bien été converti en facture n°' . $invoice->getId());
+                $entityManager->persist($invoice);
+                $entityManager->flush();
+                return $this->redirectToRoute('app_user_invoice_index');
+            }
+
         }
 
         return $this->render('quotes/quote_convert.html.twig', [

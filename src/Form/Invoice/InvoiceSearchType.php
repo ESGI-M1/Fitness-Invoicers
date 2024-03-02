@@ -29,6 +29,10 @@ class InvoiceSearchType extends AbstractType
             $status[$statusEnum->name] = $statusEnum;
         }
         $builder
+            ->add('id', IntegerType::class, [
+                'required' => false,
+                'label' => 'N° de facture',
+            ])
             ->add('discountTotal', NumberType::class, [
                 'required' => false,
                 'label' => 'Montant total',

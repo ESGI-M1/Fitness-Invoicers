@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\CustomerStatutEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -53,6 +54,9 @@ class Customer
 
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Mail::class)]
     private Collection $mails;
+
+    #[ORM\Column(type: Types::STRING, length: 255, enumType: CustomerStatutEnum::class)]
+    private ?CustomerStatutEnum $status = null;
 
     public function __construct()
     {
@@ -201,6 +205,8 @@ class Customer
         return $this->firstName !== ''
             && $this->lastName !== ''
             && $this->email !== ''
+            && $this->deliveryAddress !== null
+            && $this->billingAddress !== null
             && $this->deliveryAddress->isValid()
             && $this->billingAddress->isValid();
     }
@@ -211,15 +217,27 @@ class Customer
         if ($this->firstName === '') {
             $errors[] = 'customer.firstName.required';
         }
+
         if ($this->lastName === '') {
             $errors[] = 'customer.lastName.required';
         }
+
         if ($this->email === '') {
             $errors[] = 'customer.email.required';
         }
+
+        if($this->deliveryAddress === null) {
+            $errors[] = 'customer.deliveryAddress.required';
+        }
+
+        if($this->billingAddress === null) {
+            $errors[] = 'customer.billingAddress.required';
+        }
+
         if (!$this->deliveryAddress->isValid()) {
             $errors = array_merge($errors, $this->deliveryAddress->getIsNotValidErrors());
         }
+
         if (!$this->billingAddress->isValid()) {
             $errors = array_merge($errors, $this->billingAddress->getIsNotValidErrors());
         }
@@ -287,6 +305,18 @@ class Customer
                 $mail->setCustomer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?CustomerStatutEnum
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?CustomerStatutEnum $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

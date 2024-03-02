@@ -68,3 +68,28 @@
   }
 }
 
+@keyframes rotate {
+   from {
+     transform: rotate(0deg);
+   }
+   to {
+     transform: rotate(360deg);
+   }
+ }
+
+.fa-sync {
+  transition: transform 0.5s ease-in-out;
+
+  button:hover &, a:hover & {
+    animation: rotate 2s linear infinite; /* 2s est la durée de l'animation */
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ name.title }}{% endblock %}
+
+{% block main %}
+
+    <h1>Sélection du statut</h1>
+
+    {% if value.isValid %}
+        <h2>Tout est valide</h2>
+        {{ form_start(formStatus) }}
+        {{ form_row(formStatus.status) }}
+        <button type="submit" class="btn btn-primary">Valider</button>
+        {{ form_end(formStatus) }}
+    {% else %}
+        <h2>Le pdf n'est pas valide</h2>
+        {% for error in value.IsNotValidErrors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {{ form_start(formExpirationDate is defined ? formExpirationDate : form) }}
+    {% if formExpirationDate is defined %}
+        {{ form_row(formExpirationDate.expirationDate) }}
+    {% else %}
+        {{ form_row(form.dueDate) }}
+        {{ form_row(form.details) }}
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Valider</button>
+    {{ form_end(formExpirationDate is defined ? formExpirationDate : form) }}
+
+    {% set pre = name.title is same as "Devis" ? "DE" : "FA" %}
+
+    {% include './layout/preview.html.twig' with {
+        'pre': pre
+    } %}
+
+    {% include './components/a.html.twig' with {
+        'path': path('app_user_' ~ name.entity ~ '_step_two', {'id': value.id}),
+        'class': 'text-white font-bold py-2 px-4 rounded',
+        'label': 'Étape précédente',
+        'fa': 'arrow-left'
+    } %}
+
+    {% if value.isValidStepThree %}
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_' ~ name.entity ~ '_step_four', {'id': value.id}),
+            'class': 'w-fit text-white font-bold rounded mt-6',
+            'label': 'Étape suivante',
+            'fa': 'arrow-right'
+        } %}
+    {% endif %}
+
+{% endblock %}

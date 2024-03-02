@@ -99,7 +99,17 @@ class CompanyController extends AbstractController
         $user = $this->getUser();
         $companies = $user->getCompanyMembershipAccepted();
 
-        $form = $this->createForm(CompanyChoiceType::class, null, ['companies' => $companies]);
+        $form = $this->createForm(
+            CompanyChoiceType::class,
+            null,
+            [
+                'company' => $companySession->getCurrentCompany(),
+                'companies' => $companies,
+//                'attr' => [
+//                    'company' => $companySession->getCurrentCompany(),
+//                ]
+            ]
+        );
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

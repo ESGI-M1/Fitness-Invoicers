@@ -31,7 +31,6 @@ use Dompdf\Dompdf;
 
 class InvoiceController extends AbstractController
 {
-
     #[Route('/invoice', name: 'app_user_invoice_index')]
     public function list(
         EntityManagerInterface $entityManager,
@@ -83,8 +82,6 @@ class InvoiceController extends AbstractController
             $invoice->setStatus(InvoiceStatusEnum::DRAFT);
             $invoice->setCompany($companySession->getCurrentCompany());
 
-            //$mail->sendInvoice($invoice->getCustomer(), $invoice);
-
             $entityManager->persist($invoice);
             $entityManager->flush();
             $this->addFlash('success', 'La facture a été ajoutée');
@@ -102,7 +99,6 @@ class InvoiceController extends AbstractController
     #[Route('invoice/step_one/{id}', name: 'app_user_invoice_step_one', defaults: ['id' => null], methods: ['GET', 'POST'])]
     public function stepOne(Request $request, EntityManagerInterface $entityManager, Invoice $invoice = null, CompanySession $companySession): Response
     {
-
         if (!$invoice) {
             $company = $companySession->getCurrentCompany();
             $invoice = new Invoice();
@@ -128,9 +124,13 @@ class InvoiceController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->render('invoices/invoice_step_one.html.twig', [
+        return $this->render('layout/step_one.html.twig', [
             'form' => $form,
-            'invoice' => $invoice,
+            'name' => [
+                'title' => 'Factures',
+                'entity' => 'invoice'
+                ],
+            'value' => $invoice,
             'customer' => $invoice->getCustomer()
         ]);
     }
@@ -139,7 +139,6 @@ class InvoiceController extends AbstractController
     #[IsGranted('edit', 'invoice')]
     public function stepTwo(Request $request, EntityManagerInterface $entityManager, Invoice $invoice, CompanySession $companySession): Response
     {
-
         if ($invoice->getStatus() != InvoiceStatusEnum::DRAFT) {
             $this->addFlash('danger', 'La facture ' . $invoice->getId() . ' ne peut être modifiée');
             return $this->redirectToRoute('app_user_invoice_index');
@@ -195,12 +194,16 @@ class InvoiceController extends AbstractController
             $invoiceItems[$item->getId()]['form'] = $this->createForm(ItemStepTwoFormType::class, $item)->createView();
         }
 
-        return $this->render('invoices/invoice_step_two.html.twig', [
+        return $this->render('layout/step_two.html.twig', [
             'productFromCategory' => $productFromCategory,
             'productWithoutCategory' => $productWithoutCategory,
             'categoryForm' => $categoryForm,
-            'invoiceItems' => $invoiceItems,
-            'invoice' => $invoice,
+            'items' => $invoiceItems,
+            'name' => [
+                'title' => 'Factures',
+                'entity' => 'invoice'
+            ],
+            'value' => $invoice,
         ]);
     }
 
@@ -240,10 +243,14 @@ class InvoiceController extends AbstractController
             $this->addFlash('success', 'La facture a été modifiée');
         }
 
-        return $this->render('invoices/invoice_step_three.html.twig', [
-            'invoice' => $invoice,
+        return $this->render('layout/step_three.html.twig', [
             'formStatus' => $formStatus,
-            'form' => $form
+            'form' => $form,
+            'name' => [
+                'title' => 'Factures',
+                'entity' => 'invoice'
+            ],
+            'value' => $invoice,
         ]);
     }
 
@@ -270,13 +277,17 @@ class InvoiceController extends AbstractController
 
             if($form->getClickedButton() && 'send' === $form->getClickedButton()->getName()) {
                 $mailer->sendInvoice($invoice, $mail);
+                $mail->setDate(new \DateTimeImmutable());
+                $mail->setInvoice($invoice);
+                $mail->setCustomer($invoice->getCustomer());
+                $entityManager->persist($mail);
+
                 $invoice->setStatus(InvoiceStatusEnum::SENT);
+                $entityManager->flush();
                 $this->addFlash('success', 'La facture a été envoyée');
             }
-
-            $entityManager->flush();
         }
-        
+
         return $this->render('invoices/invoice_step_four.html.twig', [
             'invoice' => $invoice,
             'form' => $form,
