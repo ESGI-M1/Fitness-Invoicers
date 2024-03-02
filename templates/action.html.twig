@@ -19,7 +19,7 @@
             {% if form is defined %}
                 {% for child in form.children %}
                     <div class="mb-4">
-                        {{ form_row(child, { 'attr': {'class': 'form-input w-full rounded-md shadow-sm' } }) }}
+                        {{ form_row(child) }}
                     </div>
                 {% endfor %}
             {% endif %}

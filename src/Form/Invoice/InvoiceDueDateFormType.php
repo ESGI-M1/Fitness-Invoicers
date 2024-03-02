@@ -3,24 +3,30 @@
 namespace App\Form\Invoice;
 
 use App\Entity\Invoice;
-use App\Enum\InvoiceStatusEnum;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class InvoiceStatusFormType extends AbstractType
+class InvoiceDueDateFormType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('status', EnumType::class, [
-                'class' => InvoiceStatusEnum::class,
-                'label' => 'Status',
-                'required' => true,
+            ->add('dueDate', DateType::class, [
+                'label' => 'Date d\'échéance',
+                'required' => false,
+                'widget' => 'single_text',
+                'attr' => [
+                    'min' => (new \DateTime())->format('Y-m-d'),
+                ],
+            ])
+            ->add('details', TextareaType::class, [
+                'label' => 'Mentions légales',
+                'required' => false,
             ]);
     }
 

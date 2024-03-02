@@ -5,7 +5,7 @@
 {% block main %}
 
     {% include './components/a.html.twig' with {
-        'path': path('app_user_quote_edit', { 'id': company.id }),
+        'path': path('app_user_company_edit', { 'id': company.id }),
         'fa': 'edit'
     } %}
     {% if company.address %}

@@ -76,6 +76,12 @@
                                 'fa': 'edit'
                             } %}
                         {% endif %}
+                        {% if is_granted('mail', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_step_four', { 'id': quote.id }),
+                                'fa': 'envelope'
+                            } %}
+                        {% endif %}
                         {% if is_granted('delete', quote) %}
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_quote_delete', { 'id': quote.id, 'token': csrf_token('delete' ~ quote.id) }),
@@ -105,11 +111,7 @@
             </tbody>
         </table>
         {% if quotes is not empty %}
-            <div class="box-footer">
-                <div class="navigation">
                     {{ knp_pagination_render(quotes) }}
-                </div>
-            </div>
         {% endif %}
     </div>
 {% endblock %}

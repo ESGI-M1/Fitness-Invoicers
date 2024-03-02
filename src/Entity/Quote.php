@@ -48,10 +48,14 @@ class Quote
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $details = null;
 
+    #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Mail::class)]
+    private Collection $mails;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
         $this->invoices = new ArrayCollection();
+        $this->mails = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -172,7 +176,7 @@ class Quote
         $items = $this->getItems()->getValues();
         $amount = 0;
         foreach ($items as $item) {
-            $amount += $item->getTotalAmountWithoutTaxes();
+            $amount += $item->getTotalAmount();
         }
 
         return $amount;
@@ -232,6 +236,7 @@ class Quote
         return $this->getCustomer() !== null
             && $this->getCompany() !== null
             && $this->getDetails() !== null
+            && $this->getExpirationDate() !== null
             && $this->getItems()->count() > 0
             && $this->getTotalAmount() > 0
             && $this->getTotalWithoutTaxes() > 0
@@ -254,6 +259,10 @@ class Quote
 
         if ($this->getDetails() === null) {
             $errors[] = 'details.are.required';
+        }
+
+        if ($this->getExpirationDate() === null) {
+            $errors[] = 'expiration.date.is.required';
         }
 
         if ($this->getItems()->count() === 0) {
@@ -351,6 +360,31 @@ class Quote
         return $errors;
     }
 
+    public function isValidStepThree()
+    {
+        return $this->getDetails() !== null
+            && $this->getExpirationDate() !== null
+            && $this->getStatus() === QuoteStatusEnum::PENDING || $this->getStatus() === QuoteStatusEnum::SENT || $this->getStatus() === QuoteStatusEnum::ACCEPTED;
+    }
+
+    public function getIsNotValidStepThreeErrors(): array
+    {
+        $errors = [];
+        if ($this->getDetails() === null) {
+            $errors[] = 'details.are.required';
+        }
+
+        if ($this->getExpirationDate() === null) {
+            $errors[] = 'expiration.date.is.required';
+        }
+
+        if ($this->getStatus() !== QuoteStatusEnum::PENDING && $this->getStatus() !== QuoteStatusEnum::SENT && $this->getStatus() !== QuoteStatusEnum::ACCEPTED) {
+            $errors[] = 'status.is.not.valid';
+        }
+
+        return $errors;
+    }
+
     public function getDate(): ?\DateTimeImmutable
     {
         return $this->date;
@@ -383,6 +417,36 @@ class Quote
     public function setDetails(?string $details): static
     {
         $this->details = $details;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Mail>
+     */
+    public function getMails(): Collection
+    {
+        return $this->mails;
+    }
+
+    public function addMail(Mail $mail): static
+    {
+        if (!$this->mails->contains($mail)) {
+            $this->mails->add($mail);
+            $mail->setQuote($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMail(Mail $mail): static
+    {
+        if ($this->mails->removeElement($mail)) {
+            // set the owning side to null (unless already changed)
+            if ($mail->getQuote() === $this) {
+                $mail->setQuote(null);
+            }
+        }
 
         return $this;
     }

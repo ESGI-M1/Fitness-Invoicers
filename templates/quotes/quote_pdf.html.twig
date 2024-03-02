@@ -52,7 +52,6 @@
             <p>{{ quote.company.address.street }}</p>
             <p>{{ quote.company.address.postalCode }} {{ quote.company.address.city }}
                 - {{ quote.company.address.country }}</p>
-            <p>{{ quote.company.siret }}</p>
         </td>
         <td style="text-align: right">
             <h1>DEVIS</h1>
@@ -114,10 +113,7 @@
     {% endfor %}
 </table>
 
-<p>{{ quote.details }}</p>
-
-
-<table style="border: 1px solid darkgrey; float: right">
+<table style="border: 1px solid darkgrey;margin-bottom: 2rem; float: right; ">
     <tbody>
     <tr>
         <th>Moyen de paiement</th>
@@ -138,9 +134,12 @@
     </tbody>
 </table>
 
+<p>{{ quote.details }}</p>
+
+
 <footer style="position: absolute; left: 30%; right: 30%; margin: 0 auto; bottom: 0; text-align: center;">
+    <p>{{ quote.company.name }}</p>
     <p>SIRET: {{ quote.company.siret }}</p>
-    <p>{{ quote.company.name }} - {{ quote.company.siret }}</p>
     <p>{{ quote.company.address.street }} - {{ quote.company.address.postalCode }} {{ quote.company.address.city }} - {{ quote.company.address.country }}</p>
 
 </footer>

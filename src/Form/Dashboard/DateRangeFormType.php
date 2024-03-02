@@ -14,10 +14,10 @@ class DateRangeFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder
             ->add('startDate', DateType::class, [
                 'widget' => 'single_text',
+                'label' => 'du',
                 'attr' => [
                     'placeholder' => 'Start Date',
                 ],
@@ -26,6 +26,7 @@ class DateRangeFormType extends AbstractType
             ])
             ->add('endDate', DateType::class, [
                 'widget' => 'single_text',
+                'label' => 'au',
                 'attr' => [
                     'placeholder' => 'End Date',
                 ],
@@ -33,25 +34,25 @@ class DateRangeFormType extends AbstractType
                 'data' => $options['data']['endDate'],
             ])
             ->add('submitDateRange', SubmitType::class, [
-                'label' => 'Submit',
+                'label' => 'Soumettre',
             ])
             ->add('submitDay', SubmitType::class, [
-                'label' => 'Day',
+                'label' => 'Jour',
             ])
             ->add('submitMonth', SubmitType::class, [
-                'label' => 'Month',
+                'label' => 'Mois',
             ])
             ->add('submitYear', SubmitType::class, [
-                'label' => 'Year',
+                'label' => 'Année',
             ])
             ->add('submitDayBefore', SubmitType::class, [
-                'label' => 'Day-1',
+                'label' => 'Jour-1',
             ])
             ->add('submitMonthBefore', SubmitType::class, [
-                'label' => 'Month-1',
+                'label' => 'Mois-1',
             ])
             ->add('submitYearBefore', SubmitType::class, [
-                'label' => 'Year-1',
+                'label' => 'Année-1',
             ]);
     }
 

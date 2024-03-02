@@ -52,11 +52,7 @@
             </tbody>
         </table>
         {% if categories is not empty %}
-            <div class="box-footer">
-                <div class="navigation">
-                    {{ knp_pagination_render(categories) }}
-                </div>
-            </div>
+            {{ knp_pagination_render(categories) }}
         {% endif %}
     </div>
 {% endblock %}

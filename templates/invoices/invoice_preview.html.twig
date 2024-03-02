@@ -52,7 +52,7 @@
             </td>
             <td style="text-align: right">
                 <h1>FACTURE</h1>
-                <h3>{{ invoice.updatedAt| date('d/m/Y') }}</h3>
+                <h3>{{ invoice.date| date('d/m/Y') }}</h3>
                 <h3>#FA{{ invoice.id }}</h3>
             </td>
         </tr>
@@ -145,8 +145,8 @@
     <p>{{ invoice.details }}</p>
 
     <footer style="margin: 0 auto; bottom: 0; text-align: center;">
+        <p>{{ invoice.company.name }}</p>
         <p>SIRET: {{ invoice.company.siret }}</p>
-        <p>{{ invoice.company.name }} - {{ invoice.company.siret }}</p>
         <p>{{ invoice.company.address.street }}
             - {{ invoice.company.address.postalCode }} {{ invoice.company.address.city }}
             - {{ invoice.company.address.country }}</p>

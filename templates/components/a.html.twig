@@ -1,5 +1,5 @@
 <a href="{{ path }}"
-   class=" {% if class is defined %}{{ class }}{% endif %} {% if svg is defined %} justify-around{% else %} justify-center{% endif %} {% if bg_color is defined %} bg-{{ bg_color }}-200 bg-{{ bg_color }} hover:bg-{{ bg_color }}-400 {% endif %}{% if fa is defined and label is defined %}flex items-center justify-between{% endif %}">
+   class=" {% if class is defined %}{{ class }}{% endif %}">
     {% if label is defined %}
         {{ label }}
     {% endif %}

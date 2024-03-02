@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Factures{% endblock %}
+
+{% block main %}
+
+    <h1>Envoie du devis n°{{ quote.id }}</h1>
+
+    <div class="flex w-full justify-around gap-4">
+        <div class="w-2/5">
+            <h2>Personnalisation du mail</h2>
+            {{ form_start(form) }}
+
+            {{ form_row(form.object) }}
+            {{ form_row(form.content) }}
+            {{ form_row(form.joinPdf) }}
+            {{ form_end(form) }}
+        </div>
+
+        <div class="w-3/5">
+            <h2>Aperçu du mail</h2>
+            <p>Destinataire : {{ quote.customer.email }}</p>
+            <p>Objet : {{  mail.object }}</p>
+            {% if mail.joinPDF %}
+                <p><i class="fas fa-file-pdf"></i>Le PDF du devis sera joint au mail</p>
+            {% endif %}
+            <div>
+                {% include './mails/mail.html.twig' with {
+                    'mail': mail,
+                    'company': companySession.getCurrentCompanyTwig,
+                    'user': app.user,
+                } %}
+            </div>
+        </div>
+    </div>
+
+    {% include './quotes/quote_preview.html.twig' with {
+        'quote': quote,
+    } %}
+
+
+{% endblock %}

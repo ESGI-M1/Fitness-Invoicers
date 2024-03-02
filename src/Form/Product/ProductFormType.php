@@ -35,7 +35,7 @@ class ProductFormType extends AbstractType
                     return $er->createQueryBuilder('c');
                 },
                 'attr' => [
-                    'class' => 'select2'
+                    'class' => 'select2 w-full'
                 ],
                 'placeholder' => '-------',
                 'choice_label' => 'name',

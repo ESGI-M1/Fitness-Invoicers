@@ -9,10 +9,10 @@
     {% if invoice.isValid %}
         <h2>La facture est valide</h2>
 
-        {{ form_start(form) }}
-        {{ form_row(form.status) }}
+        {{ form_start(formStatus) }}
+        {{ form_row(formStatus.status) }}
         <button type="submit" class="btn btn-primary">Valider</button>
-        {{ form_end(form) }}
+        {{ form_end(formStatus) }}
 
     {% else %}
 
@@ -23,7 +23,11 @@
 
     {% endif %}
 
-
+    {{ form_start(form) }}
+    {{ form_row(form.dueDate) }}
+    {{ form_row(form.details) }}
+    <button type="submit" class="btn btn-primary">Valider</button>
+    {{ form_end(form) }}
 
     {% include './invoices/invoice_preview.html.twig' with {
         'invoice': invoice,
@@ -34,5 +38,14 @@
         'class': 'text-white font-bold py-2 px-4 rounded',
         'label': 'Étape Précédente',
     } %}
+
+    {% if invoice.isValidStepThree %}
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_invoice_step_four', {'id': invoice.id}),
+            'class': 'text-white font-bold py-2 px-4 rounded',
+            'label': 'Étape Suivante',
+        } %}
+    {% endif %}
+
 
 {% endblock %}

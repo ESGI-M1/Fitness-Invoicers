@@ -42,6 +42,16 @@
     th {
         background-color: #f2f2f2;
     }
+
+    .address {
+        margin: 0 auto;
+        margin-bottom: 2rem;
+    }
+
+    .address td {
+        width: 33%;
+    }
+
 </style>
 
 <table style="width: 100%">
@@ -52,7 +62,6 @@
             <p>{{ invoice.company.address.street }}</p>
             <p>{{ invoice.company.address.postalCode }} {{ invoice.company.address.city }}
                 - {{ invoice.company.address.country }}</p>
-            <p>{{ invoice.company.siret }}</p>
         </td>
         <td style="text-align: right">
             <h1>FACTURE</h1>
@@ -63,7 +72,7 @@
     </tbody>
 </table>
 
-<table style="margin: 0 auto;margin-bottom: 2rem; ">;
+<table class="address">;
     <tbody>
     <tr>
         <td>
@@ -79,6 +88,10 @@
             <p>{{ invoice.customer.billingAddress.street }}</p>
             <p>{{ invoice.customer.billingAddress.postalCode }} {{ invoice.customer.billingAddress.city }}</p>
             <p>{{ invoice.customer.billingAddress.country }}</p>
+        </td>
+        <td style="vertical-align: top">
+            <h2>Date d'échéance</h2>
+            <p>{{ invoice.dueDate ? invoice.dueDate| date('d/m/Y') }}</p>
         </td>
     </tr>
     </tbody>
@@ -110,32 +123,55 @@
     {% endfor %}
 </table>
 
-<table style="border: 1px solid darkgrey;margin-bottom: 2rem">
-    <tbody>
-    <tr>
-        <th>Moyen de paiement</th>
-        <td>blabla</td>
-    </tr>
-    <tr>
-        <th>Total HT</th>
-        <td>{{ invoice.getTotalWithoutTaxes }} €</td>
-    </tr>
-    <tr>
-        <th>Total TVA</th>
-        <td>{{ invoice.getTaxesAmount }} €</td>
-    </tr>
-    <tr>
-        <th>Total TTC</th>
-        <td>{{ invoice.getTotalAmount }} €</td>
-    </tr>
-    </tbody>
-</table>
+<div>
+
+    {%if invoice.deposit %}
+        <table style="border: 1px solid darkgrey;margin-bottom: 2rem">
+            <tbody>
+                <tr>
+                    <th>Méthode de paiement</th>
+                    <td>blabla</td>
+                </tr>
+                <tr>
+                    <th>Acompte</th>
+                    <td>{{ invoice.deposit.amount }} €</td>
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+
+
+    <table style="border: 1px solid darkgrey;margin-bottom: 2rem">
+        <tbody>
+        <tr>
+            <th>Moyen de paiement</th>
+            <td>blabla</td>
+        </tr>
+        <tr>
+            <th>Total HT</th>
+            <td>{{ invoice.getTotalWithoutTaxes }} €</td>
+        </tr>
+        <tr>
+            <th>Total TVA</th>
+            <td>{{ invoice.getTaxesAmount }} €</td>
+        </tr>
+        <tr>
+            <th>Total TTC</th>
+            <td>{{ invoice.getTotalAmount }} €</td>
+        </tr>
+        <tr>
+            <th>Reste à payer</th>
+            <td>{{ invoice.getOutStandingAmount }} €</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 <p>{{ invoice.details }}</p>
 
 <footer style="position: absolute; left: 30%; right: 30%; margin: 0 auto; bottom: 0; text-align: center;">
+    <p>{{ invoice.company.name }}</p>
     <p>SIRET: {{ invoice.company.siret }}</p>
-    <p>{{ invoice.company.name }} - {{ invoice.company.siret }}</p>
     <p>{{ invoice.company.address.street }} - {{ invoice.company.address.postalCode }} {{ invoice.company.address.city }} - {{ invoice.company.address.country }}</p>
 
 </footer>

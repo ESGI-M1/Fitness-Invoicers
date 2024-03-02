@@ -9,10 +9,10 @@
     {% if quote.isValid %}
         <h2>La devis est valide</h2>
 
-        {{ form_start(form) }}
-        {{ form_row(form.status) }}
+        {{ form_start(formStatus) }}
+        {{ form_row(formStatus.status) }}
         <button type="submit" class="btn btn-primary">Valider</button>
-        {{ form_end(form) }}
+        {{ form_end(formStatus) }}
 
     {% else %}
 
@@ -22,6 +22,11 @@
         {% endfor %}
 
     {% endif %}
+
+    {{ form_start(formExpirationDate) }}
+    {{ form_row(formExpirationDate.expirationDate) }}
+    <button type="submit" class="btn btn-primary">Valider</button>
+    {{ form_end(formExpirationDate) }}
 
 
 
@@ -34,5 +39,13 @@
         'class': 'text-white font-bold py-2 px-4 rounded',
         'label': 'Étape Précédente',
     } %}
+
+    {% if quote.isValidStepThree %}
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_quote_step_four', {'id': quote.id}),
+            'class': 'text-white font-bold py-2 px-4 rounded',
+            'label': 'Étape Suivante',
+        } %}
+    {% endif %}
 
 {% endblock %}

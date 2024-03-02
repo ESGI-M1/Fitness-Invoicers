@@ -60,6 +60,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Customer $Customer = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $mailSignature = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $invoiceMailContent = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $quoteMailContent = null;
+
     public function __construct()
     {
         $this->referentCompanies = new ArrayCollection();
@@ -284,6 +293,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCustomer(?Customer $Customer): static
     {
         $this->Customer = $Customer;
+
+        return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    public function getMailSignature(): ?string
+    {
+        return $this->mailSignature;
+    }
+
+    public function setMailSignature(?string $mailSignature): static
+    {
+        $this->mailSignature = $mailSignature;
+
+        return $this;
+    }
+
+    public function getInvoiceMailContent(): ?string
+    {
+        return $this->invoiceMailContent;
+    }
+
+    public function setInvoiceMailContent(?string $invoiceMailContent): static
+    {
+        $this->invoiceMailContent = $invoiceMailContent;
+
+        return $this;
+    }
+
+    public function getQuoteMailContent(): ?string
+    {
+        return $this->quoteMailContent;
+    }
+
+    public function setQuoteMailContent(?string $quoteMailContent): static
+    {
+        $this->quoteMailContent = $quoteMailContent;
 
         return $this;
     }

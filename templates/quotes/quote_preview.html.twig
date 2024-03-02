@@ -52,7 +52,7 @@
             </td>
             <td style="text-align: right">
                 <h1>Devis</h1>
-                <h3>{{ quote.updatedAt| date('d/m/Y') }}</h3>
+                <h3>{{ quote.date| date('d/m/Y') }}</h3>
                 <h3>#DE{{ quote.id }}</h3>
             </td>
         </tr>
@@ -92,7 +92,7 @@
             </td>
             <td style="vertical-align: baseline">
                 <h2>Date de validité</h2>
-                <p>{{ quote.expirationDate| date('d/m/Y') }}</p>
+                <p>{{ quote.expirationDate ? quote.expirationDate| date('d/m/Y') }}</p>
             </td>
         </tr>
         </tbody>
@@ -149,8 +149,8 @@
     <p>{{ quote.details }}</p>
 
     <footer style="margin: 0 auto; bottom: 0; text-align: center;">
+        <p>{{ quote.company.name }}</p>
         <p>SIRET: {{ quote.company.siret }}</p>
-        <p>{{ quote.company.name }} - {{ quote.company.siret }}</p>
         <p>{{ quote.company.address.street }}
             - {{ quote.company.address.postalCode }} {{ quote.company.address.city }}
             - {{ quote.company.address.country }}</p>

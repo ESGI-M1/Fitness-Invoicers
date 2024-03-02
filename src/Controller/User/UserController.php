@@ -4,7 +4,7 @@ namespace App\Controller\User;
 
 use App\Form\User\ProfileFormType;
 use App\Form\ChangePasswordFormType;
-use App\Form\CompanyMembership\CompanyMembershipFormType;
+use App\Form\User\UserMailFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +25,7 @@ class UserController extends AbstractController
 
         $profileForm = $this->createForm(ProfileFormType::class, $user);
         $passwordForm = $this->createForm(ChangePasswordFormType::class);
+        $mailForm = $this->createForm(UserMailFormType::class, $user);
         //$companyForm = $this->createForm(CompanyFormType::class, $this->getUser());
 
         $companyMemberships = $user->getCompanyMemberships()->getValues();
@@ -35,7 +36,7 @@ class UserController extends AbstractController
         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
 
             // add flash message
-            $this->addFlash('success', 'Profile updated successfully!');
+            $this->addFlash('success', 'Votre profil a été mis à jour avec succès');
 
             $entityManager->flush();
             return $this->redirectToRoute('app_index_profile');
@@ -49,7 +50,7 @@ class UserController extends AbstractController
             $checkPass = $passwordHasher->isPasswordValid($user, $currentPassword);
 
             if(($checkPass) === false) {
-                $this->addFlash('error', 'The current password is incorrect');
+                $this->addFlash('error', 'Le mot de passe actuel est incorrect');
                 return $this->redirectToRoute('app_user_profile');
             }
 
@@ -60,13 +61,22 @@ class UserController extends AbstractController
                 )
             );
             $entityManager->flush();
-            $this->addFlash('success', 'Password updated successfully!');
+            $this->addFlash('success', 'Le mot de passe a été mis à jour avec succès');
+            return $this->redirectToRoute('app_user_profile');
+        }
+
+        $mailForm->handleRequest($request);
+
+        if ($mailForm->isSubmitted() && $mailForm->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Vos mails par défaut ont été mis à jour avec succès');
             return $this->redirectToRoute('app_user_profile');
         }
 
         return $this->render('dashboard/profile.html.twig', [
             'profileForm' => $profileForm->createView(),
             'passwordForm' => $passwordForm->createView(),
+            'mailForm' => $mailForm->createView(),
             'companyMemberships' => $companyMemberships
         ]);
     }

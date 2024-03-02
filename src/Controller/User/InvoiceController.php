@@ -6,15 +6,18 @@ use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\Invoice;
 use App\Entity\Item;
+use App\Entity\Mail;
 use App\Enum\InvoiceStatusEnum;
 use App\Service\CompanySession;
-use App\Service\Mail;
+use App\Service\Mailer;
 use App\Form\Invoice\InvoiceFormType;
 use App\Form\Invoice\InvoiceSearchType;
 use App\Form\Invoice\InvoiceCustomerFormType;
 use App\Form\Invoice\InvoiceCategoryFormType;
 use App\Form\Invoice\InvoiceStatusFormType;
+use App\Form\Invoice\InvoiceDueDateFormType;
 use App\Form\Item\ItemStepTwoFormType;
+use App\Form\Mail\MailFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -216,23 +219,68 @@ class InvoiceController extends AbstractController
             return $this->redirectToRoute('app_user_invoice_step_two', ['id' => $invoice->getId()]);
         }
 
-        $form = $this->createForm(InvoiceStatusFormType::class, $invoice);
-        $form->handleRequest($request);
+        $formStatus = $this->createForm(InvoiceStatusFormType::class, $invoice);
+        $formStatus->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($formStatus->isSubmitted() && $formStatus->isValid()) {
 
             if($invoice->getStatus() == InvoiceStatusEnum::SENT) {
                 $invoice->setDate(new \DateTimeImmutable());
             }
 
             $entityManager->flush();
+            $this->addFlash('success', 'La facture a été modifiée');
+        }
 
-            return $this->redirectToRoute('app_user_invoice_show', ['id' => $invoice->getId()]);
+        $form = $this->createForm(InvoiceDueDateFormType::class, $invoice);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() && $invoice->getStatus() == InvoiceStatusEnum::DRAFT) {
+            $entityManager->flush();
+            $this->addFlash('success', 'La facture a été modifiée');
         }
 
         return $this->render('invoices/invoice_step_three.html.twig', [
             'invoice' => $invoice,
+            'formStatus' => $formStatus,
             'form' => $form
+        ]);
+    }
+
+    #[Route('invoice/step_four/{id}', name: 'app_user_invoice_step_four', methods: ['GET', 'POST'])]
+    #[IsGranted('mail', 'invoice')]
+    public function stepFour(Request $request, EntityManagerInterface $entityManager, Invoice $invoice, Mailer $mailer): Response
+    {
+
+        if (!$invoice->isValidStepThree()) {
+            $this->addFlash('danger', 'La facture n`\'a pas de date d\'échéance et de statut');
+            return $this->redirectToRoute('app_user_invoice_step_three', ['id' => $invoice->getId()]);
+        }
+
+        $mail = new Mail();
+        $user = $this->getUser();
+        $mail->setObject('Votre facture n°' . $invoice->getId() . ' est disponible : ' . $invoice->getCompany()->getName());
+        $mail->setContent($user->getInvoiceMailContent());
+        $mail->setSignature($user->getMailSignature());
+
+        $form = $this->createForm(MailFormType::class, $mail);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if($form->getClickedButton() && 'send' === $form->getClickedButton()->getName()) {
+                $mailer->sendInvoice($invoice, $mail);
+                $invoice->setStatus(InvoiceStatusEnum::SENT);
+                $this->addFlash('success', 'La facture a été envoyée');
+            }
+
+            $entityManager->flush();
+        }
+        
+        return $this->render('invoices/invoice_step_four.html.twig', [
+            'invoice' => $invoice,
+            'form' => $form,
+            'mail' => $mail
         ]);
     }
 

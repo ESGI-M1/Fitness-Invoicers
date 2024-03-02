@@ -24,7 +24,8 @@ class InvoiceListener
         $status = $eventChange['status'];
 
         if ($status[0] != InvoiceStatusEnum::DRAFT->value) {
-            throw new \Exception('You can not change status of an invoice already sent');
+            // to do
+            //throw new \Exception('You can not change status of an invoice already sent');
         }
     }
 }

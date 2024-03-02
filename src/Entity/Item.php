@@ -18,7 +18,6 @@ class Item
 
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $quantity = null;
-
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $discountAmountOnItem = null;
 
@@ -130,14 +129,19 @@ class Item
         return $this;
     }
 
-    public function getTotalAmount(): float
+    public function getTaxesAmount(): float
     {
-        return $this->getProduct()->getPrice() * $this->getQuantity() * (1 + $this->getTaxes() / 100);
+        return $this->getTotalWithoutTaxes() * ( 1 + $this->getTaxes() / 100);
     }
 
-    public function getTotalAmountWithoutTaxes(): float
+    public function getTotalAmount(): float
     {
-        return $this->getProduct()->getPrice() * $this->getQuantity();
+        return $this->getTotalWithoutTaxes() + $this->getTaxesAmount() - $this->getDiscountAmount();
+    }
+
+    public function getTotalWithoutTaxes(): float
+    {
+        return $this->getPrice() * $this->getQuantity();
     }
 
     public function getDiscountAmount(): float
@@ -154,7 +158,7 @@ class Item
             && $this->getDiscountAmountOnItem() >= 0
             && $this->getDiscountAmountOnTotal() >= 0
             && $this->getTotalAmount() >= 0
-            && $this->getTotalAmountWithoutTaxes() >= 0
+            && $this->getTotalWithoutTaxes() >= 0
             && $this->getDiscountAmount() >= 0
             && $this->getInvoices() !== null || $this->getQuote() !== null;
     }
@@ -190,7 +194,7 @@ class Item
             $errors[] = 'item.total.amount.must.be.greater.or.equal.to.0';
         }
 
-        if ($this->getTotalAmountWithoutTaxes() < 0) {
+        if ($this->getTotalWithoutTaxes() < 0) {
             $errors[] = 'item.total.amount.without.taxes.must.be.greater.or.equal.to.0';
         }
 

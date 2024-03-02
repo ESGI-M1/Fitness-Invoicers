@@ -7,6 +7,7 @@ use App\Entity\Quote;
 use App\Entity\Invoice;
 use App\Entity\Product;
 use App\Entity\Item;
+use App\Entity\Mail;
 use App\Enum\InvoiceStatusEnum;
 use App\Enum\QuoteStatusEnum;
 use App\Form\Quote\QuoteCustomerFormType;
@@ -14,8 +15,11 @@ use App\Form\Quote\QuoteFormType;
 use App\Form\Quote\QuoteSearchType;
 use App\Form\Quote\QuoteCategoryFormType;
 use App\Form\Quote\QuoteStatusFormType;
-use App\Form\Item\ItemStepTwoFormType;
+use App\Form\Quote\QuoteExpirationDateFormType;
 use App\Form\Quote\QuoteConvertFormType;
+use App\Form\Mail\MailFormType;
+use App\Form\Item\ItemStepTwoFormType;
+use App\Service\Mailer;
 use App\Service\CompanySession;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -110,7 +114,7 @@ class QuoteController extends AbstractController
         }
 
         if ($quote->getStatus() != QuoteStatusEnum::DRAFT) {
-            $this->addFlash('danger', 'La facture ' . $quote->getId() . ' ne peut être modifiée');
+            $this->addFlash('danger', 'Le devis ' . $quote->getId() . ' ne peut être modifiée');
             return $this->redirectToRoute('app_user_quote_index');
         }
 
@@ -136,12 +140,12 @@ class QuoteController extends AbstractController
     {
 
         if ($quote->getStatus() != QuoteStatusEnum::DRAFT) {
-            $this->addFlash('danger', 'La facture ' . $quote->getId() . ' ne peut être modifiée');
+            $this->addFlash('danger', 'Le devis ' . $quote->getId() . ' ne peut être modifiée');
             return $this->redirectToRoute('app_user_quote_index');
         }
 
         if (!$quote->isValidStepOne()) {
-            $this->addFlash('danger', 'La facture ' . $quote->getId() . ' n\'a pas de client');
+            $this->addFlash('danger', 'Le devis ' . $quote->getId() . ' n\'a pas de client');
             return $this->redirectToRoute('app_user_quote_step_one', ['id' => $quote->getId()]);
         }
 
@@ -205,19 +209,19 @@ class QuoteController extends AbstractController
     {
 
         if ($quote->getStatus() != QuoteStatusEnum::DRAFT) {
-            $this->addFlash('danger', 'La facture ' . $quote->getId() . ' ne peut être modifiée');
+            $this->addFlash('danger', 'Le devis ' . $quote->getId() . ' ne peut être modifiée');
             return $this->redirectToRoute('app_user_quote_index');
         }
 
         if (!$quote->isValidStepTwo()) {
-            $this->addFlash('danger', 'La facture ' . $quote->getId() . ' n\'a pas de produit');
+            $this->addFlash('danger', 'Le devis ' . $quote->getId() . ' n\'a pas de produit');
             return $this->redirectToRoute('app_user_quote_step_two', ['id' => $quote->getId()]);
         }
 
-        $form = $this->createForm(QuoteStatusFormType::class, $quote);
-        $form->handleRequest($request);
+        $formStatus = $this->createForm(QuoteStatusFormType::class, $quote);
+        $formStatus->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($formStatus->isSubmitted() && $formStatus->isValid()) {
 
             if ($quote->getStatus() == QuoteStatusEnum::ACCEPTED) {
                 $quote->setDate(new \DateTimeImmutable());
@@ -225,13 +229,57 @@ class QuoteController extends AbstractController
 
             $entityManager->flush();
             $this->addFlash('success', 'Le devis a bien été modifié.');
+        }
 
-            return $this->redirectToRoute('app_user_quote_show', ['id' => $quote->getId()]);
+        $formExpirationDate = $this->createForm(QuoteExpirationDateFormType::class, $quote);
+        $formExpirationDate->handleRequest($request);
+
+        if ($formExpirationDate->isSubmitted() && $formExpirationDate->isValid() && $quote->getStatus() == QuoteStatusEnum::DRAFT) {
+            $entityManager->flush();
+            $this->addFlash('success', 'La date d\'expiration a bien été modifiée.');
         }
 
         return $this->render('quotes/quote_step_three.html.twig', [
             'quote' => $quote,
-            'form' => $form
+            'formStatus' => $formStatus,
+            'formExpirationDate' => $formExpirationDate
+        ]);
+    }
+
+    #[Route('quote/step_four/{id}', name: 'app_user_quote_step_four', methods: ['GET', 'POST'])]
+    #[IsGranted('mail', 'quote')]
+    public function stepFour(Request $request, EntityManagerInterface $entityManager, Quote $quote, Mailer $mailer): Response
+    {
+
+        if (!$quote->isValidStepThree()) {
+            $this->addFlash('danger', 'La devis n`\'a pas de date d\'expiration et de statut');
+            return $this->redirectToRoute('app_user_quote_step_three', ['id' => $quote->getId()]);
+        }
+
+        $mail = new Mail();
+        $user = $this->getUser();
+        $mail->setObject('Votre devis n°' . $quote->getId() . ' est disponible : ' . $quote->getCompany()->getName());
+        $mail->setContent($user->getQuoteMailContent());
+        $mail->setSignature($user->getMailSignature());
+
+        $form = $this->createForm(MailFormType::class, $mail);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if($form->getClickedButton() && 'send' === $form->getClickedButton()->getName()) {
+                $mailer->sendQuote($quote, $mail);
+                $quote->setStatus(QuoteStatusEnum::SENT);
+                $this->addFlash('success', 'Le devis a été envoyée');
+            }
+
+            $entityManager->flush();
+        }
+
+        return $this->render('quotes/quote_step_four.html.twig', [
+            'quote' => $quote,
+            'form' => $form,
+            'mail' => $mail
         ]);
     }
 

@@ -92,7 +92,7 @@
                             {% for key, status in statistics.quotesByStatus.quotes %}
                                 <div class="flex items-center justify-between mb-2">
                                     <div>{{ key }}</div>
-                                    <div>{{ status|length }} {{ status|length > 1 ? 'devis' : 'devi' }}</div>
+                                    <div>{{ status|length }} devis</div>
                                     <div>{{ statistics.quotesByStatus.amount[key] }} €</div>
                                 </div>
                             {% endfor %}

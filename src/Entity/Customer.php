@@ -51,10 +51,14 @@ class Customer
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Quote::class)]
     private Collection $quotes;
 
+    #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Mail::class)]
+    private Collection $mails;
+
     public function __construct()
     {
         $this->invoices = new ArrayCollection();
         $this->quotes = new ArrayCollection();
+        $this->mails = new ArrayCollection();
     }
 
 
@@ -255,5 +259,35 @@ class Customer
 
     public function getName() {
         return $this->lastName .  ' ' . $this->firstName;
+    }
+
+    /**
+     * @return Collection<int, Mail>
+     */
+    public function getMails(): Collection
+    {
+        return $this->mails;
+    }
+
+    public function addMail(Mail $mail): static
+    {
+        if (!$this->mails->contains($mail)) {
+            $this->mails->add($mail);
+            $mail->setCustomer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMail(Mail $mail): static
+    {
+        if ($this->mails->removeElement($mail)) {
+            // set the owning side to null (unless already changed)
+            if ($mail->getCustomer() === $this) {
+                $mail->setCustomer(null);
+            }
+        }
+
+        return $this;
     }
 }

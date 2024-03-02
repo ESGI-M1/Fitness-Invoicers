@@ -50,7 +50,7 @@ class CompanyController extends AbstractController
             $entityManager->persist($company);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_company_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_company_show', ['id' => $company->getId()]);
         }
 
         return $this->render('action.html.twig', [
@@ -71,7 +71,7 @@ class CompanyController extends AbstractController
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_company_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_company_show', ['id' => $company->getId()]);
         }
 
         return $this->render('action.html.twig', [
@@ -90,7 +90,7 @@ class CompanyController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_user_company_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_user_company_index');
     }
 
     #[Route('company/set', name: 'app_user_company_set', methods: ['GET', 'POST'])]

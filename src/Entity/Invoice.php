@@ -73,9 +73,16 @@ class Invoice
     #[ORM\Column(nullable: true)]
     private ?float $totalAmount = null;
 
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $dueDate = null;
+
+    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: Mail::class)]
+    private Collection $mails;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
+        $this->mails = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,7 +155,7 @@ class Invoice
         $items = $this->getItems();
         $amount = 0;
         foreach ($items as $item) {
-            $amount += $item->getProduct()->getPrice() * $item->getQuantity() * $item->getTaxes() / 100;
+            $amount += $item->getTaxesAmount();
         }
         return $amount;
     }
@@ -158,7 +165,7 @@ class Invoice
         $items = $this->getItems();
         $amount = 0;
         foreach ($items as $item) {
-            $amount += $item->getProduct()->getPrice() * $item->getQuantity();
+            $amount += $item->getTotalWithoutTaxes();
         }
         return $amount;
     }
@@ -232,6 +239,7 @@ class Invoice
         return $this->getCustomer() !== null
             && $this->getCompany() !== null
             && $this->getDetails() !== null
+            && $this->getDueDate() !== null
             && $this->getItems()->count() > 0
             && $this->getTotalAmount() > 0
             && $this->getTotalWithoutTaxes() > 0
@@ -254,6 +262,10 @@ class Invoice
 
         if ($this->getDetails() === null) {
             $errors[] = 'details.are.required';
+        }
+
+        if ($this->getDueDate() === null) {
+            $errors[] = 'due.date.is.required';
         }
 
         if ($this->getItems()->count() === 0) {
@@ -351,6 +363,31 @@ class Invoice
         return $errors;
     }
 
+    public function isValidStepThree()
+    {
+        return $this->getDetails() !== null
+            && $this->getDueDate() !== null
+            && $this->getStatus() === InvoiceStatusEnum::VALIDATED || $this->getStatus() === InvoiceStatusEnum::SENT;
+    }
+
+    public function getIsNotValidStepThreeErrors(): array
+    {
+        $errors = [];
+        if ($this->getDetails() === null) {
+            $errors[] = 'details.are.required';
+        }
+
+        if ($this->getDueDate() === null) {
+            $errors[] = 'due.date.is.required';
+        }
+
+        if ($this->getStatus() !== InvoiceStatusEnum::VALIDATED || $this->getStatus() !== InvoiceStatusEnum::SENT) {
+            $errors[] = 'status.is.not.valid';
+        }
+
+        return $errors;
+    }
+
     public function getDate(): ?\DateTimeImmutable
     {
         return $this->date;
@@ -389,7 +426,7 @@ class Invoice
 
     public function getTotalAmount(): ?float
     {
-        return $this->totalAmount;
+        return $this->totalAmount +1;
     }
 
     public function setTotalAmount(?float $totalAmount): static
@@ -398,4 +435,55 @@ class Invoice
 
         return $this;
     }
+
+    public function getOutStandingAmount(): float
+    {
+        if ($this->getDeposit() !== null) {
+            return $this->getTotalAmount() - $this->getDeposit()->getAmount();
+        }
+        return $this->getTotalAmount();
+    }
+
+    public function getDueDate(): ?\DateTimeImmutable
+    {
+        return $this->dueDate;
+    }
+
+    public function setDueDate(?\DateTimeImmutable $dueDate): static
+    {
+        $this->dueDate = $dueDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Mail>
+     */
+    public function getMails(): Collection
+    {
+        return $this->mails;
+    }
+
+    public function addMail(Mail $mail): static
+    {
+        if (!$this->mails->contains($mail)) {
+            $this->mails->add($mail);
+            $mail->setInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMail(Mail $mail): static
+    {
+        if ($this->mails->removeElement($mail)) {
+            // set the owning side to null (unless already changed)
+            if ($mail->getInvoice() === $this) {
+                $mail->setInvoice(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
