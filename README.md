@@ -1,72 +1,56 @@
-# Symfony Docker (PHP8 / Caddy / Postgresql)
 
-A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework, with full [HTTP/2](https://symfony.com/doc/current/weblink.html), HTTP/3 and HTTPS support.
+## GROUPE 28 - IW4
+- Nom : Jules RABUS, github : Jules-Rabus
+- Nom : Melvin PIERRE, github : melvin-crypto
+- Nom : Maxime, github : Naegato, départ janvier
+- Nom : Arthur SERENNE, github : ArthurSerenne, départ décembre
 
-## Getting Started
+Lien de la prod : http://fit.sc2raju8736.universe.wf/
 
-1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/)
-2. Run `docker compose build --pull --no-cache` to build fresh images
-3. Run `docker compose up` (the logs will be displayed in the current shell) or Run `docker compose up -d` to run in background 
-4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
-5. Run `docker compose down --remove-orphans` to stop the Docker containers.
-6. Run `docker compose logs -f` to display current logs, `docker compose logs -f [CONTAINER_NAME]` to display specific container's current logs
+Il est possible que les mails arrivent dans les spams.
 
-## Commandes utiles
-Lister l'ensemble des commandes existances `docker compose exec php bin/console`
+Les fonctinnalités par personne :
 
-#### Création de fichier vierge
-Controller `docker compose exec php bin/console make:controller`
+### Arthur :
+- Début de maquette figma mais non reçu
+- Début des personas mais partiellement transmis
 
-FormType `docker compose exec php bin/console make:form`
+### Maxime :
+- Initialisation du projet avec symfony 7
+- Première version de la bdd
+- Mis en place d'un docker
 
-CRUD `docker compose exec php bin/console make:crud`
+### Melvin :
+- filter repository
+- sort
+- design_guide
+- Création des components
+- paginate
+- initialisation controller
+- crud de base
 
-#### Debug
-Supprimer le cache du navigateur
+### Jules
+- thème
+- La majorité des fonctionnalités liées au devis
+- La majorité des fonctionnalités liées au factures
+- Mise en place des mails
+- Création du menu
+- Mise en place du dark mode
+- Réinitialiser mdp
+- Current company session
+- Page accueil / dashboard
+- Page profile
+- Mise en places des étapes pour les factures et devis
+- Mis en place sur un serveur
+- Amélioration de la gestion des controllers
+- Mise en place des voters
 
-`docker compose exec php bin/console cache:clear`
+Arthur a commencé à créer des maquettes sur Figma, mais nous n'avons pas reçu ses premières propositions avant son départ avant décembre.
 
-`docker compose exec php bin/console c:c`
+Maxime a lancé le projet avec Symfony 7 et a créé la première version de la base de données.
 
-Voir les routes actives
+Melvin a travaillé sur plusieurs fonctionnalités clés, notamment le filtre et le tri des données, le guide de design, la création de composants, la pagination, ainsi que l'initialisation des contrôleurs.
 
-`docker compose exec php bin/console debug:router`
+Jules a été responsable du développement du thème visuel, de la création des fonctionnalités de devis et de facturation, de la conception du menu, de la réinitialisation des mots de passe, de la gestion de la société actuelle, de la création de l'accueil et du tableau de bord, de l'amélioration des contrôleurs et la mise en place du serveur.
 
-## Gestion des routes
-[https://symfony.com/doc/current/routing.html](https://symfony.com/doc/current/routing.html)
-
-## Autowiring & ParamConverter
-Autowiring [https://symfony.com/doc/current/service_container/autowiring.html](https://symfony.com/doc/current/service_container/autowiring.html)
-
-ParamConverter [https://symfony.com/bundles/SensioFrameworkExtraBundle/current/annotations/converters.html](https://symfony.com/bundles/SensioFrameworkExtraBundle/current/annotations/converters.html)
-
-## Gestion de base de données
-
-#### Commandes de création des fichiers entity/repository et d'ajout de champs
-`docker compose exec php bin/console make:entity`
-
-Documentation sur les relations entre les entités [https://symfony.com/doc/current/doctrine/associations.html](https://symfony.com/doc/current/doctrine/associations.html)
-
-#### Mise à jour de la base de données via migration
-Generation d'une migration
-
-`docker compose exec php bin/console make:migration`
-
-Jouer les migrations
-
-`docker compose exec php bin/console doctrine:migration:migrate`
-
-`docker compose exec php bin/console d:m:m`
-
-#### Mise à jour de la base de données via update de schema sans migration
-Voir les requètes interprétées (sans mise à jour de la DB)
-
-`docker compose exec php bin/console doctrine:schema:update --dump-sql`
-
-`docker compose exec php bin/console d:s:u --dump-sql`
-
-Executer les requètes en DB
-
-`docker compose exec php bin/console doctrine:schema:update --force`
-
-`docker compose exec php bin/console d:s:u --force`
+Jules et Melvin ont collaboré sur la création des formulaires, en mettant en place les différents champs et validations nécessaires pour garantir la saisie correcte des données par les utilisateurs.

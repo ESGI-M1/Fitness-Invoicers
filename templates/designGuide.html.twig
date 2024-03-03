@@ -4,15 +4,16 @@
 
 {% block main %}
     <div class="flex flex-col items-center">
-        <h1 class="text-3xl font-bold mb-4">Guide de design avec Tailwind CSS</h1>
+        <h1 class="text-3xl font-bold mb-4 dark:text-white">Guide de design avec Tailwind CSS</h1>
 
         {% include './components/hr.html.twig' with {
             'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
         } %}
 
         <div class="text-center ml-4">
-            <h2 class="text-2xl font-bold mb-2">Couleur des thèmes du site</h2>
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">Couleur des thèmes du site</h2>
         </div>
+        <br>
         <div class="grid grid-cols-2 gap-4">
             <!-- Thème Clair (Light) -->
             <div class="bg-white text-black p-4 rounded-lg shadow-md">
@@ -30,8 +31,9 @@
         } %}
 
         <div class="text-center ml-4">
-            <h2 class="text-2xl font-bold mb-2">Couleur primaire du site</h2>
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">Couleur primaire du site</h2>
         </div>
+        <br>
         <div class="grid grid-cols-3 gap-4">
             <!-- Couleur primaire -->
             <div class="bg-primary hover:bg-primary-hover text-white p-4 rounded-lg shadow-md">
@@ -78,7 +80,7 @@ tertiary: {
         } %}
 
         <div class="text-center ml-4">
-            <h2 class="text-2xl font-bold mb-2">Exemple de composant a</h2>
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de composant a</h2>
             <div class="mb-4 p-4 rounded-lg">
                 {% include './components/a.html.twig' with {
                     'path': '#',
@@ -86,7 +88,7 @@ tertiary: {
                     'label': 'Déconnexion',
                 } %}
             </div>
-            <h2 class="text-2xl font-bold mb-2">2ème exemple de composant a</h2>
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">2ème exemple de composant a</h2>
             <div class="flex justify-center mb-4 p-4 rounded-lg">
                 {% include './components/a.html.twig' with {
                     'path': '#',
@@ -118,7 +120,8 @@ tertiary: {
 
         <div class="flex justify-between mb-8">
             <div class="ml-4">
-                <h2 class="text-2xl font-bold mb-2">Exemple de component a_menu</h2>
+                <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component a_menu</h2>
+                <br>
                 {% include './components/a_menu.html.twig' with {
                     'name': 'Utilisateur',
                     'path': '/companymembership',
@@ -147,7 +150,8 @@ tertiary: {
 
         <div class="flex justify-between mb-8">
             <div class="ml-4">
-                <h2 class="text-2xl font-bold mb-2">Exemple de component a_top_menu</h2>
+                <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component a_top_menu</h2>
+                <br>
                 {% include './components/a_top_menu.html.twig' with {
                     'path': path('app_logout'),
                     'fa': 'right-from-bracket'
@@ -174,7 +178,8 @@ tertiary: {
 
         <div class="flex justify-between mb-8">
             <div class="ml-4">
-                <h2 class="text-2xl font-bold mb-2">Exemple de component bouton</h2>
+                <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component bouton</h2>
+                <br>
                 <div class="mb-4">
                     {% include './components/button.html.twig' with {
                         'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6
@@ -201,7 +206,8 @@ tertiary: {
 
         <div class="flex justify-between mb-8">
             <div class="ml-4">
-                <h2 class="text-2xl font-bold mb-2">Exemple de component button_top_menu</h2>
+                <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component button_top_menu</h2>
+                <br>
                 {% include './components/button_top_menu.html.twig' with {
                     'id': 'lightMode',
                     'fa': 'sun'
@@ -228,7 +234,8 @@ tertiary: {
 
         <div class="flex justify-between mb-8">
             <div class="ml-4">
-                <h2 class="text-2xl font-bold mb-2">Exemple de component error</h2>
+                <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component error</h2>
+                <br>
                 {% include './components/error.html.twig' %}
             </div>
         </div>
@@ -261,7 +268,8 @@ tertiary: {
 
         <div class="flex justify-between mb-8">
             <div class="ml-4">
-                <h2 class="text-2xl font-bold mb-2">Exemple de component back</h2>
+                <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component back</h2>
+                <br>
                 {% include './components/back.html.twig' with {
                     'content': 'Retour',
                     'fa': 'arrow-left'
@@ -292,7 +300,8 @@ tertiary: {
 
         <div class="flex justify-between mb-8">
             <div class="ml-4">
-                <h2 class="text-2xl font-bold mb-2">Exemple de titre</h2>
+                <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de titre</h2>
+                <br>
                 <div class="mb-4">
                     {% include './components/title.html.twig' with {
                         'balise': 'h2',
@@ -317,7 +326,8 @@ tertiary: {
 
     <div class="flex justify-center mb-8">
         <div class="ml-4">
-            <h2 class="text-2xl font-bold mb-2">Exemple de component input</h2>
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component input</h2>
+            <br>
             <label class="block text-gray-800 required" for="_username">Identifiant</label>
             <input type="email" id="_username" name="_username" required="required" class="form-input"
                    data-dashlane-rid="b73028a3843fc260" data-form-type="username" data-kwimpalastatus="alive"

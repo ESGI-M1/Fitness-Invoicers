@@ -450,6 +450,7 @@ class Invoice
     public function getOutStandingAmount(): float
     {
         $payments = $this->getPayments();
+        $amount = 0;
         foreach ($payments as $payment) {
             $amount += $payment->getAmount();
         }
