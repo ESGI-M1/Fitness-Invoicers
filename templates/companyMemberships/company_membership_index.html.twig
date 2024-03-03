@@ -48,11 +48,11 @@
                     <td class="border p-4">{{ user.status.name }}</td>
                     {% if is_granted('company_referent') %}
                         <td class="border">
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_company_membership_edit', { 'id': user.id }),
                                 'fa': 'edit'
                             } %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_company_membership_delete', { 'id': user.id, 'token': csrf_token('delete-user-company-membership' ~ user.id) }),
                                 'fa': 'trash'
                             } %}

@@ -10,8 +10,10 @@
   .search form div{
     @apply pr-2 rounded-md;
   }
-  
-  form:not(div.bg-white) label {
+
+  form:not(#profileForm) label,
+  form:not(#passwordForm) label,
+  form:not(#mailForm) label {
     @apply dark:text-white #{!important};
   }
 

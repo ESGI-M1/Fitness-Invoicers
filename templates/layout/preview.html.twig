@@ -65,10 +65,10 @@
                 {% endif %}
             </td>
             {% if value.expirationDate is defined %}
-            <td style="vertical-align: baseline">
-                <h2>Date de validité</h2>
-                <p>{{ value.expirationDate ? value.expirationDate| date('d/m/Y') }}</p>
-            </td>
+                <td style="vertical-align: baseline">
+                    <h2>Date de validité</h2>
+                    <p>{{ value.expirationDate ? value.expirationDate| date('d/m/Y') }}</p>
+                </td>
             {% endif %}
         </tr>
         </tbody>
@@ -81,6 +81,8 @@
             <th>Taux de taxe</th>
             <th>Prix unitaire (HT)</th>
             <th>Quantité</th>
+            <th>Remise par unité (HT) €</th>
+            <th>Remise total (HT) €</th>
             <th>Total (HT)</th>
             <th>Total (TTC)</th>
         </tr>
@@ -93,19 +95,37 @@
                 <td>{{ item.taxes ? item.taxes : 0 }} %</td>
                 <td>{{ item.product.price }} €</td>
                 <td>{{ item.quantity }}</td>
-                <td>{{ item.quantity * item.product.price }} €</td>
-                <td>{{ item.quantity * item.product.price * (1 + item.taxes / 100) }} €</td>
+                <td>{{ item.discountAmountOnItem }}</td>
+                <td>{{ item.discountAmountOnTotal }}</td>
+                <td>{{ item.totalWithoutTaxes }} €</td>
+                <td>{{ item.totalAmount }} €</td>
             </tr>
         {% endfor %}
     </table>
 
+    {% if name.title == 'Factures' and value.deposit and false %}
+        <table style="border: 1px solid darkgrey;margin-bottom: 2rem">
+            <tbody>
+            <tr>
+                <th>Méthode de paiement</th>
+                <td>{{ invoice.payment.method }}</td>
+            </tr>
+            <tr>
+                <th>Acompte</th>
+                <td>{{ invoice.deposit.amount }} €</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endif %}
 
     <table style="border: 1px solid darkgrey; float: right">
         <tbody>
-        <tr>
-            <th>Moyen de paiement</th>
-            <td>blabla</td>
-        </tr>
+        {% if name.title == 'Factures' %}
+            <tr>
+                <th>Méthode de paiement</th>
+                <td>{{ value.payments|length ? value.payments[0].method.name : 'Non renseigné' }}</td>
+            </tr>
+        {% endif %}
         <tr>
             <th>Total HT</th>
             <td>{{ value.getTotalWithoutTaxes }} €</td>

@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use App\Repository\CustomerRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 
@@ -25,9 +26,11 @@ class Customer
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank(message: 'Le prénom est obligatoire')]
     private string $firstName;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
     private string $lastName;
 
     #[ORM\OneToOne(mappedBy: 'Customer', cascade: ['persist', 'remove'])]
@@ -44,9 +47,11 @@ class Customer
 
     #[ORM\ManyToOne(inversedBy: 'customers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(message: 'La société est obligatoire')]
     private ?Company $company = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'L\'email est obligatoire')]
     private ?string $email = null;
 
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Quote::class)]

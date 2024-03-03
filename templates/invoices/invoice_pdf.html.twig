@@ -105,6 +105,8 @@
         <th>Taux de taxe</th>
         <th>Prix unitaire (HT)</th>
         <th>Quantité</th>
+        <th>Remise par unité (HT) €</th>
+        <th>Remise total (HT) €</th>
         <th>Total (HT)</th>
         <th>Total (TTC)</th>
     </tr>
@@ -114,23 +116,25 @@
         <tr>
             <td>{{ item.product.reference }}</td>
             <td>{{ item.product.name }}</td>
-            <td>{{ item.taxes }} %</td>
+            <td>{{ item.taxes ? item.taxes : 0 }} %</td>
             <td>{{ item.product.price }} €</td>
             <td>{{ item.quantity }}</td>
-            <td>{{ item.quantity * item.product.price }} €</td>
-            <td>{{ item.quantity * item.product.price * (1 + item.taxes / 100) }} €</td>
+            <td>{{ item.discountAmountOnItem ? item.discountAmountOnItem : 0 }}</td>
+            <td>{{ item.discountAmountOnTotal ? item.discountAmountOnTotal : 0 }}</td>
+            <td>{{ item.totalWithoutTaxes }} €</td>
+            <td>{{ item.totalAmount }} €</td>
         </tr>
     {% endfor %}
 </table>
 
 <div>
 
-    {%if invoice.deposit %}
+    {% if invoice.deposit %}
         <table style="border: 1px solid darkgrey;margin-bottom: 2rem">
             <tbody>
                 <tr>
                     <th>Méthode de paiement</th>
-                    <td>blabla</td>
+                    <td>{{ invoice.payment.method }}</td>
                 </tr>
                 <tr>
                     <th>Acompte</th>
@@ -145,7 +149,8 @@
         <tbody>
         <tr>
             <th>Moyen de paiement</th>
-            <td>blabla</td>
+            <td>{{ invoice.payments[0].method.name }}</td>
+            }
         </tr>
         <tr>
             <th>Total HT</th>

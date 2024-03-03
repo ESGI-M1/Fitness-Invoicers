@@ -1,0 +1,7 @@
+<a href="{{ path }}"
+   class="font-bold {% if class is defined %}{{ class }}{% endif %} ">
+        {{ label }}
+    {% if fa is defined %}
+        &nbsp; <i class="fas fa-{{ fa }}"></i>
+    {% endif %}
+</a>

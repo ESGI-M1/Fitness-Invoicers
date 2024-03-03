@@ -26,7 +26,7 @@
                                         <h3 class="text-gray-800 text-lg font-semibold dark:text-white">Adresse de
                                             livraison</h3>
                                         {% if customer.deliveryAddress %}
-                                            {% include './components/a.html.twig' with {
+                                            {% include './components/a_table.html.twig' with {
                                                 'path': path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id}),
                                                 'fa': 'edit'
                                             } %}
@@ -35,7 +35,7 @@
                                             <p>{{ customer.deliveryAddress.country }}</p>
                                         {% else %}
                                             <p>Pas d'adresse de livraison</p>
-                                            {% include './components/a.html.twig' with {
+                                            {% include './components/a_table.html.twig' with {
                                                 'path': path('app_user_address_add', {'id': customer.id}),
                                                 'fa': 'add'
                                             } %}
@@ -45,7 +45,7 @@
                                         <h3 class="text-gray-800 text-lg font-semibold dark:text-white">Adresse de
                                             facturation</h3>
                                         {% if customer.billingAddress %}
-                                            {% include './components/a.html.twig' with {
+                                            {% include './components/a_table.html.twig' with {
                                                 'path': path('app_user_address_billingAddress_edit', {'address_id': customer.billingAddress.id, 'customer_id': customer.id}),
                                                 'fa': 'edit'
                                             } %}
@@ -54,7 +54,7 @@
                                             <p>{{ customer.billingAddress.country }}</p>
                                         {% else %}
                                             <p>Pas d'adresse de facturation</p>
-                                            {% include './components/a.html.twig' with {
+                                            {% include './components/a_table.html.twig' with {
                                                 'path': path('app_user_address_add', {'id': customer.id}),
                                                 'fa': 'add'
                                             } %}
@@ -65,19 +65,19 @@
                             <div class="flex justify-between items-center gap-4 px-4 pb-4">
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_customer_edit', {'id': customer.id}),
-                                    'class': 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded',
+                                    'class': 'bg-primary hover:bg-primary-hover',
                                     'label': 'Modifier',
                                     'fa': 'edit'
                                 } %}
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_customer_interaction', {'id': customer.id}),
-                                    'class': 'bg-secondary hover:bg-secondary-hover text-white font-bold py-2 px-4 rounded',
+                                    'class': 'bg-secondary hover:bg-secondary-hover',
                                     'label': 'Intéraction',
                                     'fa': 'handshake'
                                 } %}
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_customer_delete', {'id': customer.id, 'token': csrf_token('delete' ~ customer.id)}),
-                                    'class': 'bg-tertiary hover:bg-tertiary-hover text-white font-bold py-2 px-4 rounded',
+                                    'class': 'bg-tertiary hover:bg-tertiary-hover',
                                     'label': 'Supprimer',
                                     'fa': 'trash'
                                 } %}

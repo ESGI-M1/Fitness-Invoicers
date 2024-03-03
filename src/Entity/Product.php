@@ -26,12 +26,15 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank(message: 'Le nom du produit est obligatoire.')]
     private string $name;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank(message: 'La référence du produit est obligatoire.')]
     private string $reference;
 
     #[ORM\Column(type: Types::FLOAT)]
+    #[Assert\PositiveOrZero(message: 'Le prix doit être positif ou nul.')]
     private float $price;
 
     #[Vich\UploadableField(mapping: 'productImage', fileNameProperty: 'imageName')]
@@ -59,6 +62,7 @@ class Product
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(message: 'La société est obligatoire.')]
     private ?Company $company = null;
 
     public function __construct()

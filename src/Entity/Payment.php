@@ -8,6 +8,7 @@ use App\Repository\PaymentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Trait\TimestampableTrait;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
@@ -21,6 +22,7 @@ class Payment
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\Positive(message: 'Le montant doit être positif')]
     private ?float $amount = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, enumType: PaymentStatusEnum::class)]

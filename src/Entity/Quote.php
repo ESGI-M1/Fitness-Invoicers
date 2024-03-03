@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: QuoteRepository::class)]
 class Quote
@@ -22,6 +23,7 @@ class Quote
     private ?int $id = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\PositiveOrZero(message: 'Le montant de la remise doit être positif ou nul')]
     private ?float $discountAmount = null;
 
     #[ORM\OneToMany(mappedBy: 'quote', targetEntity: Item::class, orphanRemoval: true)]
@@ -160,17 +162,6 @@ class Quote
         return $this;
     }
 
-    public function getAmount(): float
-    {
-        $items = $this->getItems()->getValues();
-        $amount = 0;
-        foreach ($items as $item) {
-            $amount += $item->getTotalAmount();
-        }
-
-        return $amount;
-    }
-
     public function getCustomer(): ?Customer
     {
         return $this->customer;
@@ -188,7 +179,7 @@ class Quote
         $items = $this->getItems();
         $amount = 0;
         foreach ($items as $item) {
-            $amount += $item->getProduct()->getPrice() * $item->getQuantity() * (1 - $item->getTaxes() / 100);
+            $amount += $item->getTotalAmount();
         }
         return $amount;
     }
@@ -198,7 +189,7 @@ class Quote
         $items = $this->getItems();
         $amount = 0;
         foreach ($items as $item) {
-            $amount += $item->getProduct()->getPrice() * $item->getQuantity() * $item->getTaxes() / 100;
+            $amount += $item->getTaxesAmount();
         }
         return $amount;
     }
@@ -208,7 +199,7 @@ class Quote
         $items = $this->getItems();
         $amount = 0;
         foreach ($items as $item) {
-            $amount += $item->getProduct()->getPrice() * $item->getQuantity();
+            $amount += $item->getTotalWithoutTaxes();
         }
         return $amount;
     }
@@ -224,7 +215,6 @@ class Quote
 
         return $this->getCustomer() !== null
             && $this->getCompany() !== null
-            && $this->getDetails() !== null
             && $this->getExpirationDate() !== null
             && $this->getItems()->count() > 0
             && $this->getTotalAmount() > 0
@@ -244,10 +234,6 @@ class Quote
 
         if ($this->getCompany() === null) {
             $errors[] = 'company.not.valid';
-        }
-
-        if ($this->getDetails() === null) {
-            $errors[] = 'details.are.required';
         }
 
         if ($this->getExpirationDate() === null) {

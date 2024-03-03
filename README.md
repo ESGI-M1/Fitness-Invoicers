@@ -30,7 +30,7 @@ Les fonctinnalités par personne :
 - crud de base
 
 ### Jules
-- thème
+- Thème général du site
 - La majorité des fonctionnalités liées au devis
 - La majorité des fonctionnalités liées au factures
 - Mise en place des mails
@@ -54,3 +54,15 @@ Melvin a travaillé sur plusieurs fonctionnalités clés, notamment le filtre et
 Jules a été responsable du développement du thème visuel, de la création des fonctionnalités de devis et de facturation, de la conception du menu, de la réinitialisation des mots de passe, de la gestion de la société actuelle, de la création de l'accueil et du tableau de bord, de l'amélioration des contrôleurs et la mise en place du serveur.
 
 Jules et Melvin ont collaboré sur la création des formulaires, en mettant en place les différents champs et validations nécessaires pour garantir la saisie correcte des données par les utilisateurs.
+
+Listes des fonctionnalités qui ont été arretées en cours de route :
+- Mise en place de test unitaire
+- Mise en place de la vérification des codings standarts
+- Template mail avancé, avec de la saisie d'information
+- Asserts sur tous les champs
+- Partie cliente
+- Gestion avancé des paiements, via un portail de paiement en ligne
+- Design plus avancé de manière générale
+- Possibilité d'avoir un code plus propre de manière générale : helper, service, class abstraite ... etc 
+- Traduction du site en anglais et français
+- Enregistrement des PDF et des devis sur le serveur

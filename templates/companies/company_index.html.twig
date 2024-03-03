@@ -7,7 +7,7 @@
     {% include './components/a.html.twig' with {
         'path': path('app_user_company_edit', { 'id': company.id }),
         'label': 'Modifier les informations de l\'entreprise',
-        'class': 'flex items-center justify-center px-4 py-2 text-white rounded bg-primary hover:bg-primary-hover',
+        'class': 'flex items-center justify-center bg-primary hover:bg-primary-hover',
         'fa': 'edit'
     } %}
 
@@ -15,14 +15,14 @@
         {% include './components/a.html.twig' with {
             'path': path('app_user_address_company_edit', { 'company_id': company.id , 'address_id': company.address.id }),
             'label': 'Modifier l\'adresse de l\'entreprise',
-            'class': 'flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded mt-4',
+            'class': 'flex items-center justify-center bg-primary hover:bg-primary-hover mt-4',
             'fa': 'edit'
         } %}
     {% else %}
         {% include './components/a.html.twig' with {
             'path': path('app_user_address_add_company', { 'id': company.id}),
             'label': 'Ajouter une adresse à l\'entreprise',
-            'class': 'flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded mt-4',
+            'class': 'flex items-center justify-center bg-primary hover:bg-primary-hover mt-4',
             'fa': 'plus-circle'
         } %}
     {% endif %}

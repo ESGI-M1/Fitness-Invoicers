@@ -18,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'user.email.alreadyExist')]
@@ -31,12 +30,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
+    #[Assert\NotBlank(message: 'Le champ email est obligatoire')]
+    #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide.')]
     private string $email;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank(message: 'Le champ nom est obligatoire')]
     private string $firstName;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank(message: 'Le champ prénom est obligatoire')]
     private string $lastName;
 
     #[ORM\Column]

@@ -84,32 +84,52 @@ tertiary: {
             <div class="mb-4 p-4 rounded-lg">
                 {% include './components/a.html.twig' with {
                     'path': '#',
-                    'class': 'text-red-600 hover:text-red-500',
-                    'label': 'Déconnexion',
-                } %}
-            </div>
-            <h2 class="text-2xl font-bold mb-2 dark:text-white">2ème exemple de composant a</h2>
-            <div class="flex justify-center mb-4 p-4 rounded-lg">
-                {% include './components/a.html.twig' with {
-                    'path': '#',
-                    'class': 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded float-right',
-                    'label': 'Ajouter',
-                    'fa': 'add'
+                    'class': 'bg-primary hover:bg-primary-hover',
+                    'label': 'Modifier',
+                    'fa': 'edit'
                 } %}
             </div>
         </div>
         <div class="bg-black text-white p-4 rounded-lg shadow-md">
             <xmp class="text-sm">
                 {% verbatim %}
-                <a href="{{ path }}"
-                   class=" {% if class is defined %}{{ class }}{% endif %} {% if bg_color is defined %}
-                   bg-{{ 'bg_color' }}-200 bg-{{ 'bg_color' }} hover:bg-{{ 'bg_color' }}-400 {% endif %}
-                   {% if fa is defined %}flex items-center justify-between{% endif %}">
-                    {{ 'label' }}
-                    {% if 'fa' is defined %}
-                        &nbsp; <i class="fas fa-{{ 'fa' }}"></i>
-                    {% endif %}
-                </a>
+                   <a href="{{ path }}"
+                       class="text-white font-bold py-2 px-4 rounded {% if class is defined %}{{ class }}{% endif %} ">
+                        {% if label is defined %}
+                            {{ label }}
+                        {% endif %}
+                        {% if fa is defined %}
+                            &nbsp; <i class="fas fa-{{ fa }}"></i>
+                        {% endif %}
+                    </a>
+                {% endverbatim %}
+            </xmp>
+        </div>
+
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+
+        <div class="text-center ml-4">
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de composant a_login</h2>
+            <div class="mb-4 p-4 rounded-lg">
+                {% include './components/a_login.html.twig' with {
+                    'path': path('app_forgot_password_request'),
+                    'class': 'text-sm ml-2 text-primary-hover hover:text-primary',
+                    'label': 'Mot de passe oublié?',
+                } %}
+            </div>
+        </div>
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                      <a href="{{ path }}"
+                       class="font-bold {% if class is defined %}{{ class }}{% endif %} ">
+                            {{ label }}
+                        {% if fa is defined %}
+                            &nbsp; <i class="fas fa-{{ fa }}"></i>
+                        {% endif %}
+                    </a>
                 {% endverbatim %}
             </xmp>
         </div>
@@ -140,6 +160,35 @@ tertiary: {
                         {{ name }}
                     </a>
                 </li>
+                    {% endverbatim %}
+            </xmp>
+        </div>
+
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component a_table</h2>
+                <br>
+                {% include './components/a_table.html.twig' with {
+                    'path': '#',
+                    'fa': 'edit'
+                } %}
+            </div>
+        </div>
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                    <a href="{{ path }}">
+                        {% if label is defined %}
+                            {{ label }}
+                        {% endif %}
+                        {% if fa is defined %}
+                            &nbsp; <i class="fas fa-{{ fa }}"></i>
+                        {% endif %}
+                    </a>
                     {% endverbatim %}
             </xmp>
         </div>

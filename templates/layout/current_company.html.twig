@@ -9,13 +9,15 @@
             'class': 'w-full h-1 my-1 bg-gray-200 border-0 rounded dark:bg-gray-700">'
         } %}
         <div class="flex justify-around">
-            <a href="{{ path('app_user_company_set') }}">
-                <i class="fas fa-sync rotate"></i>
-            </a>
+            {% include './components/a_table.html.twig' with {
+                'path': path('app_user_company_set'),
+                'fa': 'sync rotate'
+            } %}
             {% if is_granted('company_referent') %}
-                <a href="{{ path('app_user_company_show', { 'id': companySession.getCurrentCompanyTwig.id }) }}">
-                    <i class="fa-solid fa-edit"></i>
-                </a>
+                {% include './components/a_table.html.twig' with {
+                    'path': path('app_user_company_show', { 'id': companySession.getCurrentCompanyTwig.id }),
+                    'fa': 'edit'
+                } %}
             {% endif %}
         </div>
     </h1>

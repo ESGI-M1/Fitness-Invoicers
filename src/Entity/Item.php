@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
 class Item
@@ -17,14 +19,17 @@ class Item
     private ?int $id = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\PositiveOrZero(message: 'La quantité doit être supérieure ou égale à 0')]
     private ?int $quantity = null;
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $discountAmountOnItem = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\PositiveOrZero(message: 'Le montant de la remise doit être supérieur ou égal à 0')]
     private ?float $discountAmountOnTotal = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\PositiveOrZero(message: 'Le montant des taxes doit être supérieur ou égal à 0')]
     private ?float $taxes = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
@@ -38,6 +43,7 @@ class Item
     private ?invoice $invoices = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero(message: 'Le prix doit être supérieur ou égal à 0')]
     private ?float $price = null;
 
     public function getId(): ?int

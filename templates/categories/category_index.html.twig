@@ -34,11 +34,11 @@
                     <td class="border">{{ category.name }}</td>
                     <td class="border">{{ category.products|length }}</td>
                     <td class="text-center border">
-                        {% include './components/a.html.twig' with {
+                        {% include './components/a_table.html.twig' with {
                             'path': path('app_user_category_edit', { 'id': category.id }),
                             'fa': 'edit'
                         } %}
-                        {% include './components/a.html.twig' with {
+                        {% include './components/a_table.html.twig' with {
                             'path': path('app_user_category_delete', { 'id': category.id, 'token': csrf_token('delete' ~ category.id) }),
                             'fa': 'trash'
                         } %}

@@ -21,14 +21,14 @@
                     <div class="flex flex-col justify-between items-center mb-3">
                         <div>
                             Vous êtes connecté en tant que {{ app.user.userIdentifier }},
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_login.html.twig' with {
                                 'path': path('app_logout'),
                                 'class': 'text-tertiary-hover hover:text-tertiary',
                                 'label': 'Déconnexion',
                             } %}
                         </div>
                         <div>
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_login.html.twig' with {
                                 'path': path('app_index'),
                                 'class': 'text-primary-hover hover:text-primary',
                                 'label': 'Revenir vers l\'accueil',
@@ -51,7 +51,7 @@
                     } %}
                     {{ form_end(form) }}
                     <div class="flex justify-end mb-4">
-                        {% include './components/a.html.twig' with {
+                        {% include './components/a_login.html.twig' with {
                             'path': path('app_forgot_password_request'),
                             'class': 'text-sm ml-2 text-primary-hover hover:text-primary',
                             'label': 'Mot de passe oublié?',

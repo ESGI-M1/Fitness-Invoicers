@@ -8,6 +8,7 @@ use App\Entity\Company;
 use App\Entity\Customer;
 use App\Entity\Deposit;
 use App\Enum\InvoiceStatusEnum;
+use App\Enum\PaymentStatusEnum;
 use App\Repository\InvoiceRepository;
 use App\Trait\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,6 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
@@ -31,6 +33,7 @@ class Invoice
     private ?int $id = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\PositiveOrZero(message: 'Le montant doit être positif ou nul')]
     private ?float $discountAmount = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, enumType: InvoiceStatusEnum::class)]
@@ -242,7 +245,6 @@ class Invoice
 
         return $this->getCustomer() !== null
             && $this->getCompany() !== null
-            && $this->getDetails() !== null
             && $this->getDueDate() !== null
             && $this->getItems()->count() > 0
             && $this->getTotalAmount() > 0
@@ -258,10 +260,6 @@ class Invoice
         $errors = [];
         if ($this->getCustomer() === null) {
             $errors[] = 'customer.not.valid';
-        }
-
-        if ($this->getCompany() === null) {
-            $errors[] = 'company.not.valid';
         }
 
         if ($this->getDetails() === null) {
@@ -452,7 +450,9 @@ class Invoice
         $payments = $this->getPayments();
         $amount = 0;
         foreach ($payments as $payment) {
-            $amount += $payment->getAmount();
+            if($payment->getStatus() === PaymentStatusEnum::PAID) {
+                $amount += $payment->getAmount();
+            }
         }
         return $this->getTotalAmount() - $amount;
     }

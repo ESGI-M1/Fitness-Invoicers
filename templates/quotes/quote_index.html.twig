@@ -8,7 +8,7 @@
         'entity': 'Devis',
         'values': quotes,
         'path': path('app_user_quote_step_one'),
-        'class': 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded float-right',
+        'class': 'bg-primary hover:bg-primary-hover float-right',
         'label': 'Ajouter un devis',
         'right': 'ROLE_USER'
     } %}
@@ -68,37 +68,37 @@
                     </td>
                     <td class="border">
                         {% if is_granted('see', quote) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_quote_show', { 'id': quote.id }),
                                 'fa': 'eye'
                             } %}
                         {% endif %}
                         {% if is_granted('edit', quote) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_quote_step_one', { 'id': quote.id }),
                                 'fa': 'edit'
                             } %}
                         {% endif %}
                         {% if is_granted('mail', quote) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_quote_step_four', { 'id': quote.id }),
                                 'fa': 'envelope'
                             } %}
                         {% endif %}
                         {% if is_granted('delete', quote) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_quote_delete', { 'id': quote.id, 'token': csrf_token('delete' ~ quote.id) }),
                                 'fa': 'trash'
                             } %}
                         {% endif %}
                         {% if is_granted('convert', quote) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_quote_convert', { 'id': quote.id, 'token': csrf_token('convert' ~ quote.id) }),
                                 'fa': 'paperclip'
                             } %}
                         {% endif %}
                         {% if is_granted('see', quote) and quote.isValid %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_quote_pdf', { 'id': quote.id }),
                                 'fa': 'file-pdf'
                             } %}

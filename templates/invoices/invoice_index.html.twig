@@ -68,31 +68,31 @@
                     </td>
                     <td class="border">
                         {% if is_granted('see', invoice) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_invoice_show', { 'id': invoice.id }),
                                 'fa': 'eye'
                             } %}
                         {% endif %}
                         {% if is_granted('edit', invoice) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_invoice_step_one', { 'id': invoice.id }),
                                 'fa': 'edit'
                             } %}
                         {% endif %}
                         {% if is_granted('mail', invoice) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_invoice_step_four', { 'id': invoice.id }),
                                 'fa': 'envelope'
                             } %}
                         {% endif %}
                         {% if is_granted('delete', invoice) %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_invoice_delete', { 'id': invoice.id, 'token': csrf_token('delete' ~ invoice.id) }),
                                 'fa': 'trash'
                             } %}
                         {% endif %}
                         {% if is_granted('see', invoice) and invoice.isValid %}
-                            {% include './components/a.html.twig' with {
+                            {% include './components/a_table.html.twig' with {
                                 'path': path('app_user_invoice_pdf', { 'id': invoice.id }),
                                 'fa': 'file-pdf'
                             } %}

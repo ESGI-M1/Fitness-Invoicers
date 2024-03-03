@@ -38,7 +38,7 @@
         {% for user in users %}
             <tr>
                 <td class="text-center border">
-                    {% include './components/a.html.twig' with {
+                    {% include './components/a_table.html.twig' with {
                         'path': path('app_admin_user_edit', { 'id': user.id }),
                         'fa': 'edit'
                     } %}

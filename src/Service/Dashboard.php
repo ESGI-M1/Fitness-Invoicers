@@ -66,7 +66,7 @@ class Dashboard
         $quotesByStatus = $this->initQuotesByStatus();
         foreach ($quotes as $quote) {
 
-            $quotesByStatus['amount'][$quote->getStatus()->name] += $quote->getAmount();
+            $quotesByStatus['amount'][$quote->getStatus()->name] += $quote->getTotalAmount();
             $quotesByStatus['quotes'][$quote->getStatus()->name][] = $quote;
         }
 
@@ -101,7 +101,7 @@ class Dashboard
         $quotesByStatus = $this->initQuotesByStatus();
         foreach ($quotes as $quote) {
 
-            $quotesByStatus['amount'][$quote->getStatus()->name] += $quote->getAmount();
+            $quotesByStatus['amount'][$quote->getStatus()->name] += $quote->getTotalAmount();
             $quotesByStatus['quotes'][$quote->getStatus()->name][] = $quote;
         }
 
