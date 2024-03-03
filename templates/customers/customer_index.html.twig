@@ -23,8 +23,11 @@
                                     : {{ customer.invoices|length }} factures</h2>
                                 <div class="flex justify-around">
                                     <div class="mt-2 text-gray-600 dark:text-white">
-                                        <h3 class="text-gray-800 text-lg font-semibold dark:text-white">Adresse de
-                                            livraison</h3>
+                                        {% include './components/title.html.twig' with {
+                                            'balise': 'h3',
+                                            'title': 'Adresse de livraison',
+                                            'class' : 'text-gray-800 text-lg font-semibold dark:text-white'
+                                        } %}
                                         {% if customer.deliveryAddress %}
                                             {% include './components/a_table.html.twig' with {
                                                 'path': path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id}),
@@ -42,8 +45,11 @@
                                         {% endif %}
                                     </div>
                                     <div class="mt-2 text-gray-600 dark:text-white">
-                                        <h3 class="text-gray-800 text-lg font-semibold dark:text-white">Adresse de
-                                            facturation</h3>
+                                        {% include './components/title.html.twig' with {
+                                            'balise': 'h3',
+                                            'title': 'Adresse de facturation',
+                                            'class' : 'text-gray-800 text-lg font-semibold dark:text-white'
+                                        } %}
                                         {% if customer.billingAddress %}
                                             {% include './components/a_table.html.twig' with {
                                                 'path': path('app_user_address_billingAddress_edit', {'address_id': customer.billingAddress.id, 'customer_id': customer.id}),

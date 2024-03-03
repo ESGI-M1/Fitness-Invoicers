@@ -5,7 +5,11 @@
 {% block main %}
 <div class="flex gap-6"> {# Utilisation de flex-col pour aligner les éléments verticalement, et gap-6 pour ajouter un espace entre eux #}
     <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4"> {# Réduction de la taille des carrés blancs en modifiant la valeur de p-6 à p-4 #}
-        <h2 class="text-2xl font-semibold mb-4 text-center">Modifier votre profil</h2>
+        {% include './components/title.html.twig' with {
+            'balise': 'h2',
+            'title': 'Modifier votre profil',
+            'class' : 'text-2xl font-semibold mb-4 text-center'
+        } %}
         {{ form_start(profileForm) }}
         {{ form_widget(profileForm) }}
         {% include './components/button.html.twig' with {
@@ -15,7 +19,11 @@
         {{ form_end(profileForm) }}
     </div>
     <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4">
-        <h2 class="text-2xl font-semibold mb-4 text-center">Modifier votre mot de passe</h2>
+        {% include './components/title.html.twig' with {
+            'balise': 'h2',
+            'title': 'Modifier votre mot de passe',
+            'class' : 'text-2xl font-semibold mb-4 text-center'
+        } %}
         {{ form_start(passwordForm) }}
         {{ form_widget(passwordForm) }}
         {% include './components/button.html.twig' with {
@@ -25,7 +33,11 @@
         {{ form_end(passwordForm) }}
     </div>
     <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4">
-        <h2 class="text-2xl font-semibold mb-4 text-center">Vos entreprises</h2>
+        {% include './components/title.html.twig' with {
+            'balise': 'h2',
+            'title': 'Vos entreprises',
+            'class' : 'text-2xl font-semibold mb-4 text-center'
+        } %}
         {% for companyMemberShip in companyMemberships %}
             <div class="flex justify-between items-center border-b border-gray-300 py-2"> {# Réduction de l'espace entre les éléments de la liste #}
                 <div>

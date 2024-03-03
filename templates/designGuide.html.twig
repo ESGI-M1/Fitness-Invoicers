@@ -4,25 +4,41 @@
 
 {% block main %}
     <div class="flex flex-col items-center">
-        <h1 class="text-3xl font-bold mb-4 dark:text-white">Guide de design avec Tailwind CSS</h1>
+        {% include './components/title.html.twig' with {
+            'balise': 'h1',
+            'title': 'Guide de design avec Tailwind CSS',
+            'class' : 'text-3xl font-bold mb-4 dark:text-white'
+        } %}
 
         {% include './components/hr.html.twig' with {
             'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
         } %}
 
         <div class="text-center ml-4">
-            <h2 class="text-2xl font-bold mb-2 dark:text-white">Couleur des thèmes du site</h2>
+            {% include './components/title.html.twig' with {
+                'balise': 'h2',
+                'title': 'Couleur des thèmes du site CSS',
+                'class' : 'text-2xl font-bold mb-2 dark:text-white'
+            } %}
         </div>
         <br>
         <div class="grid grid-cols-2 gap-4">
             <!-- Thème Clair (Light) -->
             <div class="bg-white text-black p-4 rounded-lg shadow-md">
-                <h2 class="text-xl font-bold mb-2">Thème Clair (Light)</h2>
+                {% include './components/title.html.twig' with {
+                    'balise': 'h2',
+                    'title': 'Thème Clair (Light)',
+                    'class' : 'text-xl font-bold mb-2'
+                } %}
             </div>
 
             <!-- Thème Sombre (Dark) -->
             <div class="bg-gray-800 text-white p-4 rounded-lg shadow-md">
-                <h2 class="text-xl font-bold mb-2">Thème Sombre (Dark)</h2>
+                {% include './components/title.html.twig' with {
+                    'balise': 'h2',
+                    'title': 'Thème Sombre (Dark)',
+                    'class' : 'text-xl font-bold mb-2'
+                } %}
             </div>
         </div>
 
@@ -362,7 +378,7 @@ tertiary: {
         <div class="bg-black text-white p-4 rounded-lg shadow-md">
             <xmp class="text-sm">
                 {% verbatim %}
-                <{{ balise }} class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-100">
+              <{{ balise }} class="{% if class is defined %}{{ class }} {% endif %}">
                 {{ title }}</{{ balise }}>
             {% endverbatim %}
             </xmp>

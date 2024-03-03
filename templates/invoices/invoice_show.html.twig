@@ -23,6 +23,10 @@
         {% if invoice.quote %}
             <div>
                 <h3>Devis</h3>
+                {% include './components/title.html.twig' with {
+                    'balise': 'h3',
+                    'title': 'Devis',
+                } %}
             </div>
         {% endif %}
     </div>
