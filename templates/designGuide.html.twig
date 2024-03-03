@@ -66,8 +66,8 @@
             <div class="ml-4">
                 <h2 class="text-2xl font-bold mb-2">Exemple de component a_top_menu</h2>
                 {% include './components/a_top_menu.html.twig' with {
-                    'id': 'lightMode',
-                    'fa': 'sun'
+                    'path': path('app_logout'),
+                    'fa': 'right-from-bracket'
                 } %}
             </div>
         </div>
@@ -81,6 +81,31 @@
                         <i class="fas fa-{{ 'fa' }}"></i>
                     {% endif %}
                 </button>
+                {% endverbatim %}
+            </xmp>
+        </div>
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2">Exemple de component button_top_menu</h2>
+                {% include './components/button_top_menu.html.twig' with {
+                    'id': 'lightMode',
+                    'fa': 'sun'
+                } %}
+            </div>
+        </div>
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+             <button id="{{ id }}"
+                    class="rounded-xl p-1 hover:bg-primaryLighter dark:hover:bg-white transition-colors duration-500">
+                {% if fa is defined %}
+                    <i class="fas fa-{{ fa }}"></i>
+                {% endif %}
+            </button>
+
                 {% endverbatim %}
             </xmp>
         </div>
@@ -162,5 +187,28 @@
             {% endverbatim %}
             </xmp>
         </div>
+    </div>
+    {% include './components/hr.html.twig' with {
+        'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+    } %}
+    <div class="flex justify-between mb-8">
+        <div class="ml-4">
+            <h2 class="text-2xl font-bold mb-2">Exemple de component input</h2>
+            <label class="block text-gray-800 required" for="_username">Identifiant</label>
+            <input type="email" id="_username" name="_username" required="required" class="form-input"
+                   data-dashlane-rid="b73028a3843fc260" data-form-type="username" data-kwimpalastatus="alive"
+                   data-kwimpalaid="1709468192904-0">
+        </div>
+    </div>
+    <div class="bg-black text-white p-4 rounded-lg shadow-md">
+        <xmp class="text-sm">
+            {% verbatim %}
+              @layer components {
+                  .form-input {
+                    @apply w-full rounded-md bg-gray-100 shadow-inner;
+                  }
+                }
+                {% endverbatim %}
+        </xmp>
     </div>
 {% endblock %}

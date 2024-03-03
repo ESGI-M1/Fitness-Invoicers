@@ -10,6 +10,7 @@
         <h2>Tout est valide</h2>
         {{ form_start(formStatus) }}
         {{ form_row(formStatus.status) }}
+        {{ form_row(formStatus.paymentMethod) }}
         <button type="submit" class="btn btn-primary">Valider</button>
         {{ form_end(formStatus) }}
     {% else %}

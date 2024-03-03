@@ -36,7 +36,7 @@ class UserController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Votre profil a été mis à jour avec succès');
 
-            return $this->redirectToRoute('app_index_profile');
+            return $this->redirectToRoute('app_user_profile');
         }
 
         $passwordForm->handleRequest($request);

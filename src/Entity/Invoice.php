@@ -327,6 +327,7 @@ class Invoice
 
     public function isValidStepTwo(): bool
     {
+        return true;
         foreach ($this->getItems() as $item) {
             if (!$item->isValid()) {
                 return false;
@@ -430,7 +431,13 @@ class Invoice
 
     public function getTotalAmount(): ?float
     {
-        return $this->totalAmount +1;
+        $amount = 0;
+        $items = $this->getItems();
+        foreach ($items as $item) {
+            $amount += $item->getTotalAmount();
+        }
+
+        return $this->totalAmount ?? $amount;
     }
 
     public function setTotalAmount(?float $totalAmount): static

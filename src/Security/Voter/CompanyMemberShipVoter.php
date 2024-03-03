@@ -2,7 +2,6 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Company;
 use App\Entity\CompanyMembership;
 use App\Service\CompanySession;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -17,6 +16,8 @@ class CompanyMemberShipVoter extends Voter
     public const REFERENT = 'referent';
 
     private CompanySession $companySession;
+
+    private Security $security;
 
     public function __construct(CompanySession $companySession, Security $security)
     {

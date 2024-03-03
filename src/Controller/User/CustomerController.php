@@ -49,7 +49,6 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/customer/add', name: 'app_user_customer_add', methods: ['GET', 'POST'])]
-    #[IsGranted('add', 'customer')]
     public function add(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
     {
         $company = $companySession->getCurrentCompany();

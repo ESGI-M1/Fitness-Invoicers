@@ -6,6 +6,7 @@ use App\Entity\Address;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class AddressVoter extends Voter
 {
@@ -15,10 +16,18 @@ class AddressVoter extends Voter
     public const EDIT = 'edit';
     public const DELETE = 'delete';
 
+    private Security $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
+
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [self::SEE, self::ADD, self::EDIT, self::DELETE])
-            && $subject instanceof \App\Entity\Category;
+            && $subject instanceof \App\Entity\Address;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool

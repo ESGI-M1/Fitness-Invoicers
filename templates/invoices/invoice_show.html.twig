@@ -6,19 +6,30 @@
 
     <h1>Facture {{ invoice.id }}</h1>
 
-    <div>
+    <div class="flex justify-around">
 
-    <div>
-        <p>Status: {{ invoice.status.name }}</p>
-    </div>
+        <div>
+            <h3>Status</h3>
+            <p>{{ invoice.status.name }}</p>
+        </div>
 
-    <div>
-        <p>Payment</p>
-    </div>
+        <div>
+            <h3>Paiement : {{ invoice.payments|length }}</h3>
+            <div>
+                {% for payment in invoice.payments %}
+                    <h4>{{ payment.date|date('d/m/Y') }} : {{ payment.amount }}€</h4>
+                    <p>{{ payment.method.name }}</p>
+                    <p>{{ payment.status.name }}</p>
+                {% endfor %}
+            </div>
+        </div>
 
-    <div>
-        <p>Devis</p>
-    </div>
+        {% if invoice.quote %}
+            <div>
+                <h3>Devis</h3>
+
+            </div>
+        {% endif %}
 
     </div>
 
@@ -27,5 +38,5 @@
         'title': 'Factures',
         'pre': 'FA'
     } %}
-    
+
 {% endblock %}

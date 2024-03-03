@@ -7,6 +7,7 @@ use App\Service\CompanySession;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class CategoryVoter extends Voter
 {
@@ -18,9 +19,12 @@ class CategoryVoter extends Voter
 
     private CompanySession $companySession;
 
-    public function __construct(CompanySession $companySession)
+    private Security $security;
+
+    public function __construct(CompanySession $companySession, Security $security)
     {
         $this->companySession = $companySession;
+        $this->security = $security;
     }
 
     protected function supports(string $attribute, mixed $subject): bool

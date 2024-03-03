@@ -4,32 +4,27 @@
     {'id': 'systemMode', 'fa': 'sync'}
 ] %}
 
-<nav class="transition-all duration-300 bg-primary h-12 w-full p-4 px-8 flex justify-between items-center">
+<nav class="transition-all duration-300 bg-secondary h-12 w-full p-4 px-8 flex justify-between items-center">
     <button id="burger-menu"
-            class="rounded-xl p-0.5 stroke-white hover:bg-primaryLighter hover:stroke-grey dark:hover:bg-gray-800 dark:hover:stroke-white transition-colors duration-500">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="24" height="24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 6h16M4 12h16m-7 6h7"></path>
-        </svg>
+            class="rounded-xl p-1 hover:bg-primaryLighter dark:hover:bg-white transition-colors duration-500">
+        <i class="fas fa-list"></i>
     </button>
     <div class="flex gap-x-4 items-center">
-        <div class="flex justify-around items-center rounded-xl w-24 py-0.5">
+        <div class="flex justify-around items-center rounded-xl w-24 p-1">
             {% for mode in modes %}
-                {% include './components/a_top_menu.html.twig' with {
+                {% include './components/button_top_menu.html.twig' with {
                     'id': mode.id,
                     'fa': mode.fa
                 } %}
             {% endfor %}
         </div>
         <a href="{{ path('app_user_profile') }}"
-           class="rounded-xl p-0.5 fill-white hover:bg-primaryLighter hover:fill-grey dark:hover:bg-gray-800 dark:hover:fill-white transition-colors duration-500">
+           class="rounded-xl p-1 hover:bg-primaryLighter dark:hover:bg-white transition-colors duration-500">
             Mon compte
         </a>
-        <a href="{{ path('app_logout') }}"
-           class="rounded-xl p-0.5 fill-white hover:bg-primaryLighter hover:fill-grey dark:hover:bg-gray-800 dark:hover:fill-white transition-colors duration-500">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
-                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
-            </svg>
-        </a>
+        {% include './components/a_top_menu.html.twig' with {
+            'path': path('app_logout'),
+            'fa': 'right-from-bracket'
+        } %}
     </div>
 </nav>

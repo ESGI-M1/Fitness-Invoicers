@@ -16,7 +16,7 @@
     {% set direction = users.getDirection() %}
 
     <div class="mt-4">
-        <table class="table table-bordered table-striped table-hover w-full sorted">
+        <table class="table table-bordered table-striped table-hover w-full sorted dark:text-white">
             <thead>
             {% include './components/sorted.html.twig' with {
                 'title': 'Nom',
@@ -33,7 +33,7 @@
                 'entity': users,
                 'value': 'users.email',
             } %}
-            <th class="border">Statut</th>
+            <th class="border dark:text-white">Statut</th>
             {% if is_granted('company_referent') %}
                 <th class="border">Action</th>
             {% endif %}

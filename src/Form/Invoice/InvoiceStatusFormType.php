@@ -4,6 +4,7 @@ namespace App\Form\Invoice;
 
 use App\Entity\Invoice;
 use App\Enum\InvoiceStatusEnum;
+use App\Enum\PaymentMethodEnum;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -21,6 +22,14 @@ class InvoiceStatusFormType extends AbstractType
                 'class' => InvoiceStatusEnum::class,
                 'label' => 'Status',
                 'required' => true,
+            ])
+            ->add('paymentMethod', EnumType::class, [
+                'class' => PaymentMethodEnum::class,
+                'label' => 'Moyen de paiement',
+                'required' => true,
+                'multiple' => false,
+                'expanded' => true,
+                'mapped' => false,
             ]);
     }
 

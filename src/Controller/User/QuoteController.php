@@ -73,9 +73,13 @@ class QuoteController extends AbstractController
     }
 
     #[Route('quote/step_one/{id}', name: 'app_user_quote_step_one', defaults: ['id' => null], methods: ['GET', 'POST'])]
-    #[IsGranted('add', 'quote')]
     public function stepOne(Request $request, EntityManagerInterface $entityManager, Quote $quote = null, CompanySession $companySession): Response
     {
+
+        if (!$this->isGranted('add', $quote) && !$this->isGranted('edit', $quote)) {
+            throw $this->createAccessDeniedException();
+        }
+
         if (!$quote) {
             $company = $companySession->getCurrentCompany();
             $quote = new quote();

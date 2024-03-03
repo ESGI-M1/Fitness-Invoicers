@@ -131,22 +131,22 @@ class Item
 
     public function getTaxesAmount(): float
     {
-        return $this->getTotalWithoutTaxes() * ( 1 + $this->getTaxes() / 100);
+        return $this->getTotalWithoutTaxes() * ($this->getTaxes() / 100);
     }
 
     public function getTotalAmount(): float
     {
-        return $this->getTotalWithoutTaxes() + $this->getTaxesAmount() - $this->getDiscountAmount();
+        return $this->getTotalWithoutTaxes() + $this->getTaxesAmount();
     }
 
     public function getTotalWithoutTaxes(): float
     {
-        return $this->getPrice() * $this->getQuantity();
+        return $this->getPrice() * $this->getQuantity() - $this->getDiscountAmountOnItem() - $this->getDiscountAmountOnTotal();
     }
 
     public function getDiscountAmount(): float
     {
-        return $this->getDiscountAmountOnItem() * $this->getQuantity();
+        return $this->getQuantity() * $this->getDiscountAmountOnTotal() + $this->getDiscountAmountOnItem();
     }
 
     public function isValid(): bool

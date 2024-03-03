@@ -5,7 +5,7 @@ namespace App\Form\Item;
 use App\Entity\Item;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,17 +18,24 @@ class ItemStepTwoFormType extends AbstractType
             ->add('id', HiddenType::class, [
                 'required' => true,
             ])
-            ->add('quantity', IntegerType::class, [
+            ->add('quantity', NumberType::class, [
                 'required' => true,
+                'label' => false,
             ])
-            ->add('taxes', TextType::class, [
+            ->add('taxes', NumberType::class, [
                 'required' => true,
+                'label' => false,
+                'html5' => true,
             ])
-            ->add('discountAmountOnItem', IntegerType::class, [
+            ->add('discountAmountOnItem', NumberType::class, [
                 'required' => false,
+                'label' => false,
+                'html5' => true,
             ])
-            ->add('discountAmountOnTotal', IntegerType::class, [
+            ->add('discountAmountOnTotal', NumberType::class, [
                 'required' => false,
+                'label' => false,
+                'html5' => true,
             ])
         ;
     }

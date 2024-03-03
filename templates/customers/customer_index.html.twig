@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Produits{% endblock %}
+{% block title %}Clients{% endblock %}
 
 {% block main %}
     {% include './layout/search_border.html.twig' with {
@@ -12,69 +12,73 @@
         'label': 'Ajouter un client',
         'right': 'ROLE_USER'
     } %}
-    <div class="container mx-auto">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+    <div class="container mx-auto mt-4">
+        <div class="flex justify-around flex-wrap gap-4">
             {% for customer in customers %}
-                <div class="w-full p-2">
-                    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div class="p-2">
+                    <div class="bg-white shadow-lg rounded-lg dark:bg-gray-900">
                         <div class="p-4">
-                            <div class="p-4">
-                                <h2 class="text-gray-800 text-lg font-semibold">{{ customer.firstName }} {{ customer.lastName }}</h2>
-                                <p class="mt-2 text-gray-600">{{ customer.invoices|length }} factures</p>
-                                <div class="mt-2 text-gray-600">
-                                    <h3 class="text-gray-800 text-lg font-semibold">Adresse de livraison</h3>
-                                    {% if customer.deliveryAddress %}
-                                        {% include './components/a.html.twig' with {
-                                            'path': path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id}),
-                                            'fa': 'edit'
-                                        } %}
-                                        <p>{{ customer.deliveryAddress.street }}</p>
-                                        <p>{{ customer.deliveryAddress.postalCode }} {{ customer.deliveryAddress.city }}</p>
-                                        <p>{{ customer.deliveryAddress.country }}</p>
-                                    {% else %}
-                                        <p>Pas d'adresse de livraison</p>
-                                        {% include './components/a.html.twig' with {
-                                            'path': path('app_user_address_add', {'id': customer.id}),
-                                            'fa': 'add'
-                                        } %}
-                                    {% endif %}
-                                </div>
-                                <div class="mt-2 text-gray-600">
-                                    <h3 class="text-gray-800 text-lg font-semibold">Adresse de facturation</h3>
-                                    {% if customer.billingAddress %}
-                                        {% include './components/a.html.twig' with {
-                                            'path': path('app_user_address_billingAddress_edit', {'address_id': customer.billingAddress.id, 'customer_id': customer.id}),
-                                            'fa': 'edit'
-                                        } %}
-                                        <p>{{ customer.billingAddress.street }}</p>
-                                        <p>{{ customer.billingAddress.postalCode }} {{ customer.billingAddress.city }}</p>
-                                        <p>{{ customer.billingAddress.country }}</p>
-                                    {% else %}
-                                        <p>Pas d'adresse de facturation</p>
-                                        {% include './components/a.html.twig' with {
-                                            'path': path('app_user_address_add', {'id': customer.id}),
-                                            'fa': 'add'
-                                        } %}
-                                    {% endif %}
+                            <div class="p-4 pt-0">
+                                <h2 class="text-gray-800 pb-4 text-center text-lg font-semibold dark:text-white">{{ customer.firstName }} {{ customer.lastName }}
+                                    : {{ customer.invoices|length }} factures</h2>
+                                <div class="flex justify-around">
+                                    <div class="mt-2 text-gray-600 dark:text-white">
+                                        <h3 class="text-gray-800 text-lg font-semibold dark:text-white">Adresse de
+                                            livraison</h3>
+                                        {% if customer.deliveryAddress %}
+                                            {% include './components/a.html.twig' with {
+                                                'path': path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id}),
+                                                'fa': 'edit'
+                                            } %}
+                                            <p>{{ customer.deliveryAddress.street }}</p>
+                                            <p>{{ customer.deliveryAddress.postalCode }} {{ customer.deliveryAddress.city }}</p>
+                                            <p>{{ customer.deliveryAddress.country }}</p>
+                                        {% else %}
+                                            <p>Pas d'adresse de livraison</p>
+                                            {% include './components/a.html.twig' with {
+                                                'path': path('app_user_address_add', {'id': customer.id}),
+                                                'fa': 'add'
+                                            } %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="mt-2 text-gray-600 dark:text-white">
+                                        <h3 class="text-gray-800 text-lg font-semibold dark:text-white">Adresse de
+                                            facturation</h3>
+                                        {% if customer.billingAddress %}
+                                            {% include './components/a.html.twig' with {
+                                                'path': path('app_user_address_billingAddress_edit', {'address_id': customer.billingAddress.id, 'customer_id': customer.id}),
+                                                'fa': 'edit'
+                                            } %}
+                                            <p>{{ customer.billingAddress.street }}</p>
+                                            <p>{{ customer.billingAddress.postalCode }} {{ customer.billingAddress.city }}</p>
+                                            <p>{{ customer.billingAddress.country }}</p>
+                                        {% else %}
+                                            <p>Pas d'adresse de facturation</p>
+                                            {% include './components/a.html.twig' with {
+                                                'path': path('app_user_address_add', {'id': customer.id}),
+                                                'fa': 'add'
+                                            } %}
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center px-4 pb-4">
+                            <div class="flex justify-between items-center gap-4 px-4 pb-4">
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_customer_edit', {'id': customer.id}),
-                                    'class': 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded',
+                                    'class': 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded',
                                     'label': 'Modifier',
                                     'fa': 'edit'
                                 } %}
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_customer_interaction', {'id': customer.id}),
-                                    'class': 'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
+                                    'class': 'bg-secondary hover:bg-secondary-hover text-white font-bold py-2 px-4 rounded',
                                     'label': 'Intéraction',
                                     'fa': 'handshake'
                                 } %}
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_customer_delete', {'id': customer.id, 'token': csrf_token('delete' ~ customer.id)}),
-                                    'class': 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded',
-                                    'label': 'Delete',
+                                    'class': 'bg-tertiary hover:bg-tertiary-hover text-white font-bold py-2 px-4 rounded',
+                                    'label': 'Supprimer',
                                     'fa': 'trash'
                                 } %}
                             </div>

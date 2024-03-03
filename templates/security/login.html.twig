@@ -42,7 +42,7 @@
                     {{ form_start(form) }}
                         {% for child in form.children %}
                             <div class="mb-4">
-                                {{ form_row(child) }}
+                                {{ form_row(child, {'attr': {'class': 'form-input'}}) }}
                             </div>
                         {% endfor %}
                     {% include './components/button.html.twig' with {

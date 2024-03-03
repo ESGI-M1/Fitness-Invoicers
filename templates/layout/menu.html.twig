@@ -1,7 +1,7 @@
 {% set icons = {
-    'Utilisateur': {'path': '/companymembership', 'fa': 'user'},
-    'Client': {'path': '/customer', 'fa': 'address-card'},
-    'Produit': {'path': '/product', 'fa': 'shopping-cart'},
+    'Utilisateurs': {'path': '/companymembership', 'fa': 'user'},
+    'Clients': {'path': '/customer', 'fa': 'address-card'},
+    'Produits': {'path': '/product', 'fa': 'shopping-cart'},
     'Catégories': {'path': '/category', 'fa': 'folder'},
     'Factures': {'path': '/invoice', 'fa': 'file-invoice'},
     'Devis': {'path': '/quote', 'fa': 'file-alt'},
@@ -9,13 +9,13 @@
 } %}
 
 <nav id="left-menu"
-     class="transition-all duration-1000 bg-white text-white h-full max-w-full overflow-hidden top-0 shrink-0 w-56">
+     class="transition-all duration-1000 bg-white text-white h-full max-w-full overflow-hidden top-0 shrink-0 w-56 dark:bg-gray-900">
     <div class="px-6 pt-4">
         {% if companySession.getCurrentCompanyTwig %}
             {% include './layout/current_company.html.twig' %}
         {% endif %}
-        <h2 class="text-base font-bold uppercase text-grey mt-8 mb-4">Général</h2>
-        <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey mb-10">
+        <h2 class="text-base font-bold uppercase text-grey mt-8 mb-4 dark:text-white">Général</h2>
+        <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey mb-10 dark:text-white">
             {% include './components/a_menu.html.twig' with {
                 'path': path('app_index'),
                 'name': 'Accueil',
@@ -23,8 +23,8 @@
             } %}
         </ul>
         {% if companySession.getCurrentCompanyTwig %}
-            <h2 class="text-base font-bold uppercase text-grey mb-4">Tableau de bord</h2>
-            <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey mb-10">
+            <h2 class="text-base font-bold uppercase text-grey mb-4 dark:text-white">Tableau de bord</h2>
+            <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey mb-10 dark:text-white">
                 {% for name, item in icons %}
                     {% include './components/a_menu.html.twig' with {
                         'name': name,

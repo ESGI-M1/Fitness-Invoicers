@@ -131,18 +131,23 @@ class CompanyMembershipController extends AbstractController
         $form = $this->createForm(CompanyMembershipFormType::class, $companyMembership);
         $user = $companyMembership->getRelatedUser();
 
-        $form->get('firstName')->setData($user->getFirstName());
-        $form->get('lastName')->setData($user->getLastName());
-        $form->get('email')->setData($user->getEmail());
+        $lastName = $form->get('lastName');
+        $firstName = $form->get('firstName');
+        $email = $form->get('email');
+
+        $firstName->setData($user->getFirstName());
+        $lastName->setData($user->getLastName());
+        $email->setData($user->getEmail());
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $companyMembership->getRelatedUser();
-            $user->setFirstName($form->get('lastName'))
-                ->setLastname($form->get('firstName'))
-                ->setEmail($form->get('email'));
+            $user->setFirstName($firstName->getData())
+                ->setLastname($lastName->getData())
+                ->setEmail($email->getData());
 
-            $entityManager->persist($user);
+            $entityManager->persist($companyMembership);
             $entityManager->flush();
             $this->addFlash('success', 'Company membership updated successfully!');
             return $this->redirectToRoute('app_user_company_membership_index');

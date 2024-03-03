@@ -17,6 +17,8 @@ class ItemVoter extends Voter
 
     private CompanySession $companySession;
 
+    private Security $security;
+
     public function __construct(CompanySession $companySession, Security $security)
     {
         $this->companySession = $companySession;
