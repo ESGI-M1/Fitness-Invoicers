@@ -49,6 +49,7 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/customer/add', name: 'app_user_customer_add', methods: ['GET', 'POST'])]
+    #[IsGranted('add', 'customer')]
     public function add(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
     {
         $company = $companySession->getCurrentCompany();
@@ -74,6 +75,7 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/customer/edit/{id}', name: 'app_user_customer_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', 'customer')]
     public function edit(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession, Customer $customer): Response
     {
         $company = $companySession->getCurrentCompany();
@@ -96,6 +98,7 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/customer/interaction/{id}', name: 'app_user_customer_interaction', methods: ['GET'])]
+    #[IsGranted('see', 'customer')]
     public function interaction(EntityManagerInterface $entityManager, Customer $customer): Response
     {
 
@@ -131,6 +134,7 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/customer/delete/{id}/{token}', name: 'app_user_customer_delete', methods: ['GET'])]
+    #[IsGranted('delete', 'customer')]
     public function delete(EntityManagerInterface $entityManager, CompanySession $companySession, Customer $customer, Mailer $mailer, string $token): Response
     {
         if ($this->isCsrfTokenValid('delete' . $customer->getId(), $token)) {

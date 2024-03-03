@@ -100,6 +100,7 @@ class InvoiceController extends AbstractController
     }
 
     #[Route('invoice/step_one/{id}', name: 'app_user_invoice_step_one', defaults: ['id' => null], methods: ['GET', 'POST'])]
+    #[IsGranted('add', 'invoice')]
     public function stepOne(Request $request, EntityManagerInterface $entityManager, Invoice $invoice = null, CompanySession $companySession): Response
     {
         if (!$invoice) {

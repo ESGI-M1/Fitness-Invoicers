@@ -2,15 +2,15 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Category;
+use App\Entity\Product;
 use App\Service\CompanySession;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
-class CategoryVoter extends Voter
+class ProductVoter extends Voter
 {
-
     public const SEE = 'see';
     public const ADD = 'add';
     public const EDIT = 'edit';
@@ -18,15 +18,19 @@ class CategoryVoter extends Voter
 
     private CompanySession $companySession;
 
-    public function __construct(CompanySession $companySession)
+    private Security $security;
+
+    public function __construct(CompanySession $companySession, Security $security)
     {
         $this->companySession = $companySession;
+        $this->security = $security;
     }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
+
         return in_array($attribute, [self::SEE, self::ADD, self::EDIT, self::DELETE])
-            && $subject instanceof \App\Entity\Category;
+            && $subject instanceof \App\Entity\Product;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -44,35 +48,22 @@ class CategoryVoter extends Voter
         };
     }
 
-    private function canAddOrSee(Category $category, UserInterface $user): bool
+    private function canAddOrSee(Product $product, UserInterface $user): bool
     {
         $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
+
         if($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 
-        if(!$currentCompany || $currentCompany !== $category->getCompany() || !$currentCompany->userInCompany($user)) {
+        if(!$currentCompany || $currentCompany !== $product->getCompany() || !$currentCompany->userInCompany($user)) {
             return false;
         }
 
         return true;
     }
 
-    private function canEdit(Category $category, UserInterface $user): bool
-    {
-        $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
-        if($this->security->isGranted('ROLE_ADMIN')) {
-            return true;
-        }
-
-        if(!$currentCompany || $currentCompany !== $category->getCompany() || !$currentCompany->userInCompany($user)) {
-            return false;
-        }
-
-        return  true;
-    }
-
-    private function canDelete(Category $category, UserInterface $user): bool
+    private function canEdit(Product $product, UserInterface $user): bool
     {
         $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
 
@@ -80,10 +71,26 @@ class CategoryVoter extends Voter
             return true;
         }
 
-        if(!$currentCompany || $currentCompany !== $category->getCompany() || !$currentCompany->userInCompany($user)) {
+        if(!$currentCompany || $currentCompany !== $product->getCompany() || !$currentCompany->userInCompany($user)) {
             return false;
         }
 
         return true;
     }
+
+    private function canDelete(Product $product, UserInterface $user): bool
+    {
+        $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
+
+        if($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        if(!$currentCompany || $currentCompany !== $product->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

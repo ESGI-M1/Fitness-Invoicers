@@ -44,7 +44,8 @@ class InvoiceVoter extends Voter
         }
 
         return match ($attribute) {
-            self::SEE, self::ADD => $this->canAddOrSee($subject, $user),
+            self::SEE => $this->canSee($subject, $user),
+            self::ADD => $this->canAdd($subject, $user),
             self::EDIT => $this->canEdit($subject, $user),
             self::MAIL => $this->canMail($subject, $user),
             self::DELETE => $this->canDelete($subject, $user),
@@ -52,7 +53,7 @@ class InvoiceVoter extends Voter
         };
     }
 
-    private function canAddOrSee(Invoice $invoice, UserInterface $user): bool
+    private function canSee(Invoice $invoice, UserInterface $user): bool
     {
         $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
         if($this->security->isGranted('ROLE_ADMIN')) {
@@ -60,6 +61,20 @@ class InvoiceVoter extends Voter
         }
 
         if(!$currentCompany || $currentCompany !== $invoice->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function canAdd(?Invoice $invoice, UserInterface $user): bool
+    {
+        $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
+        if($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+        
+        if(!$currentCompany || !$currentCompany->userInCompany($user)) {
             return false;
         }
 

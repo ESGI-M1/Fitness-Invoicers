@@ -18,34 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CategoryController extends AbstractController
 {
-    #[Route('/category-admin', name : 'app_admin_category_index', methods : ['GET', 'POST'])]
-    public function listadmin(
-        EntityManagerInterface $entityManager,
-        Request $request,
-        PaginatorInterface $paginator,
-        CompanySession $companySession,
-    ): Response {
-        $company = $companySession->getCurrentCompany();
-
-        $form = $this->createForm(
-            CategorySearchAdminType::class,
-        );
-
-        $form->handleRequest($request);
-
-        $categories = $entityManager->getRepository(Category::class);
-
-        $category = $paginator->paginate(
-            $categories->getCategoriesByFilters($company, $form->getData()),
-            $request->query->getInt('page', 1),
-            $request->query->getInt('items', 20)
-        );
-
-        return $this->render('categories/category_index_admin.html.twig', [
-            'categories' => $category,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/category', name : 'app_user_category_index', methods : ['GET', 'POST'])]
     public function list(
@@ -77,36 +49,11 @@ class CategoryController extends AbstractController
     }
 
     #[Route('category/show/{id}', name : 'app_user_category_show', methods : ['GET'])]
+    #[IsGranted('see', 'category')]
     public function show(Category $category): Response
     {
         return $this->render('categories/category_show.html.twig', [
             'category' => $category,
-        ]);
-    }
-
-    #[Route('category/add-admin', name : 'app_admin_category_add', methods : ['GET', 'POST'])]
-    public function addAdmin(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $category = new Category();
-
-        $form = $this->createForm(
-            CategoryFormAdminType::class,
-            $category,
-        );
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($category);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_user_category_index');
-        }
-
-        return $this->render('action.html.twig', [
-            'action' => 'Ajouter une catégorie',
-            'category' => $category,
-            'form' => $form,
         ]);
     }
 

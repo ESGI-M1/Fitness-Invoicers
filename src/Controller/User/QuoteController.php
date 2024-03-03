@@ -72,33 +72,8 @@ class QuoteController extends AbstractController
         ]);
     }
 
-    #[Route('quote/add', name: 'app_user_quote_add', methods: ['GET', 'POST'])]
-    public function add(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
-    {
-
-        $quote = new Quote();
-        $form = $this->createForm(QuoteFormType::class, $quote);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $quote->setStatus(QuoteStatusEnum::DRAFT);
-            $quote->setCompany($companySession->getCurrentCompany());
-            $entityManager->persist($quote);
-            $entityManager->flush();
-            $this->addFlash('success', 'Le devis a bien été ajouté.');
-
-            return $this->redirectToRoute('app_user_quote_index');
-        }
-
-        return $this->render('action.html.twig', [
-            'action' => 'Ajouter un devis',
-            'quote' => $quote,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('quote/step_one/{id}', name: 'app_user_quote_step_one', defaults: ['id' => null], methods: ['GET', 'POST'])]
+    #[IsGranted('add', 'quote')]
     public function stepOne(Request $request, EntityManagerInterface $entityManager, Quote $quote = null, CompanySession $companySession): Response
     {
         if (!$quote) {
@@ -376,27 +351,8 @@ class QuoteController extends AbstractController
         return $this->redirectToRoute('app_user_quote_step_two', ['id' => $quote->getId()]);
     }
 
-    #[Route('quote/edit/{id}', name: 'app_user_quote_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Quote $quote, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(QuoteFormType::class, $quote);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            $this->addFlash('success', 'Le devis a bien été modifié.');
-
-            return $this->redirectToRoute('app_user_quote_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('action.html.twig', [
-            'action' => 'Modifier le devis n°' . $quote->getId(),
-            'quote' => $quote,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('quote/delete/{id}/{token}', name: 'app_user_quote_delete', methods: ['GET'])]
+    #[IsGranted('delete', 'quote')]
     public function delete(Request $request, Quote $quote, EntityManagerInterface $entityManager, string $token): Response
     {
         if ($this->isCsrfTokenValid('delete' . $quote->getId(), $token)) {
@@ -408,10 +364,10 @@ class QuoteController extends AbstractController
             $entityManager->remove($quote);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Le devis a bien été supprimé.');
+            $this->addFlash('success', 'Le devis n°' . $quote->getId() . ' a bien été supprimé');
         }
 
-        return $this->redirectToRoute('app_user_quote_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_user_quote_index');
     }
 
     #[Route('quote/convert/{id}/{token}', name: 'app_user_quote_convert', methods: ['GET', 'POST'])]

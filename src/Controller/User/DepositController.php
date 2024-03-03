@@ -15,31 +15,5 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DepositController extends AbstractController
 {
-
-    #[Route('/deposit', name: 'app_user_deposit_index')]
-    public function list(
-        EntityManagerInterface $entityManager,
-        Request $request,
-        PaginatorInterface $paginator,
-        CompanySession $companySession
-    ): Response {
-        $form = $this->createForm(
-            DepositSearchType::class,
-        );
-
-        $form->handleRequest($request);
-
-        $company = $companySession->getCurrentCompany();
-
-        $deposits = $paginator->paginate(
-            $entityManager->getRepository(Deposit::class)->getDepositsByFilters($company,$form->getData()),
-            $request->query->getInt('page', 1),
-            $request->query->getInt('items', 20)
-        );
-
-        return $this->render('deposit/deposit_index.html.twig', [
-            'deposits' => $deposits,
-            'form' => $form
-        ]);
-    }
+    
 }

@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 class ProductController extends AbstractController
 {
@@ -27,7 +29,6 @@ class ProductController extends AbstractController
 
         $form->handleRequest($request);
 
-
         $product = $paginator->paginate(
             $entityManager->getRepository(Product::class)->getProductsByFilters($company, $form->getData()),
             $request->query->getInt('page', 1),
@@ -41,6 +42,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('product/show/{id}', name: 'app_user_product_show', methods: ['GET'])]
+    #[IsGranted('see', 'product')]
     public function show(Product $product): Response
     {
         return $this->render('products/product_show.html.twig', [
@@ -76,6 +78,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('product/edit/{id}', name: 'app_user_product_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', 'product')]
     public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ProductFormType::class, $product);
@@ -97,6 +100,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('product/delete/{id}/{token}', name: 'app_user_product_delete', methods: ['GET'])]
+    #[IsGranted('delete', 'product')]
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager, string $token): Response
     {
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $token)) {

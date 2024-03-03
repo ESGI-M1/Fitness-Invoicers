@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\Security\Core\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 
 
@@ -18,6 +19,7 @@ class AddressController extends AbstractController
 {
 
     #[Route('/address/add/customer/{id}', name: 'app_user_address_add', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', 'customer')]
     public function add(EntityManagerInterface $entityManager, Request $request, Customer $customer, int $invoice_id = null): Response
     {
 
@@ -70,6 +72,7 @@ class AddressController extends AbstractController
     }
 
     #[Route('/address/deliveryAddress/edit/{customer_id}/{address_id}/{invoice_id}', name: 'app_user_address_deliveryAddress_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', 'customer')]
     public function deliveryEdit(
         EntityManagerInterface                   $entityManager,
         Request                                  $request,
@@ -102,6 +105,7 @@ class AddressController extends AbstractController
     }
 
     #[Route('/address/billingAddress/edit/{customer_id}/{address_id}', name: 'app_user_address_billingAddress_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('edit', 'customer')]
     public function billingEdit(
         EntityManagerInterface                   $entityManager,
         Request                                  $request,

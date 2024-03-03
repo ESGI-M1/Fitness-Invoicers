@@ -49,7 +49,8 @@ class QuoteVoter extends Voter
         }
 
         return match ($attribute) {
-            self::SEE, self::ADD => $this->canAddOrSee($subject, $user),
+            self::SEE => $this->canSee($subject, $user),
+            self::ADD => $this->canAdd($subject, $user),
             self::EDIT => $this->canEdit($subject, $user),
             self::MAIL => $this->canMail($subject, $user),
             self::CONVERT => $this->canConvert($subject, $user),
@@ -58,7 +59,7 @@ class QuoteVoter extends Voter
         };
     }
 
-    private function canAddOrSee(Quote $quote, UserInterface $user): bool
+    private function canSee(Quote $quote, UserInterface $user): bool
     {
         $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
 
@@ -67,6 +68,20 @@ class QuoteVoter extends Voter
         }
 
         if(!$currentCompany || $currentCompany !== $quote->getCompany() || !$currentCompany->userInCompany($user)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function canAdd(?Quote $invoice, UserInterface $user): bool
+    {
+        $currentCompany = $this->companySession->getCurrentCompanyWithoutRedirect();
+        if($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        if(!$currentCompany || !$currentCompany->userInCompany($user)) {
             return false;
         }
 

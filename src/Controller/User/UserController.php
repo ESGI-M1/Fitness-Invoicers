@@ -26,19 +26,16 @@ class UserController extends AbstractController
         $profileForm = $this->createForm(ProfileFormType::class, $user);
         $passwordForm = $this->createForm(ChangePasswordFormType::class);
         $mailForm = $this->createForm(UserMailFormType::class, $user);
-        //$companyForm = $this->createForm(CompanyFormType::class, $this->getUser());
 
         $companyMemberships = $user->getCompanyMemberships()->getValues();
-        dump($companyMemberships);
 
         $profileForm->handleRequest($request);
 
         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
 
-            // add flash message
+            $entityManager->flush();
             $this->addFlash('success', 'Votre profil a été mis à jour avec succès');
 
-            $entityManager->flush();
             return $this->redirectToRoute('app_index_profile');
         }
 

@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CompanyController extends AbstractController
 {
 
-    #[Route('/company/show/{id}', name: 'app_user_company_show')]
+    #[Route('/company/show/{id}', name : 'app_user_company_show')]
     #[IsGranted('referent', 'company')]
     public function show(Company $company): Response
     {
@@ -27,7 +27,7 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    #[Route('company/add', name: 'app_user_company_add', methods: ['GET', 'POST'])]
+    #[Route('company/add', name : 'app_user_company_add', methods : ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $entityManager): Response
     {
         $company = new Company();
@@ -35,7 +35,6 @@ class CompanyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $user = $this->getUser();
             $companyMembership = new CompanyMembership();
             $companyMembership->setRelatedUser($user);
@@ -60,7 +59,7 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    #[Route('company/edit/{id}', name: 'app_user_company_edit', methods: ['GET', 'POST'])]
+    #[Route('company/edit/{id}', name : 'app_user_company_edit', methods : ['GET', 'POST'])]
     #[IsGranted('referent', 'company')]
     public function edit(Request $request, Company $company, EntityManagerInterface $entityManager): Response
     {
@@ -68,7 +67,6 @@ class CompanyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $entityManager->flush();
 
             return $this->redirectToRoute('app_user_company_show', ['id' => $company->getId()]);
@@ -81,11 +79,11 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    #[Route('company/delete/{id}/{token}', name: 'app_user_company_delete', methods: ['POST'])]
+    #[Route('company/delete/{id}/{token}', name : 'app_user_company_delete', methods : ['POST'])]
     #[IsGranted('referent', 'company')]
     public function delete(Request $request, Company $company, EntityManagerInterface $entityManager, string $token): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$company->getId(), $token)) {
+        if ($this->isCsrfTokenValid('delete' . $company->getId(), $token)) {
             $entityManager->remove($company);
             $entityManager->flush();
         }
@@ -93,7 +91,7 @@ class CompanyController extends AbstractController
         return $this->redirectToRoute('app_user_company_index');
     }
 
-    #[Route('company/set', name: 'app_user_company_set', methods: ['GET', 'POST'])]
+    #[Route('company/set', name : 'app_user_company_set', methods : ['GET', 'POST'])]
     public function set(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession): Response
     {
         $user = $this->getUser();
@@ -103,21 +101,16 @@ class CompanyController extends AbstractController
             CompanyChoiceType::class,
             null,
             [
-                'company' => $companySession->getCurrentCompany(),
                 'companies' => $companies,
-//                'attr' => [
-//                    'company' => $companySession->getCurrentCompany(),
-//                ]
             ]
         );
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $user = $this->getUser();
 
             $companyMembershipForm = $form->get('company')->getData();
-            if($companyMembershipForm->getRelatedUser() === $user && $companyMembershipForm->getStatus() === CompanyMembershipStatusEnum::ACCEPTED) {
+            if ($companyMembershipForm->getRelatedUser() === $user && $companyMembershipForm->getStatus() === CompanyMembershipStatusEnum::ACCEPTED) {
                 $companySession->setCurrentCompany($companyMembershipForm->getCompany());
             }
 

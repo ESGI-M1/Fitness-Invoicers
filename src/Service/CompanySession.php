@@ -36,15 +36,15 @@ class CompanySession
         $session = $this->requestStack->getSession();
         $companyId = $session->get('current_company');
 
-        if (!$companyId && !$this->security->isGranted('ROLE_SUPER_ADMIN')) {
-            $response = new RedirectResponse($this->router->generate('app_user_company_set'), Response::HTTP_SEE_OTHER);
+        if (!$companyId && !$this->security->isGranted('ROLE_ADMIN')) {
+            $response = new RedirectResponse($this->router->generate('app_user_company_set'));
             $response->send();
         }
 
         $company = $this->entityManager->getRepository(Company::class)->find($companyId);
 
         if (!$company) {
-            $response = new RedirectResponse($this->router->generate('app_user_company_set'), Response::HTTP_SEE_OTHER);
+            $response = new RedirectResponse($this->router->generate('app_user_company_set'));
             $response->send();
         }
 

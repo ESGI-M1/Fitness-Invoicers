@@ -17,6 +17,7 @@ class CompanyChoiceType extends AbstractType
     ) {
         $this->em = $em;
     }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -30,7 +31,6 @@ class CompanyChoiceType extends AbstractType
                 'placeholder' => 'Choisir une société',
                 'required' => true,
                 'multiple' => false,
-                'data' => $options['company']
             ]);
     }
 
@@ -39,7 +39,6 @@ class CompanyChoiceType extends AbstractType
         $resolver->setDefaults(
             [
                 'companies' => [],
-                'company' => null,
             ]
         );
     }
