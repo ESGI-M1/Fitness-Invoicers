@@ -5,10 +5,10 @@
 ] %}
 
 <nav class="transition-all duration-300 bg-secondary h-12 w-full p-4 px-8 flex justify-between items-center">
-    <button id="burger-menu"
-            class="rounded-xl p-1 hover:bg-primaryLighter dark:hover:bg-white transition-colors duration-500">
-        <i class="fas fa-list"></i>
-    </button>
+    {% include './components/button_top_menu.html.twig' with {
+        'id': 'burger-menu',
+        'fa': 'list'
+    } %}
     <div class="flex gap-x-4 items-center">
         <div class="flex justify-around items-center rounded-xl w-24 p-1">
             {% for mode in modes %}
@@ -18,10 +18,11 @@
                 } %}
             {% endfor %}
         </div>
-        <a href="{{ path('app_user_profile') }}"
-           class="rounded-xl p-1 hover:bg-primaryLighter dark:hover:bg-white transition-colors duration-500">
-            Mon compte
-        </a>
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_profile'),
+            'class': 'rounded-xl p-1 hover:bg-primaryLighter dark:text-white transition-colors duration-500',
+            'label': 'Mon compte',
+        } %}
         {% include './components/a_top_menu.html.twig' with {
             'path': path('app_logout'),
             'fa': 'right-from-bracket'

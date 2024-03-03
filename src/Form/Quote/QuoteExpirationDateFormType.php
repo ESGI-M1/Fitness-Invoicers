@@ -18,7 +18,7 @@ class QuoteExpirationDateFormType extends AbstractType
         $builder
             ->add('expirationDate', DateType::class, [
                 'label' => 'Date d\'expiration',
-                'required' => false,
+                'required' => true,
                 'widget' => 'single_text',
                 'attr' => [
                     'min' => (new \DateTime())->format('Y-m-d'),

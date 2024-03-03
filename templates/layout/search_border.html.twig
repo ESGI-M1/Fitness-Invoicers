@@ -1,4 +1,4 @@
-<div class="search border-b shadow-lg p-4">
+<div class="search border-b p-4">
     {% if form %}
         {{ form_start(form) }}
         {{ form_end(form) }}
@@ -12,15 +12,12 @@
     {% if path is defined %}
         <div class="text-right">
             {% if is_granted(right) %}
-
             {% include './components/a.html.twig' with {
                 'path': path,
-                'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+                'class': 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded float-right',
                 'label': label,
                 'fa': 'add'
             } %}
-{#            {% if is_granted('company_referent')%}#}
-
             {% endif %}
         </div>
     {% endif %}

@@ -8,12 +8,12 @@
         'entity': 'Devis',
         'values': quotes,
         'path': path('app_user_quote_step_one'),
-        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'class': 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded float-right',
         'label': 'Ajouter un devis',
         'right': 'ROLE_USER'
     } %}
     <div class="mt-4">
-        <table class="table table-bordered table-striped table-hover w-full">
+        <table class="table table-bordered table-striped table-hover w-full text-center dark:text-white">
             <thead>
             <tr>
                 {% include './components/sorted.html.twig' with {
@@ -22,9 +22,9 @@
                     'value': 'q.id',
                 } %}
                 {% include './components/sorted.html.twig' with {
-                    'title': 'Date de création',
+                    'title': 'Date',
                     'entity': quotes,
-                    'value': 'q.createdAt',
+                    'value': 'q.date',
                 } %}
                 {% include './components/sorted.html.twig' with {
                     'title': 'Client',
@@ -36,32 +36,24 @@
                     'entity': quotes,
                 } %}
                 {% include './components/sorted.html.twig' with {
-                    'title': 'Montant remise',
-                    'entity': quotes,
-                    'value': 'q.discountAmount' ?? 0,
-                } %}
-                {% include './components/sorted.html.twig' with {
                     'title': 'Statut',
                     'entity': quotes,
                 } %}
                 <th class="border">Factures</th>
                 <th class="border">Actions</th>
-                <th class="border">PDF</th>
             </tr>
             </thead>
             <tbody>
             {% for quote in quotes %}
-                <tr>
+                <tr class="p-4">
                     <td class="border">{{ quote.id }}</td>
                     <td class="border">{{ quote.date|date('d/m/Y') }}</td>
                     <td class="border">{{ quote.customer ? quote.customer.fullname : '' }}</td>
                     <td class="border">{{ quote.totalAmount ?? 0 }} €</td>
-                    <td class="border">
-                        {{ quote.discountAmount is not null ? quote.discountAmount ~ '€' : 0 }}
-                    </td>
                     <td class="border">{{ quote.status.getStatusLabel() }}</td>
                     <td class="border text-center">
                         {% if quote.invoices %}
+                            <div class="flex flex-col">
                             {% for invoice in quote.invoices %}
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_invoice_show', { 'id': invoice.id }),
@@ -69,6 +61,7 @@
                                     'fa': 'eye'
                                 } %}
                             {% endfor %}
+                            </div>
                         {% else %}
                             <span class="text-center">Aucune facture</span>
                         {% endif %}
@@ -104,7 +97,6 @@
                                 'fa': 'paperclip'
                             } %}
                         {% endif %}
-                    <td class="border">
                         {% if is_granted('see', quote) and quote.isValid %}
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_quote_pdf', { 'id': quote.id }),
@@ -121,7 +113,7 @@
             </tbody>
         </table>
         {% if quotes is not empty %}
-                    {{ knp_pagination_render(quotes) }}
+            {{ knp_pagination_render(quotes) }}
         {% endif %}
     </div>
 {% endblock %}

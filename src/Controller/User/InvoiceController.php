@@ -228,6 +228,12 @@ class InvoiceController extends AbstractController
             return $this->redirectToRoute('app_user_invoice_step_two', ['id' => $invoice->getId()]);
         }
 
+        if(!$invoice->isValid()){
+            foreach($invoice->getIsNotValidErrors() as $error){
+                $this->addFlash('danger', $error);
+            }
+        }
+
         $formStatus = $this->createForm(InvoiceStatusFormType::class, $invoice);
         $formStatus->handleRequest($request);
 

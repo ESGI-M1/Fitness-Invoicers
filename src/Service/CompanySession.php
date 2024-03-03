@@ -43,7 +43,7 @@ class CompanySession
 
         $company = $this->entityManager->getRepository(Company::class)->find($companyId);
 
-        if (!$company) {
+        if (!$company || !$company->userInCompany($user)) {
             $response = new RedirectResponse($this->router->generate('app_user_company_set'));
             $response->send();
         }
@@ -69,7 +69,7 @@ class CompanySession
 
         $company = $this->entityManager->getRepository(Company::class)->find($companyId);
 
-        if (!$company) {
+        if (!$company || !$company->userInCompany($user)) {
             return null;
         }
 
@@ -101,7 +101,7 @@ class CompanySession
 
         $company = $this->entityManager->getRepository(Company::class)->find($companyId);
 
-        if (!$company) {
+        if (!$company || !$company->userInCompany($user)) {
             return null;
         }
 

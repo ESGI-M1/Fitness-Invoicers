@@ -192,7 +192,6 @@ class QuoteController extends AbstractController
     #[IsGranted('edit', 'quote')]
     public function stepThree(Request $request, EntityManagerInterface $entityManager, quote $quote): Response
     {
-
         if ($quote->getStatus() != QuoteStatusEnum::DRAFT) {
             $this->addFlash('danger', 'Le devis ' . $quote->getId() . ' ne peut être modifiée');
             return $this->redirectToRoute('app_user_quote_index');
@@ -201,6 +200,12 @@ class QuoteController extends AbstractController
         if (!$quote->isValidStepTwo()) {
             $this->addFlash('danger', 'Le devis ' . $quote->getId() . ' n\'a pas de produit');
             return $this->redirectToRoute('app_user_quote_step_two', ['id' => $quote->getId()]);
+        }
+
+        if(!$quote->isValid()){
+            foreach($quote->getIsNotValidErrors() as $error){
+                $this->addFlash('danger', $error);
+            }
         }
 
         $formStatus = $this->createForm(QuoteStatusFormType::class, $quote);

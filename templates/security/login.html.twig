@@ -23,14 +23,14 @@
                             Vous êtes connecté en tant que {{ app.user.userIdentifier }},
                             {% include './components/a.html.twig' with {
                                 'path': path('app_logout'),
-                                'class': 'text-red-600 hover:text-red-500',
+                                'class': 'text-tertiary-hover hover:text-tertiary',
                                 'label': 'Déconnexion',
                             } %}
                         </div>
                         <div>
                             {% include './components/a.html.twig' with {
                                 'path': path('app_index'),
-                                'class': 'text-blue-600 hover:text-blue-500',
+                                'class': 'text-primary-hover hover:text-primary',
                                 'label': 'Revenir vers l\'accueil',
                                 'fa': 'home'
                             } %}
@@ -53,7 +53,7 @@
                     <div class="flex justify-end mb-4">
                         {% include './components/a.html.twig' with {
                             'path': path('app_forgot_password_request'),
-                            'class': 'text-sm ml-2 text-blue-600 hover:text-blue-500',
+                            'class': 'text-sm ml-2 text-primary-hover hover:text-primary',
                             'label': 'Mot de passe oublié?',
                         } %}
                     </div>

@@ -5,6 +5,78 @@
 {% block main %}
     <div class="flex flex-col items-center">
         <h1 class="text-3xl font-bold mb-4">Guide de design avec Tailwind CSS</h1>
+
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+
+        <div class="text-center ml-4">
+            <h2 class="text-2xl font-bold mb-2">Couleur des thèmes du site</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <!-- Thème Clair (Light) -->
+            <div class="bg-white text-black p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">Thème Clair (Light)</h2>
+            </div>
+
+            <!-- Thème Sombre (Dark) -->
+            <div class="bg-gray-800 text-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">Thème Sombre (Dark)</h2>
+            </div>
+        </div>
+
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+
+        <div class="text-center ml-4">
+            <h2 class="text-2xl font-bold mb-2">Couleur primaire du site</h2>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Couleur primaire -->
+            <div class="bg-primary hover:bg-primary-hover text-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">Couleur Primaire</h2>
+                <xmp class="text-sm">
+                    {% verbatim %}
+primary: {
+    DEFAULT: '#3182CE',
+    hover: '#2C5282',
+},
+                    {% endverbatim %}
+                </xmp>
+            </div>
+
+            <!-- Couleur secondaire -->
+            <div class="bg-secondary hover:bg-secondary-hover text-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">Couleur Secondaire</h2>
+                <xmp class="text-sm">
+                    {% verbatim %}
+secondary: {
+    DEFAULT: '#00A76F',
+    hover: '#276749',
+},
+                    {% endverbatim %}
+                </xmp>
+            </div>
+
+            <!-- Couleur tertiaire -->
+            <div class="bg-tertiary hover:bg-tertiary-hover text-white p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold mb-2">Couleur Tertiaire</h2>
+                <xmp class="text-sm">
+                    {% verbatim %}
+tertiary: {
+    DEFAULT: '#E53E3E',
+    hover: '#C53030',
+},
+                    {% endverbatim %}
+                </xmp>
+            </div>
+        </div>
+
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+
         <div class="text-center ml-4">
             <h2 class="text-2xl font-bold mb-2">Exemple de composant a</h2>
             <div class="mb-4 p-4 rounded-lg">
@@ -14,8 +86,16 @@
                     'label': 'Déconnexion',
                 } %}
             </div>
+            <h2 class="text-2xl font-bold mb-2">2ème exemple de composant a</h2>
+            <div class="flex justify-center mb-4 p-4 rounded-lg">
+                {% include './components/a.html.twig' with {
+                    'path': '#',
+                    'class': 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded float-right',
+                    'label': 'Ajouter',
+                    'fa': 'add'
+                } %}
+            </div>
         </div>
-
         <div class="bg-black text-white p-4 rounded-lg shadow-md">
             <xmp class="text-sm">
                 {% verbatim %}
@@ -31,9 +111,11 @@
                 {% endverbatim %}
             </xmp>
         </div>
+
         {% include './components/hr.html.twig' with {
             'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
         } %}
+
         <div class="flex justify-between mb-8">
             <div class="ml-4">
                 <h2 class="text-2xl font-bold mb-2">Exemple de component a_menu</h2>
@@ -44,7 +126,6 @@
                 } %}
             </div>
         </div>
-
         <div class="bg-black text-white p-4 rounded-lg shadow-md">
             <xmp class="text-sm">
                 {% verbatim %}
@@ -59,9 +140,11 @@
                     {% endverbatim %}
             </xmp>
         </div>
-        {% include './components/hr.html.twig' with {
+
+        {% include'./components/hr.html.twig' with {
             'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
         } %}
+
         <div class="flex justify-between mb-8">
             <div class="ml-4">
                 <h2 class="text-2xl font-bold mb-2">Exemple de component a_top_menu</h2>
@@ -84,9 +167,38 @@
                 {% endverbatim %}
             </xmp>
         </div>
+
         {% include './components/hr.html.twig' with {
             'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
         } %}
+
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2">Exemple de component bouton</h2>
+                <div class="mb-4">
+                    {% include './components/button.html.twig' with {
+                        'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6
+                        shadow-sm focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2
+                        border-solid p-4 shadow-lg justify-around bg-gray-100 hover:bg-gray-200',
+                        'label': 'Se connecter',
+                    } %}
+                </div>
+            </div>
+        </div>
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                <button class="{{ class }}">
+                    {{ label }}
+                </button>
+                {% endverbatim %}
+            </xmp>
+        </div>
+
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+
         <div class="flex justify-between mb-8">
             <div class="ml-4">
                 <h2 class="text-2xl font-bold mb-2">Exemple de component button_top_menu</h2>
@@ -109,9 +221,44 @@
                 {% endverbatim %}
             </xmp>
         </div>
+
         {% include './components/hr.html.twig' with {
             'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
         } %}
+
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2">Exemple de component error</h2>
+                {% include './components/error.html.twig' %}
+            </div>
+        </div>
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+              {% for type, flashMessages in app.flashes %}
+                 <div class="flex items-center p-4 mb-4 text-md border rounded-lg" role="alert">
+                <i class="fas fa-exclamation-circle dark:text-white"></i> &nbsp;
+                {% for message in flashMessages %}
+                <div>
+                    <span class="font-medium dark:text-white">{{ type }} alert</span> {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button id="{{ id }}"
+                    class="rounded-xl p-1 hover:bg-primaryLighter dark:hover:bg-white transition-colors duration-500">
+                {% if fa is defined %}
+                    <i class="fas fa-{{ fa }}"></i>
+                {% endif %}
+            </button>
+                {% endverbatim %}
+            </xmp>
+        </div>
+
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+
         <div class="flex justify-between mb-8">
             <div class="ml-4">
                 <h2 class="text-2xl font-bold mb-2">Exemple de component back</h2>
@@ -121,7 +268,6 @@
                 } %}
             </div>
         </div>
-
         <div class="bg-black text-white p-4 rounded-lg shadow-md">
             <xmp class="text-sm">
                 {% verbatim %}
@@ -139,34 +285,11 @@
                 {% endverbatim %}
             </xmp>
         </div>
+
         {% include './components/hr.html.twig' with {
             'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
         } %}
-        <div class="flex justify-between mb-8">
-            <div class="ml-4">
-                <h2 class="text-2xl font-bold mb-2">Exemple de bouton</h2>
-                <div class="mb-4">
-                    {% include './components/button.html.twig' with {
-                        'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6
-                        shadow-sm focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2
-                        border-solid p-4 shadow-lg justify-around bg-gray-100 hover:bg-gray-200',
-                        'label': 'Se connecter',
-                    } %}
-                </div>
-            </div>
-        </div>
-        <div class="bg-black text-white p-4 rounded-lg shadow-md">
-            <xmp class="text-sm">
-                {% verbatim %}
-                <button class="{{ class }}">
-                    {{ label }}
-                </button>
-                {% endverbatim %}
-            </xmp>
-        </div>
-        {% include './components/hr.html.twig' with {
-            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
-        } %}
+
         <div class="flex justify-between mb-8">
             <div class="ml-4">
                 <h2 class="text-2xl font-bold mb-2">Exemple de titre</h2>
@@ -178,7 +301,6 @@
                 </div>
             </div>
         </div>
-
         <div class="bg-black text-white p-4 rounded-lg shadow-md">
             <xmp class="text-sm">
                 {% verbatim %}
@@ -188,10 +310,12 @@
             </xmp>
         </div>
     </div>
+
     {% include './components/hr.html.twig' with {
         'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
     } %}
-    <div class="flex justify-between mb-8">
+
+    <div class="flex justify-center mb-8">
         <div class="ml-4">
             <h2 class="text-2xl font-bold mb-2">Exemple de component input</h2>
             <label class="block text-gray-800 required" for="_username">Identifiant</label>

@@ -19,7 +19,6 @@ class DashboardController extends AbstractController
     #[Route('/', name: 'app_index')]
     public function index(Request $request, Dashboard $dashboard, CompanySession $companySession): Response
     {
-
         $company = $companySession->getCurrentCompany();
 
         $dateRangeForm = $this->createForm(DateRangeFormType::class);
@@ -55,6 +54,7 @@ class DashboardController extends AbstractController
     #[Route('/design_guide', name: 'design_guide')]
     public function designGuide(): Response
     {
+        $this->addFlash('success','Exemple alert !');
         return $this->render('designGuide.html.twig');
     }
 }

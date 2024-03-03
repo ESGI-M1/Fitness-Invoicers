@@ -3,33 +3,33 @@
 {% block title %}{{ name.title }}{% endblock %}
 
 {% block main %}
-
-    <h1>Sélection du statut</h1>
+    <h1 class="text-3xl font-semibold mb-6 dark:text-white">Sélection du statut</h1>
 
     {% if value.isValid %}
-        <h2>Tout est valide</h2>
-        {{ form_start(formStatus) }}
-        {{ form_row(formStatus.status) }}
-        {{ form_row(formStatus.paymentMethod) }}
-        <button type="submit" class="btn btn-primary">Valider</button>
-        {{ form_end(formStatus) }}
-    {% else %}
-        <h2>Le pdf n'est pas valide</h2>
-        {% for error in value.IsNotValidErrors %}
-            <p>{{ error }}</p>
-        {% endfor %}
+        <div class="mb-8 p-4 bg-white dark:bg-gray-900 dark:text-white shadow-lg rounded-lg">
+            <h2>Tout est valide</h2>
+            {{ form_start(formStatus) }}
+            {{ form_row(formStatus.status) }}
+            {{ form_row(formStatus.paymentMethod) }}
+            <button type="submit" class="btn btn-primary">Valider</button>
+            {{ form_end(formStatus) }}
+        </div>
     {% endif %}
 
-    {{ form_start(formExpirationDate is defined ? formExpirationDate : form) }}
-    {% if formExpirationDate is defined %}
-        {{ form_row(formExpirationDate.expirationDate) }}
-    {% else %}
-        {{ form_row(form.dueDate) }}
-        {{ form_row(form.details) }}
-    {% endif %}
-    <button type="submit" class="btn btn-primary">Valider</button>
-    {{ form_end(formExpirationDate is defined ? formExpirationDate : form) }}
-
+    <div class="mb-8 p-4 bg-white dark:bg-gray-900 dark:text-white shadow-lg rounded-lg">
+        {{ form_start(formExpirationDate is defined ? formExpirationDate : form) }}
+        {% if formExpirationDate is defined %}
+            {{ form_row(formExpirationDate.expirationDate) }}
+        {% else %}
+            {{ form_row(form.dueDate) }}
+            {{ form_row(form.details) }}
+        {% endif %}
+        <button type="submit"
+                class="btn btn-primary bg-secondary hover:bg-secondary-hover text-white py-2 px-4 rounded">Valider
+        </button>
+        {{ form_end(formExpirationDate is defined ? formExpirationDate : form) }}
+    </div>
+    
     {% include './layout/preview.html.twig' %}
     <div class="flex justify-between w-full items-center ">
         {% include './components/a.html.twig' with {

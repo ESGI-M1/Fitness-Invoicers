@@ -2,4 +2,17 @@
   .form-input {
     @apply w-full rounded-md bg-gray-100 shadow-inner;
   }
+
+  .search form{
+    @apply w-full flex p-4 pb-0 shadow-lg rounded-lg dark:bg-gray-900;
+  }
+
+  .search form div{
+    @apply pr-2 rounded-md;
+  }
+
+  form label {
+    @apply dark:text-white #{!important};
+  }
+
 }

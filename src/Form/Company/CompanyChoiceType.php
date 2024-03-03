@@ -31,6 +31,9 @@ class CompanyChoiceType extends AbstractType
                 'placeholder' => 'Choisir une société',
                 'required' => true,
                 'multiple' => false,
+                'attr' => [
+                    'class' => 'select2'
+                ]
             ]);
     }
 

@@ -16,7 +16,6 @@ class QuoteStatusFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder
             ->add('status', EnumType::class, [
                 'class' => QuoteStatusEnum::class,

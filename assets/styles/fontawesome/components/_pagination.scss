@@ -3,7 +3,7 @@
 }
 
 .pagination .page-item {
-  @apply mx-1;
+  @apply mx-1 dark:text-white;
 }
 
 .pagination .active {

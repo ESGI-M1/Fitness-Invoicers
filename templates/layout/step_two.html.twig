@@ -8,9 +8,9 @@
     <div class="mb-6">
         {{ form_start(categoryForm) }}
         <div class="mb-4">
-            {{ form_row(categoryForm.categories, {'attr': {'class': 'w-full select2 border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 dark:border-black dark:text-white'}}) }}
+            {{ form_row(categoryForm.categories, {'attr': {'class': 'w-full select2 border border-gray-300 rounded p-2 focus:outline-none focus:border-primary dark:border-black dark:text-white'}}) }}
         </div>
-        <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+        <button type="submit" class="btn btn-primary bg-secondary hover:bg-secondary-hover text-white py-2 px-4 rounded">
             <i class="fas fa-check mr-2"></i> Valider
         </button>
         {{ form_end(categoryForm) }}
@@ -37,7 +37,7 @@
                             <td class="p-2">{{ product.price }} €</td>
                             <td class="p-2">
                                 <a href="{{ path('app_user_' ~ name.entity ~ '_add_item', {('id_' ~ name.entity): value.id, 'id_product': product.id}) }}"
-                                   class="text-blue-600 hover:text-blue-800">
+                                   class="text-primary hover:text-primary-hover">
                                     <i class="fas fa-plus"></i> Ajouter
                                 </a>
                             </td>
@@ -69,7 +69,7 @@
                         <td class="p-2">{{ product.price }} €</td>
                         <td class="p-2">
                             <a href="{{ path('app_user_' ~ name.entity ~ '_add_item', {('id_' ~ name.entity): value.id, 'id_product': product.id}) }}"
-                               class="text-blue-600 hover:text-blue-800">
+                               class="dark:text-primary hover:text-primary-hover">
                                 <i class="fas fa-plus"></i> Ajouter
                             </a>
                         </td>
@@ -110,13 +110,13 @@
                             <div class="flex items-center w-full">
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_' ~ name.entity ~ '_decrease_quantity_item', {'id_item': row.item.id}),
-                                    'class': 'text-blue-600 hover:text-blue-800',
+                                    'class': 'dark:text-white',
                                     'fa': 'minus'
                                 } %}
                                 {{ form_row(row.form.quantity, {'attr': {'class': 'w-12 dark:text-black'}}) }}
                                 {% include './components/a.html.twig' with {
                                     'path': path('app_user_' ~ name.entity ~ '_increase_quantity_item', {'id_item': row.item.id}),
-                                    'class': 'text-blue-600 hover:text-blue-800',
+                                    'class': 'dark:text-white',
                                     'fa': 'plus'
                                 } %}
                             </div>
@@ -131,7 +131,6 @@
                             </button>
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_' ~ name.entity ~ '_remove_item', {('id_' ~ name.entity): value.id, 'id_item': row.item.id}),
-                                'class': 'text-red-600 hover:text-red-800',
                                 'fa': 'trash'
                             } %}
                         </td>

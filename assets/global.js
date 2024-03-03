@@ -65,13 +65,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     forms.forEach(function (form) {
         const parentDiv = form.parentElement;
-        const mb6Divs = form.querySelectorAll('div.mb-6');
 
         if (parentDiv.classList.contains('search')) {
-            form.classList.add('flex');
-            mb6Divs.forEach(div => {
-                div.classList.add('pr-4');
-            });
             form.querySelectorAll('input').forEach(input => {
                 input.addEventListener('change', function() {
                     form.submit();

@@ -28,11 +28,12 @@ class CompanyMembershipController extends AbstractController
 {
     #[Route('/companymembership', name: 'app_user_company_membership_index', methods: ['GET', 'POST'])]
     public function list(
-        Request $request,
-        CompanySession $companySession,
+        Request                $request,
+        CompanySession         $companySession,
         EntityManagerInterface $entityManager,
-        PaginatorInterface $paginator
-    ): Response {
+        PaginatorInterface     $paginator
+    ): Response
+    {
         $company = $companySession->getCurrentCompany();
 
         $form = $this->createForm(UserSearchType::class);
@@ -71,9 +72,9 @@ class CompanyMembershipController extends AbstractController
             $companyMembership->setCompany($company);
             $companyMembership->setStatus(CompanyMembershipStatusEnum::ACCEPTED);
 
-            if($userByMail){
+            if ($userByMail) {
 
-                if($entityManager->getRepository(CompanyMembership::class)->getCompanyMembershipsByCompanyAndUser($company, $userByMail)){
+                if ($entityManager->getRepository(CompanyMembership::class)->getCompanyMembershipsByCompanyAndUser($company, $userByMail)) {
                     $this->addFlash('error', 'Cet utilisateur est déjà membre de l\'entreprise');
                     return $this->redirectToRoute('app_user_company_membership_add');
                 }
@@ -90,8 +91,7 @@ class CompanyMembershipController extends AbstractController
 
                 $this->addFlash('success', 'Utilisateur ajouté avec succès!');
 
-            }
-            else{
+            } else {
                 $companyMembership->setRelatedUser($user);
                 $randomPassword = bin2hex(random_bytes(12));
                 $user->setPassword($passwordHasher->hashPassword($user, $randomPassword));
@@ -111,7 +111,6 @@ class CompanyMembershipController extends AbstractController
 
             $entityManager->persist($companyMembership);
             $entityManager->flush();
-
 
 
             return $this->redirectToRoute('app_user_company_membership_index');
@@ -163,12 +162,11 @@ class CompanyMembershipController extends AbstractController
     #[Route('companymembership/delete/{id}/{token}', name: 'app_user_company_membership_delete', methods: ['GET'])]
     public function delete(CompanyMembership $companyMembership, EntityManagerInterface $entityManager, string $token): Response
     {
-
         if ($this->isCsrfTokenValid('delete-user-company-membership' . $companyMembership->getId(), $token)) {
 
             $user = $companyMembership->getRelatedUser();
 
-            if($companyMembership->getCompany()->getReferent() === $user){
+            if ($companyMembership->getCompany()->getReferent() === $user) {
                 $this->addFlash('error', 'Vous ne pouvez pas quitter l\'entreprise car vous êtes le référent de l\'entreprise');
                 return $this->redirectToRoute('app_user_company_membership_index');
             }
@@ -178,8 +176,6 @@ class CompanyMembershipController extends AbstractController
             $entityManager->flush();
 
         }
-
         return $this->redirectToRoute('app_user_profile');
     }
-
 }

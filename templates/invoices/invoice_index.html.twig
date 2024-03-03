@@ -8,12 +8,12 @@
         'entity': 'Factures',
         'values': invoices,
         'path': path('app_user_invoice_step_one'),
-        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'class': 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded float-right',
         'label': 'Ajouter une facture',
         'right': 'ROLE_USER'
     } %}
     <div class="mt-4">
-        <table class="table table-bordered table-striped table-hover w-full">
+        <table class="table table-bordered table-fixed table-striped table-hover w-full text-center dark:text-white">
             <thead>
             <tr>
                 {% include './components/sorted.html.twig' with {
@@ -22,9 +22,9 @@
                     'value': 'i.id',
                 } %}
                 {% include './components/sorted.html.twig' with {
-                    'title': 'Date de création',
+                    'title': 'Date',
                     'entity': invoices,
-                    'value': 'i.createdAt',
+                    'value': 'i.date',
                 } %}
                 {% include './components/sorted.html.twig' with {
                     'title': 'Client',
@@ -36,41 +36,32 @@
                     'entity': invoices,
                 } %}
                 {% include './components/sorted.html.twig' with {
-                    'title': 'Montant remise',
-                    'entity': invoices,
-                    'value': 'i.discountAmount' ?? 0,
-                } %}
-                {% include './components/sorted.html.twig' with {
                     'title': 'Statut',
                     'entity': invoices,
                 } %}
                 <th class="border">Devis</th>
                 <th class="border">Rapports</th>
                 <th class="border">Actions</th>
-                <th class="border">PDF</th>
             </tr>
             </thead>
             <tbody>
             {% for invoice in invoices %}
-                <tr>
+                <tr class="p-4">
                     <td class="border">{{ invoice.id }}</td>
                     <td class="border">{{ invoice.date|date('d/m/Y') }}</td>
                     <td class="border">{{ invoice.customer ? invoice.customer.fullname : '' }}</td>
                     <td class="border">{{ invoice.totalAmount }}€</td>
-                    <td class="border">
-                        {{ invoice.discountAmount is not null ? invoice.discountAmount ~ '€' : 0 }}
-                    </td>
                     <td class="border">{{ invoice.status.getStatusLabel() }}</td>
                     <td class="border text-center">
                         {% if invoice.quote %}
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_quote_show', { 'id': invoice.quote.id }),
+                                'label': invoice.quote.id ~ ' ' ~ invoice.quote.status.value,
                                 'fa': 'eye'
                             } %}
                         {% else %}
                             <span class="text-center">Aucun devis</span>
                         {% endif %}
-                        {{ invoice.isValid ? 'Validé' : 'Non validé' }}
                     </td>
                     <td class="border">
                         {{ invoice.deposit ? 'Acompte' : 'Solde' }}
@@ -100,7 +91,6 @@
                                 'fa': 'trash'
                             } %}
                         {% endif %}
-                    <td class="border">
                         {% if is_granted('see', invoice) and invoice.isValid %}
                             {% include './components/a.html.twig' with {
                                 'path': path('app_user_invoice_pdf', { 'id': invoice.id }),
@@ -111,7 +101,7 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="9" class="text-center border">Aucune facture</td>
+                    <td colspan="8" class="text-center border">Aucune facture</td>
                 </tr>
             {% endfor %}
             </tbody>

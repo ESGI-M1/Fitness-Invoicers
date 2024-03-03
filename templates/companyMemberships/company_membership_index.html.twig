@@ -8,7 +8,7 @@
         'entity': 'Utilisateurs',
         'values': users,
         'path': path('app_user_company_membership_add'),
-        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'class': 'fancy-add bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded float-right',
         'label': 'Ajouter un utilisateur',
         'right': 'ROLE_ADMIN'
     } %}
@@ -42,10 +42,10 @@
             <tbody>
             {% for user in users %}
                 <tr>
-                    <td class="border">{{ user.relatedUser.lastName }}</td>
-                    <td class="border">{{ user.relatedUser.firstName }}</td>
-                    <td class="border">{{ user.relatedUser.email }}</td>
-                    <td class="border">{{ user.status.name }}</td>
+                    <td class="border p-4">{{ user.relatedUser.lastName }}</td>
+                    <td class="border p-4">{{ user.relatedUser.firstName }}</td>
+                    <td class="border p-4">{{ user.relatedUser.email }}</td>
+                    <td class="border p-4">{{ user.status.name }}</td>
                     {% if is_granted('company_referent') %}
                         <td class="border">
                             {% include './components/a.html.twig' with {

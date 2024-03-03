@@ -14,7 +14,7 @@ module.exports = {
                     hover: '#2C5282', // Bleu foncé au survol
                 },
                 secondary: {
-                    DEFAULT: '#38A169', // Vert
+                    DEFAULT: '#00A76F', // Vert
                     hover: '#276749', // Vert foncé au survol
                 },
                 tertiary: {
