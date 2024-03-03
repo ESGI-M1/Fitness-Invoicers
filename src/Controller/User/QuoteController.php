@@ -260,7 +260,6 @@ class QuoteController extends AbstractController
     #[IsGranted('mail', 'quote')]
     public function stepFour(Request $request, EntityManagerInterface $entityManager, Quote $quote, Mailer $mailer): Response
     {
-
         if (!$quote->isValidStepThree()) {
             $this->addFlash('danger', 'La devis n`\'a pas de date d\'expiration et de statut');
             return $this->redirectToRoute('app_user_quote_step_three', ['id' => $quote->getId()]);
@@ -274,26 +273,21 @@ class QuoteController extends AbstractController
 
         $form = $this->createForm(MailFormType::class, $mail);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
-
             if($form->getClickedButton() && 'send' === $form->getClickedButton()->getName()) {
                 $mailer->sendQuote($quote, $mail);
-                $mail->setDate(new \DateTimeImmutable());
-                $mail->setQuote($quote);
-                $mail->setCustomer($quote->getCustomer());
-                $entityManager->persist($mail);
 
                 $quote->setStatus(QuoteStatusEnum::SENT);
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Le devis a été envoyée');
             }
-
         }
 
-        return $this->render('quotes/quote_step_four.html.twig', [
-            'quote' => $quote,
+        return $this->render('layout/step_four.html.twig', [
+            'entity' => $quote,
+            'title' => 'Devis',
             'form' => $form,
             'mail' => $mail
         ]);
@@ -402,12 +396,18 @@ class QuoteController extends AbstractController
         ]);
     }
 
-    #[Route('quote/delete/{id}/{token}', name: 'app_user_quote_delete', methods: ['POST'])]
+    #[Route('quote/delete/{id}/{token}', name: 'app_user_quote_delete', methods: ['GET'])]
     public function delete(Request $request, Quote $quote, EntityManagerInterface $entityManager, string $token): Response
     {
         if ($this->isCsrfTokenValid('delete' . $quote->getId(), $token)) {
+            $items = $quote->getItems();
+            foreach ($items as $item) {
+                $entityManager->remove($item);
+            }
+
             $entityManager->remove($quote);
             $entityManager->flush();
+
             $this->addFlash('success', 'Le devis a bien été supprimé.');
         }
 
@@ -445,7 +445,7 @@ class QuoteController extends AbstractController
             $invoice->setQuote($quote);
             $invoice->setDetails($quote->getDetails());
             $invoice->setDate(new \DateTimeImmutable());
-            //$invoice->setDueDate($form->get('dueDate')->getData());
+            $invoice->setDueDate($form->get('dueDate')->getData());
             $invoice->setStatus(InvoiceStatusEnum::SENT);
             $items = $quote->getItems();
             foreach ($items as $item) {
@@ -490,7 +490,6 @@ class QuoteController extends AbstractController
                     $payment = new Payment();
                     $payment->setInvoice($invoice);
                     $payment->setAmount($amount);
-                    $payment->setDate(new \DateTimeImmutable());
                     $payment->setMethod($paymentMethod);
 
                     $entityManager->persist($deposit);
@@ -519,7 +518,6 @@ class QuoteController extends AbstractController
                     $payment = new Payment();
                     $payment->setInvoice($invoice);
                     $payment->setAmount($amountPercent);
-                    $payment->setDate(new \DateTimeImmutable());
                     $payment->setMethod($paymentMethod);
 
                     $entityManager->persist($deposit);
@@ -534,9 +532,7 @@ class QuoteController extends AbstractController
                     $this->addFlash('danger', 'L\'action n\'est pas valide');
                     return $this->redirectToRoute('app_user_quote_index');
             }
-
-            dump($form->getData());
-
+            
             if($success) {
                 $this->addFlash('success', 'Le devis n°' . $quote->getId() . ' a bien été converti en facture n°' . $invoice->getId());
                 $entityManager->persist($invoice);

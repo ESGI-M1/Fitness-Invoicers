@@ -442,10 +442,11 @@ class Invoice
 
     public function getOutStandingAmount(): float
     {
-        if ($this->getDeposit() !== null) {
-            return $this->getTotalAmount() - $this->getDeposit()->getAmount();
+        $payments = $this->getPayments();
+        foreach ($payments as $payment) {
+            $amount += $payment->getAmount();
         }
-        return $this->getTotalAmount();
+        return $this->getTotalAmount() - $amount;
     }
 
     public function getDueDate(): ?\DateTimeImmutable

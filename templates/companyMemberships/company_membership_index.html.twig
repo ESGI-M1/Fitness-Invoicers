@@ -48,10 +48,14 @@
                     <td class="border">{{ user.status.name }}</td>
                     {% if is_granted('company_referent') %}
                         <td class="border">
-                            <a href="{{ path('app_user_company_membership_edit', {'id': user.id}) }}"
-                               class="fancy-edit bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Modifier</a>
-                            <a href="{{ path('app_user_company_membership_delete', {'id': user.id, 'token': csrf_token('delete-user-company-membership' ~ user.id) }) }}"
-                               class="fancy-delete bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Supprimer</a>
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_company_membership_edit', { 'id': user.id }),
+                                'fa': 'edit'
+                            } %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_company_membership_delete', { 'id': user.id, 'token': csrf_token('delete-user-company-membership' ~ user.id) }),
+                                'fa': 'trash'
+                            } %}
                         </td>
                     {% endif %}
                 </tr>

@@ -6,8 +6,10 @@
 
     <h1>Facture {{ invoice.id }}</h1>
 
-    {% include './invoices/invoice_preview.html.twig' with {
-        'invoice': invoice,
+    {% include './layout/preview.html.twig' with {
+        'value': invoice,
+        'title': 'Factures',
+        'pre': 'FA'
     } %}
     
 {% endblock %}

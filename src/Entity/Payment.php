@@ -7,10 +7,14 @@ use App\Enum\PaymentStatusEnum;
 use App\Repository\PaymentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Trait\TimestampableTrait;
+
 
 #[ORM\Entity(repositoryClass: PaymentRepository::class)]
 class Payment
 {
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,7 +30,7 @@ class Payment
     private ?PaymentMethodEnum $method = null;
 
     #[ORM\ManyToOne(inversedBy: 'payments')]
-    private ?invoice $invoice = null;
+    private ?Invoice $invoice = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;

@@ -6,8 +6,10 @@
 
     <h1>Devis {{ quote.id }}</h1>
 
-    {% include './quotes/quote_preview.html.twig' with {
-        'quote': quote,
+    {% include './layout/preview.html.twig' with {
+        'value': quote,
+        'title': 'Devis',
+        'pre': 'DE'
     } %}
 
 {% endblock %}

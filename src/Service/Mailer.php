@@ -4,14 +4,15 @@ namespace App\Service;
 
 use App\Entity\Invoice;
 use App\Entity\Mail;
+use App\Entity\Payment;
 use App\Entity\Quote;
 use App\Enum\InvoiceStatusEnum;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Part\DataPart;
+use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment;
-use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 
 use Dompdf\Dompdf;
@@ -25,21 +26,25 @@ class Mailer
 
     private Environment $twig;
 
-    private UploaderHelper $uploaderHelper;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(MailerInterface $mailer, string $supportEmail, Security $security, Environment $twig, UploaderHelper $uploaderHelper)
+    public function __construct(MailerInterface $mailer, string $supportEmail, Security $security, Environment $twig, EntityManagerInterface $entityManager)
     {
         $this->mailer = $mailer;
         $this->supportEmail = $supportEmail;
         $this->security = $security;
         $this->twig = $twig;
-        $this->uploaderHelper = $uploaderHelper;
+        $this->entityManager = $entityManager;
     }
 
-    public function sendInvoice(Invoice $invoice, Mail $mail, bool $pdf = true)
+    public function sendInvoice(Invoice $invoice, Mail $mail)
     {
 
         $pdf = $this->generatePdfInvoice($invoice);
+
+        $mail->setDate(new \DateTimeImmutable());
+        $mail->setInvoice($invoice);
+        $mail->setCustomer($invoice->getCustomer());
 
         $email = (new TemplatedEmail())
             ->from($this->supportEmail)
@@ -47,7 +52,6 @@ class Mailer
             ->subject($mail->getObject())
             ->text($mail->getContent())
             ->htmlTemplate('mails/mail.html.twig')
-            ->addPart(new DataPart($pdf, 'facture.pdf', 'application/pdf'))
             ->context([
                 'invoice' => $invoice,
                 'company' => $invoice->getCompany(),
@@ -55,12 +59,23 @@ class Mailer
                 'user' => $this->security->getUser()
             ]);
 
+        if($mail->isJoinPDF()) {
+            $email->addPart(new DataPart($pdf, 'facture.pdf', 'application/pdf'));
+        }
+
         $this->mailer->send($email);
+
+        $this->entityManager->persist($mail);
+        $this->entityManager->flush();
     }
 
-    public function sendQuote(Quote $quote, Mail $mail, bool $pdf = true)
+    public function sendQuote(Quote $quote, Mail $mail)
     {
         $pdf = $this->generatePdfQuote($quote);
+
+        $mail->setDate(new \DateTimeImmutable());
+        $mail->setQuote($quote);
+        $mail->setCustomer($quote->getCustomer());
 
         $email = (new TemplatedEmail())
             ->from($this->supportEmail)
@@ -68,7 +83,6 @@ class Mailer
             ->subject($mail->getObject())
             ->text($mail->getContent())
             ->htmlTemplate('mails/mail.html.twig')
-            ->addPart(new DataPart($pdf, 'devis.pdf', 'application/pdf'))
             ->context([
                 'quote' => $quote,
                 'company' => $quote->getCompany(),
@@ -76,7 +90,14 @@ class Mailer
                 'user' => $this->security->getUser()
             ]);
 
+        if($mail->isJoinPDF()) {
+            $email->addPart(new DataPart($pdf, 'devis.pdf', 'application/pdf'));
+        }
+
         $this->mailer->send($email);
+
+        $this->entityManager->persist($mail);
+        $this->entityManager->flush();
     }
 
     public function sendConfirmationDeletedCustomer($customer, $company)
@@ -113,6 +134,46 @@ class Mailer
         }
 
         $this->mailer->send($email);
+
+        $this->entityManager->persist($mail);
+        $this->entityManager->flush();
+    }
+
+    public function sendPaymentReminder(Payment $payment)
+    {
+
+        $invoice = $payment->getInvoice();
+        $dueDate = $invoice->getDueDate();
+        $company = $invoice->getCompany();
+        $customer = $invoice->getCustomer();
+
+        $mail = new Mail();
+        $mail->setObject('Paiement en attente de la facture : ' . $invoice->getId());
+        $mail->setContent('Madame, Monsieur,
+        
+        Nous vous informons que votre paiement pour la facture n°' . $invoice->getId() . ' est en attente.
+        
+        La date limite de paiement est le ' . $dueDate->format('d/m/Y'));
+        $mail->setDate(new \DateTime());
+        $mail->setCustomer($customer);
+        $mail->setInvoice($invoice);
+
+        $email = (new TemplatedEmail())
+            ->from($this->supportEmail)
+            ->to($customer->getEmail())
+            ->subject($mail->getObject())
+            ->text($mail->getContent())
+            ->htmlTemplate('mails/payment_notification.html.twig')
+            ->context([
+                'invoice' => $invoice,
+                'company' => $company,
+                'mail' => $mail,
+            ]);
+
+        $this->mailer->send($email);
+
+        $this->entityManager->persist($mail);
+        $this->entityManager->flush();
     }
 
     private function generatePdfInvoice(Invoice $invoice)

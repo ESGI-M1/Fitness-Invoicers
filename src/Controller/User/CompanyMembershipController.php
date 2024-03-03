@@ -129,12 +129,20 @@ class CompanyMembershipController extends AbstractController
     public function edit(Request $request, CompanyMembership $companyMembership, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CompanyMembershipFormType::class, $companyMembership);
+        $user = $companyMembership->getRelatedUser();
 
+        $form->get('firstName')->setData($user->getFirstName());
+        $form->get('lastName')->setData($user->getLastName());
+        $form->get('email')->setData($user->getEmail());
         $form->handleRequest($request);
-        dump($companyMembership);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $companyMembership->getRelatedUser();
+            $user->setFirstName($form->get('lastName'))
+                ->setLastname($form->get('firstName'))
+                ->setEmail($form->get('email'));
 
+            $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Company membership updated successfully!');
             return $this->redirectToRoute('app_user_company_membership_index');

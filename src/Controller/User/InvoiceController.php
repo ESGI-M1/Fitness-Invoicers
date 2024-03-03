@@ -7,7 +7,10 @@ use App\Entity\Product;
 use App\Entity\Invoice;
 use App\Entity\Item;
 use App\Entity\Mail;
+use App\Entity\Payment;
 use App\Enum\InvoiceStatusEnum;
+use App\Enum\PaymentMethodEnum;
+use App\Enum\PaymentStatusEnum;
 use App\Service\CompanySession;
 use App\Service\Mailer;
 use App\Form\Invoice\InvoiceFormType;
@@ -227,8 +230,18 @@ class InvoiceController extends AbstractController
 
         if ($formStatus->isSubmitted() && $formStatus->isValid()) {
 
-            if($invoice->getStatus() == InvoiceStatusEnum::SENT) {
+            if($invoice->getStatus() == InvoiceStatusEnum::VALIDATED || $invoice->getStatus() == InvoiceStatusEnum::SENT) {
                 $invoice->setDate(new \DateTimeImmutable());
+
+                $payment = new Payment();
+                $payment->setDate(new \DateTimeImmutable());
+                $payment->setAmount($invoice->getTotalAmount());
+                $payment->setInvoice($invoice);
+                $payment->setMethod(PaymentMethodEnum::BANK_TRANSFER); // TODO
+                $payment->setStatus(PaymentStatusEnum::PENDING);
+
+                $entityManager->persist($payment);
+
             }
 
             $entityManager->flush();
@@ -277,19 +290,16 @@ class InvoiceController extends AbstractController
 
             if($form->getClickedButton() && 'send' === $form->getClickedButton()->getName()) {
                 $mailer->sendInvoice($invoice, $mail);
-                $mail->setDate(new \DateTimeImmutable());
-                $mail->setInvoice($invoice);
-                $mail->setCustomer($invoice->getCustomer());
-                $entityManager->persist($mail);
-
                 $invoice->setStatus(InvoiceStatusEnum::SENT);
                 $entityManager->flush();
+                
                 $this->addFlash('success', 'La facture a été envoyée');
             }
         }
 
-        return $this->render('invoices/invoice_step_four.html.twig', [
-            'invoice' => $invoice,
+        return $this->render('layout/step_four.html.twig', [
+            'entity' => $invoice,
+            'title' => 'Factures',
             'form' => $form,
             'mail' => $mail
         ]);
@@ -404,9 +414,16 @@ class InvoiceController extends AbstractController
     public function delete(Invoice $invoice, EntityManagerInterface $entityManager, string $token): Response
     {
         if ($invoice->getStatus() === InvoiceStatusEnum::DRAFT && $this->isCsrfTokenValid('delete' . $invoice->getId(), $token)) {
-            $this->addFlash('success', 'La facture n°' . $invoice->getId() . ' a été supprimée');
+            $items = $invoice->getItems();
+
+            foreach ($items as $item) {
+                $entityManager->remove($item);
+            }
+
             $entityManager->remove($invoice);
             $entityManager->flush();
+
+            $this->addFlash('success', 'La facture n°' . $invoice->getId() . ' a été supprimée');
         }
 
         return $this->redirectToRoute('app_user_invoice_index');

@@ -19,18 +19,17 @@
 
 {% block body %}
 
-    <div id="menu" class="flex h-screen w-screen">
+    <div id="menu" class="flex h-screen">
         {% include './layout/menu.html.twig' %}
         <div class="w-full">
             {% include './layout/top_menu.html.twig' %}
-            <main class="flex flex-col p-4">
+            <main class="flex flex-col flex-grow p-4">
                 {% include './components/error.html.twig' %}
-
                 {% block main %}{% endblock %}
             </main>
         </div>
     </div>
-
+    
 {% endblock %}
 </body>
 </html>

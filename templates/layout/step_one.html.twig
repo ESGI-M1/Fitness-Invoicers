@@ -22,8 +22,10 @@
                 <div class="flex flex-col items-center md:w-1/2 md:pl-8">
                     <h3 class="text-xl font-semibold mb-2">Adresse de livraison</h3>
                     {% if customer.deliveryAddress %}
-                        <a href="{{ path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, (name.entity ~ '_id'): value.id}) }}"
-                           class="fas fa-edit text-blue-600 hover:text-blue-800"></a>
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, (name.entity ~ '_id'): value.id}),
+                            'fa': 'edit'
+                        } %}
                         <p class="mb-2">{{ customer.deliveryAddress.street }}</p>
                         <p class="mb-2">{{ customer.deliveryAddress.postalCode }} {{ customer.deliveryAddress.city }}</p>
                         <p>{{ customer.deliveryAddress.country }}</p>
@@ -37,8 +39,10 @@
                 <div class="flex flex-col md:w-1/2 items-center md:pl-8">
                     <h3 class="text-xl font-semibold mb-2">Adresse de facturation</h3>
                     {% if customer.billingAddress %}
-                        <a href="{{ path('app_user_address_billingAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, (name.entity ~ '_id'): value.id}) }}"
-                           class="fas fa-edit text-blue-600 hover:text-blue-800"></a>
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_address_billingAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, (name.entity ~ '_id'): value.id}),
+                            'fa': 'edit'
+                        } %}
                         <p class="mb-2">{{ customer.billingAddress.street }}</p>
                         <p class="mb-2">{{ customer.billingAddress.postalCode }} {{ customer.billingAddress.city }}</p>
                         <p>{{ customer.billingAddress.country }}</p>
@@ -53,12 +57,14 @@
     </div>
 
     {% if value.isValidStepOne %}
-        {% include './components/a.html.twig' with {
-            'path': path('app_user_' ~ name.entity ~ '_step_two', {'id': value.id}),
-            'class': 'w-fit text-white font-bold rounded mt-6',
-            'label': 'Étape suivante',
-            'fa': 'arrow-right'
-        } %}
+        <div class="text-right">
+            {% include './components/a.html.twig' with {
+                'path': path('app_user_' ~ name.entity ~ '_step_two', {'id': value.id}),
+                'class': 'w-fit text-white font-bold rounded mt-6',
+                'label': 'Étape suivante',
+                'fa': 'arrow-right'
+            } %}
+        </div>
     {% else %}
         {% for error in value.IsNotValidStepOneErrors %}
             <p class="text-red-600">{{ error }}</p>

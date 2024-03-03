@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Factures{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block main %}
 
-    <h1>Envoie de la facture n°{{ invoice.id }}</h1>
+    {% set phrase = title is same as "Devis" ? 'du devis' : 'de la facture' %}
+
+    <h1>Envoi {{ phrase }} n°{{ entity.id }}</h1>
 
     <div class="flex w-full justify-around gap-4">
         <div class="w-2/5">
@@ -18,10 +20,10 @@
 
         <div class="w-3/5">
             <h2>Aperçu du mail</h2>
-            <p>Destinataire : {{ invoice.customer.email }}</p>
-            <p>Objet : {{  mail.object }}</p>
+            <p>Destinataire : {{ entity.customer.email }}</p>
+            <p>Objet : {{ mail.object }}</p>
             {% if mail.joinPDF %}
-                <p><i class="fas fa-file-pdf"></i>Le PDF de la facture sera joint au mail</p>
+                <p><i class="fas fa-file-pdf"></i>Le PDF {{ phrase }} sera joint au mail</p>
             {% endif %}
             <div>
                 {% include './mails/mail.html.twig' with {
@@ -33,9 +35,8 @@
         </div>
     </div>
 
-    {% include './invoices/invoice_preview.html.twig' with {
-        'invoice': invoice,
+    {% include './layout/preview.html.twig' with {
+        'value': entity,
     } %}
-
 
 {% endblock %}

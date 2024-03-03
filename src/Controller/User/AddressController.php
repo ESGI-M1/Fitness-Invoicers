@@ -16,13 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class AddressController extends AbstractController
 {
-    #[Route('/address', name: 'app_address')]
-    public function index(): Response
-    {
-        return $this->render('address/index.html.twig', [
-            'controller_name' => 'AddressController',
-        ]);
-    }
 
     #[Route('/address/add/customer/{id}', name: 'app_user_address_add', methods: ['GET', 'POST'])]
     public function add(EntityManagerInterface $entityManager, Request $request, Customer $customer, int $invoice_id = null): Response
