@@ -6,6 +6,7 @@
 - Nom : Arthur SERENNE, github : ArthurSerenne, départ décembre
 
 Lien de la prod : http://fit.sc2raju8736.universe.wf/
+Lien du repo github : https://github.com/Fitness-Invoicers/Fitness-Invoicers
 
 Il est possible que les mails arrivent dans les spams.
 
