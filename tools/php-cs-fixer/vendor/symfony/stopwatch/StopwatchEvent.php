@@ -36,7 +36,7 @@ class StopwatchEvent
 
     /**
      * @param float       $origin        The origin time in milliseconds
-     * @param string|null $category      The event category or null to use the default
+     * @param string|null $category      The event categories or null to use the default
      * @param bool        $morePrecision If true, time is stored as float to keep the original microsecond precision
      * @param string|null $name          The event name or null to define the name as default
      *
@@ -51,7 +51,7 @@ class StopwatchEvent
     }
 
     /**
-     * Gets the category.
+     * Gets the categories.
      */
     public function getCategory(): string
     {

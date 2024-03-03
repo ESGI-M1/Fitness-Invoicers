@@ -25,7 +25,7 @@ return (new PhpCsFixer\Config())
         'phpdoc_separation' => ['groups' => [
             ['deprecated', 'link', 'see', 'since'],
             ['author', 'copyright', 'license'],
-            ['category', 'package', 'subpackage'],
+            ['categories', 'package', 'subpackage'],
             ['property', 'property-read', 'property-write'],
             ['ORM\\*'],
             ['Assert\\*'],

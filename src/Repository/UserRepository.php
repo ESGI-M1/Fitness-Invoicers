@@ -40,28 +40,43 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getUsersByFilters($company, $options = [])
+    {
+        $query = $this->createQueryBuilder('u')
+            ->leftJoin('u.companyMemberships', 'companyMemberships')
+            ->andWhere('u.isVerified = 1');
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($company) {
+            $query->andWhere('companyMemberships.company IN (:company)')
+                ->setParameter('company', $company);
+        }
+
+        if (isset($options['alias']) && $options['alias'] !== '') {
+            $parts = explode(' ', $options['alias']);
+            $subAnd = [];
+            foreach ($parts as $k => $p) {
+                $tag = 'alias_' . $k;
+                $subOr = [];
+                foreach (['u.lastName', 'u.firstName'] as $f) {
+                    $subOr[] = "{$f} LIKE :{$tag}";
+                }
+                $subAnd[] = '(' . implode(' OR ', $subOr) . ')';
+                $query->setParameter($tag, "%$p%");
+            }
+            $query
+                ->andWhere('(' . implode(' AND ', $subAnd) . ')');
+        }
+        if (isset($options['email']) && $options['email']) {
+            $query
+                ->andWhere('u.email LIKE :email')
+                ->setParameter('email', '%' . $options['email'] . '%');
+        }
+        if (isset($options['sexe']) && $options['sexe']) {
+            $query
+                ->andWhere('u.sexe = :sexe')
+                ->setParameter('sexe', $options['sexe']->name);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }

@@ -11,32 +11,20 @@ class ItemBuilder implements BuilderInterface
 {
     private ?int $quantity = null;
     private ?float $discountAmountOnItem = null;
-    private ?float $discountAmountOnTotal = null;
-    private ?float $discountPercentOnItem = null;
-    private ?float $discountPercentOnTotal = null;
     private ?float $taxes = null;
-    private ?string $productLabel = null;
-    private ?string $productRef = null;
-    private ?float $productPrice = null;
     private ?Quote $quote = null;
     private ?Product $product = null;
-    private ?Invoice $invoice = null;
+    private ?Invoice $invoices = null;
 
     public function build(bool $persist = true): object
     {
         $item = ItemFactory::createOne(array_filter([
             'quantity' => $this->quantity,
             'discountAmountOnItem' => $this->discountAmountOnItem,
-            'discountAmountOnTotal' => $this->discountAmountOnTotal,
-            'discountPercentOnItem' => $this->discountPercentOnItem,
-            'discountPercentOnTotal' => $this->discountPercentOnTotal,
             'taxes' => $this->taxes,
-            'productLabel' => $this->productLabel,
-            'productRef' => $this->productRef,
-            'productPrice' => $this->productPrice,
             'quote' => $this->quote,
             'product' => $this->product,
-            'invoice' => $this->invoice,
+            'invoices' => $this->invoices,
         ]));
 
         if ($persist) {
@@ -67,44 +55,9 @@ class ItemBuilder implements BuilderInterface
         return $this;
     }
 
-    public function withDiscountPercentOnItem(float $discountPercentOnItem): self
-    {
-        $this->discountPercentOnItem = $discountPercentOnItem;
-
-        return $this;
-    }
-
-    public function withDiscountPercentOnTotal(float $discountPercentOnTotal): self
-    {
-        $this->discountPercentOnTotal = $discountPercentOnTotal;
-
-        return $this;
-    }
-
     public function withTaxes(float $taxes): self
     {
         $this->taxes = $taxes;
-
-        return $this;
-    }
-
-    public function withProductLabel(string $productLabel): self
-    {
-        $this->productLabel = $productLabel;
-
-        return $this;
-    }
-
-    public function withProductRef(string $productRef): self
-    {
-        $this->productRef = $productRef;
-
-        return $this;
-    }
-
-    public function withProductPrice(float $productPrice): self
-    {
-        $this->productPrice = $productPrice;
 
         return $this;
     }

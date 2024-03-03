@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ItemRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,7 +18,6 @@ class Item
 
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $quantity = null;
-
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $discountAmountOnItem = null;
 
@@ -24,22 +25,7 @@ class Item
     private ?float $discountAmountOnTotal = null;
 
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?float $discountPercentOnItem = null;
-
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?float $discountPercentOnTotal = null;
-
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $taxes = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $productLabel = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $productRef = null;
-
-    #[ORM\Column(type: Types::FLOAT)]
-    private ?float $productPrice = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
     private ?Quote $quote = null;
@@ -49,7 +35,10 @@ class Item
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]
-    private ?Invoice $invoice = null;
+    private ?invoice $invoices = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $price = null;
 
     public function getId(): ?int
     {
@@ -92,30 +81,6 @@ class Item
         return $this;
     }
 
-    public function getDiscountPercentOnItem(): ?float
-    {
-        return $this->discountPercentOnItem;
-    }
-
-    public function setDiscountPercentOnItem(?float $discountPercentOnItem): static
-    {
-        $this->discountPercentOnItem = $discountPercentOnItem;
-
-        return $this;
-    }
-
-    public function getDiscountPercentOnTotal(): ?float
-    {
-        return $this->discountPercentOnTotal;
-    }
-
-    public function setDiscountPercentOnTotal(?float $discountPercentOnTotal): static
-    {
-        $this->discountPercentOnTotal = $discountPercentOnTotal;
-
-        return $this;
-    }
-
     public function getTaxes(): ?float
     {
         return $this->taxes;
@@ -152,51 +117,108 @@ class Item
         return $this;
     }
 
-    public function getProductLabel(): ?string
+    public function getInvoices(): ?invoice
     {
-        return $this->productLabel;
+        return $this->invoices;
     }
 
-    public function setProductLabel(string $productLabel): static
+    public function setInvoices(?invoice $invoices): static
     {
-        $this->productLabel = $productLabel;
+        $this->invoices = $invoices;
 
         return $this;
     }
 
-    public function getProductPrice(): ?float
+    public function getTaxesAmount(): float
     {
-        return $this->productPrice;
+        return $this->getTotalWithoutTaxes() * ( 1 + $this->getTaxes() / 100);
     }
 
-    public function setProductPrice(float $productPrice): static
+    public function getTotalAmount(): float
     {
-        $this->productPrice = $productPrice;
+        return $this->getTotalWithoutTaxes() + $this->getTaxesAmount() - $this->getDiscountAmount();
+    }
+
+    public function getTotalWithoutTaxes(): float
+    {
+        return $this->getPrice() * $this->getQuantity();
+    }
+
+    public function getDiscountAmount(): float
+    {
+        return $this->getDiscountAmountOnItem() * $this->getQuantity();
+    }
+
+    public function isValid(): bool
+    {
+        return $this->getProduct() !== null
+            && $this->getQuantity() > 0
+            && $this->getPrice() > 0
+            && $this->getTaxes() >= 0
+            && $this->getDiscountAmountOnItem() >= 0
+            && $this->getDiscountAmountOnTotal() >= 0
+            && $this->getTotalAmount() >= 0
+            && $this->getTotalWithoutTaxes() >= 0
+            && $this->getDiscountAmount() >= 0
+            && $this->getInvoices() !== null || $this->getQuote() !== null;
+    }
+
+    public function getIsNotValidErrors(): array
+    {
+        $errors = [];
+        if ($this->getProduct() === null) {
+            $errors[] = 'product.is.required';
+        }
+
+        if ($this->getQuantity() <= 0) {
+            $errors[] = 'item.quantity.must.be.greater.than.0';
+        }
+
+        if ($this->getPrice() <= 0) {
+            $errors[] = 'item.price.must.be.greater.than.0';
+        }
+
+        if ($this->getTaxes() < 0) {
+            $errors[] = 'item.taxes.must.be.greater.or.equal.to.0';
+        }
+
+        if ($this->getDiscountAmountOnItem() < 0) {
+            $errors[] = 'item.discount.amount.on.item.must.be.greater.or.equal.to.0';
+        }
+
+        if ($this->getDiscountAmountOnTotal() < 0) {
+            $errors[] = 'item.discount.amount.on.total.must.be.greater.or.equal.to.0';
+        }
+
+        if ($this->getTotalAmount() < 0) {
+            $errors[] = 'item.total.amount.must.be.greater.or.equal.to.0';
+        }
+
+        if ($this->getTotalWithoutTaxes() < 0) {
+            $errors[] = 'item.total.amount.without.taxes.must.be.greater.or.equal.to.0';
+        }
+
+        if ($this->getDiscountAmount() < 0) {
+            $errors[] = 'item.discount.amount.must.be.greater.or.equal.to.0';
+        }
+
+        if ($this->getInvoices() === null || $this->getQuote() === null) {
+            $errors[] = 'item.invoice.or.quote.is.required';
+        }
+
+        return $errors;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }
 
-    public function getProductRef(): ?string
-    {
-        return $this->productRef;
-    }
-
-    public function setProductRef(string $productRef): static
-    {
-        $this->productRef = $productRef;
-
-        return $this;
-    }
-
-    public function getInvoice(): ?Invoice
-    {
-        return $this->invoice;
-    }
-
-    public function setInvoice(?Invoice $invoice): static
-    {
-        $this->invoice = $invoice;
-
-        return $this;
-    }
 }

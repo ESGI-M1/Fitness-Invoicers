@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Factures{% endblock %}
+
+{% block main %}
+    {% for item in items %}
+        {{item.quantity}}
+        {{item.discountAmountOnTotal}}
+        {{item.taxes}}
+        {{item.productLabel}}
+        {{item.productPrice}}
+        {{item.productRef}}
+    {% endfor %}
+{% endblock %}

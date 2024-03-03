@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis{% endblock %}
+
+{% block main %}
+
+    <h1>Devis {{ quote.id }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.convertType) }}
+        {{ form_row(form.dueDate) }}
+        {{ form_row(form.amount) }}
+        {{ form_row(form.paymentMethod) }}
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+    {{ form_end(form) }}
+
+
+    {% include './quotes/quote_preview.html.twig' with {
+        'quote': quote,
+    } %}
+
+{% endblock %}

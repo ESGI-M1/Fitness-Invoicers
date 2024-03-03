@@ -1,5 +1,4 @@
 {# form/form_themes.html.twig #}
-{% extends 'form/tailwind_2_layout.html.twig' %}
 
 {% block form_widget_simple %}
     {%- set type = type|default('text') -%}
@@ -9,8 +8,3 @@
     {%- endif -%}
     <input type="{{ type }}" {{ block('widget_attributes') }}{% if value is not empty %} value="{{ value }}"{% endif %}>
 {% endblock form_widget_simple %}
-
-{% block input_widget %}
-    {# Add any additional styling for your input here if needed #}
-    {{ parent() }}
-{% endblock input_widget %}

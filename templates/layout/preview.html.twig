@@ -1,0 +1,134 @@
+{% set pre = (name.title is defined ? name.title is same as "Devis" : title is same as "Devis") ? 'DE' : 'FA' %}
+
+<div>
+    <div class="text-right">
+        {% include './components/back.html.twig' %}
+    </div>
+    <table style="width: 100%">
+        <tbody>
+        <tr>
+            <td>
+                <h2>{{ value.company.name }}</h2>
+                <p>{{ value.company.address.street }}</p>
+                <p>{{ value.company.address.postalCode }} {{ value.company.address.city }}
+                    - {{ value.company.address.country }}</p>
+                <p>{{ value.company.siret }}</p>
+            </td>
+            <td style="text-align: right">
+                <h1>{{ name.title is defined ? name.title : title }}</h1>
+                <h3>{{ value.date| date('d/m/Y') }}</h3>
+                <h3>#{{ pre }}{{ value.id }}</h3>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table style="margin: 0 auto;margin-bottom: 2rem; ">
+        <tbody>
+        <tr>
+            <td>
+                <h2>Adresse de livraison</h2>
+                {% if value.customer and value.customer.status.name == 'VALIDATED' %}
+                    <p>{{ value.customer.fullName }}</p>
+                    <p>{{ value.customer.deliveryAddress.street }}</p>
+                    <p>{{ value.customer.deliveryAddress.postalCode }} {{ value.customer.deliveryAddress.city }}</p>
+                    <p>{{ value.customer.deliveryAddress.country }}</p>
+                {% elseif value.customer and value.customer.status.name == 'DELETED' %}
+                    <p>DELETED</p>
+                    <p>DELETED</p>
+                    <p>DELETED</p>
+                    <p>DELETED</p>
+                {% else %}
+                    <p>Pas de client associé</p>
+                    <p>-----------------</p>
+                    <p>-----------------</p>
+                    <p>-----------------</p>
+                {% endif %}
+            </td>
+            <td>
+                <h2>Adresse de facturation</h2>
+                {% if value.customer and value.customer.status.name == 'VALIDATED' %}
+                    <p>{{ value.customer.fullName }}</p>
+                    <p>{{ value.customer.billingAddress.street }}</p>
+                    <p>{{ value.customer.billingAddress.postalCode }} {{ value.customer.billingAddress.city }}</p>
+                    <p>{{ value.customer.billingAddress.country }}</p>
+                {% elseif value.customer and value.customer.status.name == 'DELETED' %}
+                    <p>DELETED</p>
+                    <p>DELETED</p>
+                    <p>DELETED</p>
+                    <p>DELETED</p>
+                {% else %}
+                    <p>Pas de client associé</p>
+                    <p>-----------------</p>
+                    <p>-----------------</p>
+                    <p>-----------------</p>
+                {% endif %}
+            </td>
+            {% if value.expirationDate is defined %}
+            <td style="vertical-align: baseline">
+                <h2>Date de validité</h2>
+                <p>{{ value.expirationDate ? value.expirationDate| date('d/m/Y') }}</p>
+            </td>
+            {% endif %}
+        </tr>
+        </tbody>
+    </table>
+    <table style="width: 100%; border: 1px solid darkgrey; margin-bottom: 2rem">
+        <thead>
+        <tr>
+            <th>Référence</th>
+            <th>Produit</th>
+            <th>Taux de taxe</th>
+            <th>Prix unitaire (HT)</th>
+            <th>Quantité</th>
+            <th>Total (HT)</th>
+            <th>Total (TTC)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in value.items %}
+            <tr>
+                <td>{{ item.product.reference }}</td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.taxes }} %</td>
+                <td>{{ item.product.price }} €</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.quantity * item.product.price }} €</td>
+                <td>{{ item.quantity * item.product.price * (1 + item.taxes / 100) }} €</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+    <table style="border: 1px solid darkgrey; float: right">
+        <tbody>
+        <tr>
+            <th>Moyen de paiement</th>
+            <td>blabla</td>
+        </tr>
+        <tr>
+            <th>Total HT</th>
+            <td>{{ value.getTotalWithoutTaxes }} €</td>
+        </tr>
+        <tr>
+            <th>Total TVA</th>
+            <td>{{ value.getTaxesAmount }} €</td>
+        </tr>
+        <tr>
+            <th>Total TTC</th>
+            <td>{{ value.getTotalAmount }} €</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>{{ value.details }}</p>
+
+    <footer style="margin: 0 auto; bottom: 0; text-align: center;">
+        <p>{{ value.company.name }}</p>
+        <p>SIRET: {{ value.company.siret }}</p>
+        <p>{{ value.company.address.street }}
+            - {{ value.company.address.postalCode }} {{ value.company.address.city }}
+            - {{ value.company.address.country }}</p>
+
+    </footer>
+</div>

@@ -21,28 +21,31 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-    //    /**
-    //     * @return Category[] Returns an array of Category objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getCategoriesByFilters($company = null, $options = [])
+    {
+        $query = $this->createQueryBuilder('c');
 
-    //    public function findOneBySomeField($value): ?Category
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($company) {
+            $query->andWhere('c.company = :company')
+                ->setParameter('company', $company);
+        }
+
+        if (isset($options['alias']) && $options['alias'] !== '') {
+            $parts = explode(' ', $options['alias']);
+            $subAnd = [];
+            foreach ($parts as $k => $p) {
+                $tag = 'alias_' . $k;
+                $subOr = [];
+                foreach (['c.name'] as $f) {
+                    $subOr[] = "{$f} LIKE :{$tag}";
+                }
+                $subAnd[] = '(' . implode(' OR ', $subOr) . ')';
+                $query->setParameter($tag, "%$p%");
+            }
+            $query
+                ->andWhere('(' . implode(' AND ', $subAnd) . ')');
+        }
+
+        return $query->getQuery();
+    }
 }

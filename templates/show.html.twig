@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ entity }}{% endblock %}
+
+{% block main %}
+    <div class="modal-header flex justify-between items-center">
+        <button type="button" class="close text-gray-500 hover:text-gray-700" aria-label="Close"
+                onclick="window.history.back()">
+            <span aria-hidden="true" class="text-2xl">&times;</span>
+        </button>
+    </div>
+    <div>
+    {{ form_start(form) }}
+    {% if form is defined %}
+        {% for child in form.children %}
+            <div class="mb-4">
+                {{ form_row(child, { 'attr': {'class': 'form-input w-full rounded-md shadow-sm' } }) }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% endblock %}

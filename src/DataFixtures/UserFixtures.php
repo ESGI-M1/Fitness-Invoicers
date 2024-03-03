@@ -15,6 +15,7 @@ class UserFixtures extends Fixture
             ->withEmail('Admin@yopmail.com')
             ->withPassword('Admin')
             ->withCivility(CivilityEnum::MALE)
+            ->verified()
             ->build();
 
         $manager->persist($admin);

@@ -20,6 +20,7 @@ final class CompanyFactory extends ModelFactory
         return [
             'name' => self::faker()->company(),
             'siret' => self::faker()->numerify('##############'),
+            'address' => AddressFactory::createOne(),
             'categories' => [],
             'companyMemberships' => [],
         ];

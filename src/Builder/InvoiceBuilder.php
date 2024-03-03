@@ -3,6 +3,7 @@
 namespace App\Builder;
 
 use App\Entity\Company;
+use App\Entity\Customer;
 use App\Entity\Deposit;
 use App\Entity\Item;
 use App\Entity\Quote;
@@ -12,7 +13,6 @@ use App\Factory\InvoiceFactory;
 class InvoiceBuilder implements BuilderInterface
 {
     private ?float $discountAmount = null;
-    private ?float $discountPercent = null;
     private ?InvoiceStatusEnum $status = null;
     private ?Quote $quote = null;
     private ?Company $company = null;
@@ -27,15 +27,20 @@ class InvoiceBuilder implements BuilderInterface
      */
     private ?array $deposits = null;
 
+    /**
+     * @var array<Customer>|null
+     */
+    private ?array $customers = null;
+
     public function build(bool $persist = true): object
     {
         $invoice = InvoiceFactory::createOne(array_filter([
             'discountAmount' => $this->discountAmount,
-            'discountPercent' => $this->discountPercent,
             'status' => $this->status,
             'quote' => $this->quote,
             'items' => $this->items,
             'deposits' => $this->deposits,
+            'customer' => $this->customers,
         ]));
 
         if ($persist) {
@@ -51,14 +56,7 @@ class InvoiceBuilder implements BuilderInterface
 
         return $this;
     }
-
-    public function withDiscountPercent(float $discountPercent): self
-    {
-        $this->discountPercent = $discountPercent;
-
-        return $this;
-    }
-
+    
     public function withStatus(InvoiceStatusEnum $status): self
     {
         $this->status = $status;

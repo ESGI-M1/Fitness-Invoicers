@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block main %}
+    <div class="flex justify-around">
+        <div class="max-w-md bg-white rounded-lg shadow-md p-6 w-full md:w-auto mb-6 md:mb-0">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Modifier votre profil</h2>
+            {{ form_start(profileForm) }}
+            {{ form_widget(profileForm) }}
+            {% include './components/button.html.twig' with {
+                'class': 'bg-blue-500 text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full',
+                'label': 'Enregistrer les modifications',
+            } %}
+            {{ form_end(profileForm) }}
+        </div>
+        <div class="max-w-md bg-white rounded-lg shadow-md p-6 w-full md:w-auto mb-6 md:mb-0">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Modifier votre mot de passe</h2>
+            {{ form_start(passwordForm) }}
+            {{ form_widget(passwordForm) }}
+            {% include './components/button.html.twig' with {
+                'class': 'bg-blue-500 text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full',
+                'label': 'Enregistrer les modifications',
+            } %}
+            {{ form_end(passwordForm) }}
+        </div>
+        <div class="max-w-md bg-white rounded-lg shadow-md p-6 w-full md:w-auto">
+            <h2 class="text-2xl font-semibold mb-4 text-center">Vos entreprises</h2>
+            {% for companyMemberShip in companyMemberships %}
+                <div class="flex justify-between items-center border-b border-gray-300 py-4">
+                    <div>
+                        <p class="font-semibold">{{ companyMemberShip.company.name }}</p>
+                        <p>{{ companyMemberShip.status.name }}</p>
+                    </div>
+                    <div class="flex gap-4">
+                        {% if is_granted('referent', companyMemberShip) and companySession.getCurrentCompanyTwig %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_company_edit', { 'id': companySession.getCurrentCompanyTwig.id }),
+                                'fa': 'edit',
+                                'class': 'text-blue-600 hover:text-blue-800',
+                            } %}
+                        {% endif %}
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_company_membership_delete', {'id': companyMemberShip.id, 'token': csrf_token('delete-user-company-membership' ~ companyMemberShip.id)}),
+                            'fa': 'trash',
+                            'class': 'text-red-600 hover:text-red-800',
+                        } %}
+                    </div>
+                </div>
+            {% endfor %}
+            {% include './components/a.html.twig' with {
+                'path': path('app_user_company_add'),
+                'class': 'bg-blue-500 text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4 w-full',
+                'label': 'Créer mon entreprise',
+            } %}
+        </div>
+    </div>
+    {{ form_start(mailForm) }}
+    <div class="flex justify-around">
+
+        <div class="w-full">
+            {{ form_row(mailForm.invoiceMailContent) }}
+        </div>
+        <div class="w-full">
+            {{ form_row(mailForm.quoteMailContent) }}
+        </div>
+        <div class="w-full">
+            {{ form_row(mailForm.mailSignature) }}
+        </div>
+    </div>
+    {% include './components/button.html.twig' with {
+        'class': 'bg-blue-500 text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full',
+        'label': 'Enregistrer les modifications',
+    } %}
+
+    {{ form_end(mailForm) }}
+{% endblock %}

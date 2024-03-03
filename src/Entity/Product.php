@@ -4,19 +4,21 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use App\Trait\TimestampableTrait;
+use App\Trait\SluggableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Vich\UploaderBundle\Entity\File as EmbeddedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[Vich\Uploadable]
 class Product
 {
     use TimestampableTrait;
+    use SluggableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,23 +29,37 @@ class Product
     private string $name;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private string $ref;
-
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Gedmo\Slug(fields: ['name', 'id'])]
-    private string $slug;
+    private string $reference;
 
     #[ORM\Column(type: Types::FLOAT)]
     private float $price;
 
-    #[Vich\UploadableField(mapping: 'products', fileNameProperty: 'image.name', size: 'image.size')]
+    #[Vich\UploadableField(mapping: 'productImage', fileNameProperty: 'imageName')]
+    #[Assert\Image(
+        maxSize: '1000k',
+        mimeTypes: ['image/jpeg', 'image/png'],
+        maxHeight: 600,
+        maxWidth: 600,
+        minHeight: 300,
+        minWidth: 300,
+        maxSizeMessage: 'L\'image produit ne doit pas dépasser 1000ko.',
+        mimeTypesMessage: 'L\'image produit doit être au format JPG ou PNG.',
+        maxHeightMessage: 'L\'image produit ne doit pas dépasser 600px de hauteur.',
+        maxWidthMessage: 'L\'image produit ne doit pas dépasser 600px de largeur.',
+        minHeightMessage: 'L\'image produit doit faire au moins 300px de hauteur.',
+        minWidthMessage: 'L\'image produit doit faire au moins 300px de largeur.'
+    )]
     private ?File $imageFile = null;
 
-    #[ORM\Embedded(class: 'Vich\UploaderBundle\Entity\File')]
-    private ?EmbeddedFile $image = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'products')]
     private Collection $categories;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Company $company = null;
 
     public function __construct()
     {
@@ -67,26 +83,14 @@ class Product
         return $this;
     }
 
-    public function getRef(): string
+    public function getReference(): string
     {
-        return $this->ref;
+        return $this->reference;
     }
 
-    public function setRef(string $ref): void
+    public function setReference(string $ref): void
     {
-        $this->ref = $ref;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = $slug;
-
-        return $this;
+        $this->reference = $ref;
     }
 
     public function getPrice(): ?float
@@ -124,4 +128,42 @@ class Product
 
         return $this;
     }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $image = null): void
+    {
+        $this->imageFile = $image;
+
+        if (null !== $image) {
+            $this->updatedAt = new \DateTime();
+        }
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+
 }

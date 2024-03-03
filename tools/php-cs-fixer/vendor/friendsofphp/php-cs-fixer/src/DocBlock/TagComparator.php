@@ -33,7 +33,7 @@ final class TagComparator
     public const DEFAULT_GROUPS = [
         ['deprecated', 'link', 'see', 'since'],
         ['author', 'copyright', 'license'],
-        ['category', 'package', 'subpackage'],
+        ['categories', 'package', 'subpackage'],
         ['property', 'property-read', 'property-write'],
     ];
 

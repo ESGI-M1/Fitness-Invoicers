@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block main %}
+
+    {% set phrase = title is same as "Devis" ? 'du devis' : 'de la facture' %}
+
+    <h1>Envoi {{ phrase }} n°{{ entity.id }}</h1>
+
+    <div class="flex w-full justify-around gap-4">
+        <div class="w-2/5">
+            <h2>Personnalisation du mail</h2>
+            {{ form_start(form) }}
+            {{ form_row(form.object) }}
+            {{ form_row(form.content) }}
+            {{ form_row(form.joinPdf) }}
+            {{ form_end(form) }}
+        </div>
+
+        <div class="w-3/5">
+            <h2>Aperçu du mail</h2>
+            <p>Destinataire : {{ entity.customer.email }}</p>
+            <p>Objet : {{ mail.object }}</p>
+            {% if mail.joinPDF %}
+                <p><i class="fas fa-file-pdf"></i>Le PDF {{ phrase }} sera joint au mail</p>
+            {% endif %}
+            <div>
+                {% include './mails/mail.html.twig' with {
+                    'mail': mail,
+                    'company': companySession.getCurrentCompanyTwig,
+                    'user': app.user,
+                } %}
+            </div>
+        </div>
+    </div>
+
+    {% include './layout/preview.html.twig' with {
+        'value': entity,
+    } %}
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Invitation{% endblock %}
+
+{% block main %}
+
+    {{ form_start(form) }}
+    {% include './components/button.html.twig' with {
+        'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2 border-solid p-4 shadow-lg  justify-around bg-gray-100 hover:bg-gray-200',
+        'label': 'Sauvegarder',
+    } %}
+    {{ form_end(form) }}
+
+{% endblock %}

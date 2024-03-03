@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ name.title }}{% endblock %}
+
+{% block main %}
+    <div class="flex flex-col">
+        <div class="md:w-1/3 mb-6 md:mb-0">
+            <h1 class="text-3xl font-semibold mb-6">Sélection du client</h1>
+            {{ form_start(form) }}
+            <div class="mb-4">
+                {{ form_row(form.customer) }}
+            </div>
+            <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+                <i class="fas fa-check mr-2"></i> Valider
+            </button>
+            {{ form_end(form) }}
+        </div>
+
+        {% if customer %}
+            <h2 class="text-2xl text-center font-semibold mb-4">{{ customer.fullName }}</h2>
+            <div class="flex md:items-center">
+                <div class="flex flex-col items-center md:w-1/2 md:pl-8">
+                    <h3 class="text-xl font-semibold mb-2">Adresse de livraison</h3>
+                    {% if customer.deliveryAddress %}
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, (name.entity ~ '_id'): value.id}),
+                            'fa': 'edit'
+                        } %}
+                        <p class="mb-2">{{ customer.deliveryAddress.street }}</p>
+                        <p class="mb-2">{{ customer.deliveryAddress.postalCode }} {{ customer.deliveryAddress.city }}</p>
+                        <p>{{ customer.deliveryAddress.country }}</p>
+                    {% else %}
+                        <p>Pas d'adresse de livraison</p>
+                        <a href="{{ path('app_user_address_add', {'id': customer.id, (name.entity ~ '_id'): value.id}) }}"
+                           class="fas fa-plus text-blue-600 hover:text-blue-800"></a>
+                    {% endif %}
+                </div>
+
+                <div class="flex flex-col md:w-1/2 items-center md:pl-8">
+                    <h3 class="text-xl font-semibold mb-2">Adresse de facturation</h3>
+                    {% if customer.billingAddress %}
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_address_billingAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id, (name.entity ~ '_id'): value.id}),
+                            'fa': 'edit'
+                        } %}
+                        <p class="mb-2">{{ customer.billingAddress.street }}</p>
+                        <p class="mb-2">{{ customer.billingAddress.postalCode }} {{ customer.billingAddress.city }}</p>
+                        <p>{{ customer.billingAddress.country }}</p>
+                    {% else %}
+                        <p>Pas d'adresse de facturation</p>
+                        <a href="{{ path('app_user_address_add', {'id': customer.id, (name.entity ~ '_id'): value.id}) }}"
+                           class="fas fa-plus text-blue-600 hover:text-blue-800"></a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if value.isValidStepOne %}
+        <div class="text-right">
+            {% include './components/a.html.twig' with {
+                'path': path('app_user_' ~ name.entity ~ '_step_two', {'id': value.id}),
+                'class': 'w-fit text-white font-bold rounded mt-6',
+                'label': 'Étape suivante',
+                'fa': 'arrow-right'
+            } %}
+        </div>
+    {% else %}
+        {% for error in value.IsNotValidStepOneErrors %}
+            <p class="text-red-600">{{ error }}</p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

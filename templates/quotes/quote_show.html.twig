@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis{% endblock %}
+
+{% block main %}
+
+    <h1>Devis {{ quote.id }}</h1>
+
+    {% include './layout/preview.html.twig' with {
+        'value': quote,
+        'title': 'Devis',
+        'pre': 'DE'
+    } %}
+
+{% endblock %}

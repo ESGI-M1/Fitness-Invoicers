@@ -4,16 +4,17 @@ namespace App\Entity;
 
 use App\Repository\CategoryRepository;
 use App\Trait\TimestampableTrait;
+use App\Trait\SluggableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
     use TimestampableTrait;
+    use SluggableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,10 +23,6 @@ class Category
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-    #[Gedmo\Slug(fields: ['name', 'id'])]
-    private ?string $slug = null;
 
     #[ORM\ManyToOne(inversedBy: 'categories')]
     #[ORM\JoinColumn(nullable: false)]
@@ -52,18 +49,6 @@ class Category
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = $slug;
 
         return $this;
     }

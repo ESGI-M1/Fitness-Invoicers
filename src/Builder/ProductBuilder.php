@@ -3,6 +3,8 @@
 namespace App\Builder;
 
 use App\Entity\Category;
+use App\Entity\Company;
+use App\Factory\CompanyFactory;
 use App\Factory\ProductFactory;
 
 class ProductBuilder implements BuilderInterface
@@ -10,6 +12,8 @@ class ProductBuilder implements BuilderInterface
     private ?string $name = null;
     private ?string $ref = null;
     private ?float $price = null;
+
+    private ?Company $company = null;
 
     /*
      * @var array<Category>|null
@@ -23,6 +27,7 @@ class ProductBuilder implements BuilderInterface
             'price' => $this->price,
             'categories' => $this->categories,
             'ref' => $this->ref,
+            'company' => $this->company,
         ]));
 
         if ($persist) {
@@ -66,6 +71,13 @@ class ProductBuilder implements BuilderInterface
     public function inCategory(Category $category): self
     {
         $this->categories[] = $category;
+
+        return $this;
+    }
+
+    public function withCompany(Company $company): self
+    {
+        $this->company = $company;
 
         return $this;
     }
