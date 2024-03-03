@@ -1,0 +1,12 @@
+{# templates/bundles/TwigBundle/Exception/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block main%}
+    <h1>403 - ACCESS DENIED</h1>
+    <h2>Vous n'avez pas accès à cette resource</h2>
+    <p>Merci de vérifier vos droits avant d'accéder à cette ressource</p>
+    {% include './components/a.html.twig' with {
+        'path': path('app_index'),
+        'label': 'Retour à l\'accueil'
+    } %}
+{% endblock %}

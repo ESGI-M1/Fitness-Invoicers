@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        <script src="https://cdn.tailwindcss.com"></script>
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body class="bg-gray-300 dark:bg-gray-800">
 
-        {% for type, flashMessages in app.flashes %}
-            {% for message in flashMessages %}
-                {{ type }}{{ message }}
-            {% endfor %}
-        {% endfor %}
-    </body>
+{% block body %}
+
+    <div id="menu" class="flex h-screen">
+        {% include './layout/menu.html.twig' %}
+        <div class="w-full">
+            {% include './layout/top_menu.html.twig' %}
+            <main class="flex flex-col flex-grow p-4">
+                {% include './components/error.html.twig' %}
+                {% block main %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    
+{% endblock %}
+</body>
 </html>

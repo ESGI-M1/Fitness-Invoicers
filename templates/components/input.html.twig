@@ -1,0 +1,9 @@
+{# components/input.html.twig #}
+{%- block input_widget -%}
+    <div class="mb-4">
+        <label class="block text-white text-sm font-bold mb-2" for="{{ id }}">
+            {{ label }}
+        </label>
+        <input id="{{ id }}" name="{{ name }}" class="{{ class }}" style="line-height: 1.25; padding-bottom: 0.5rem;">
+    </div>
+{%- endblock input_widget -%}

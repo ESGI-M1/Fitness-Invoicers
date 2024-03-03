@@ -1,0 +1,11 @@
+.pagination {
+  @apply flex justify-center;
+}
+
+.pagination .page-item {
+  @apply mx-1;
+}
+
+.pagination .active {
+  @apply text-red-500;
+}

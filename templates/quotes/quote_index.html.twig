@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Devis{% endblock %}
+
+{% block main %}
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Devis',
+        'values': quotes,
+        'path': path('app_user_quote_step_one'),
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'label': 'Ajouter un devis',
+        'right': 'ROLE_USER'
+    } %}
+    <div class="mt-4">
+        <table class="table table-bordered table-striped table-hover w-full">
+            <thead>
+            <tr>
+                {% include './components/sorted.html.twig' with {
+                    'title': 'ID',
+                    'entity': quotes,
+                    'value': 'q.id',
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Date de création',
+                    'entity': quotes,
+                    'value': 'q.createdAt',
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Client',
+                    'entity': quotes,
+                    'value': ['customer.lastName', 'customer.firstName'],
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Montant total',
+                    'entity': quotes,
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Montant remise',
+                    'entity': quotes,
+                    'value': 'q.discountAmount' ?? 0,
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Statut',
+                    'entity': quotes,
+                } %}
+                <th class="border">Factures</th>
+                <th class="border">Actions</th>
+                <th class="border">PDF</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quote in quotes %}
+                <tr>
+                    <td class="border">{{ quote.id }}</td>
+                    <td class="border">{{ quote.date|date('d/m/Y') }}</td>
+                    <td class="border">{{ quote.customer ? quote.customer.fullname : '' }}</td>
+                    <td class="border">{{ quote.totalAmount ?? 0 }} €</td>
+                    <td class="border">
+                        {{ quote.discountAmount is not null ? quote.discountAmount ~ '€' : 0 }}
+                    </td>
+                    <td class="border">{{ quote.status.getStatusLabel() }}</td>
+                    <td class="border text-center">
+                        {% if quote.invoices %}
+                            {% for invoice in quote.invoices %}
+                                {% include './components/a.html.twig' with {
+                                    'path': path('app_user_invoice_show', { 'id': invoice.id }),
+                                    'label': invoice.id ~ ' ' ~ invoice.status.value,
+                                    'fa': 'eye'
+                                } %}
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-center">Aucune facture</span>
+                        {% endif %}
+                    </td>
+                    <td class="border">
+                        {% if is_granted('see', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_show', { 'id': quote.id }),
+                                'fa': 'eye'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('edit', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_step_one', { 'id': quote.id }),
+                                'fa': 'edit'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('mail', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_step_four', { 'id': quote.id }),
+                                'fa': 'envelope'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('delete', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_delete', { 'id': quote.id, 'token': csrf_token('delete' ~ quote.id) }),
+                                'fa': 'trash'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('convert', quote) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_convert', { 'id': quote.id, 'token': csrf_token('convert' ~ quote.id) }),
+                                'fa': 'paperclip'
+                            } %}
+                        {% endif %}
+                    <td class="border">
+                        {% if is_granted('see', quote) and quote.isValid %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_pdf', { 'id': quote.id }),
+                                'fa': 'file-pdf'
+                            } %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="11" class="text-center border">Aucun devis</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if quotes is not empty %}
+                    {{ knp_pagination_render(quotes) }}
+        {% endif %}
+    </div>
+{% endblock %}

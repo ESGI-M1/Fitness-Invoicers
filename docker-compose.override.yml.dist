@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  php:
+    user: "${UID}:${GID}"
+
+  node:
+    user: "${UID}:${GID}"
+
+  nginx:
+    user: "${UID}:${GID}"
+    ports:
+      - "8000:80"
+
+  db:
+    ports:
+      - "5432:5432"
+
+  mailer:
+    ports:
+      - "1080:1080"

@@ -1,0 +1,24 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        productImage:
+            uri_prefix: /images/products
+            upload_destination: '%kernel.project_dir%/public/images/products'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_remove: true
+            delete_on_update: true
+
+        companyLogo:
+            uri_prefix: /images/companies
+            upload_destination: '%kernel.project_dir%/public/images/companies'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_remove: true
+            delete_on_update: true
+
+        invoicePdf:
+            uri_prefix: /pdf/invoices
+            upload_destination: '%kernel.project_dir%/public/pdf/invoices'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_remove: true
+            delete_on_update: true

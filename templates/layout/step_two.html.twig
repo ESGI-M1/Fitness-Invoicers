@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ name.title }}{% endblock %}
+
+{% block main %}
+    <h1 class="text-3xl font-semibold mb-6">Sélection des produits</h1>
+
+    <div class="mb-6">
+        {{ form_start(categoryForm) }}
+        <div class="mb-4">
+            {{ form_row(categoryForm.categories, {'attr': {'class': 'w-full select2 border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 dark:border-black dark:text-white'}}) }}
+        </div>
+        <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+            <i class="fas fa-check mr-2"></i> Valider
+        </button>
+        {{ form_end(categoryForm) }}
+    </div>
+
+    {% if productFromCategory %}
+        {% for category in productFromCategory %}
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4 dark:text-white">{{ category.name }}</h2>
+                <table class="w-full border border-gray-300 mb-4 dark:border-black">
+                    <thead>
+                    <tr>
+                        <th class="px-4 py-2 dark:text-white">Produit</th>
+                        <th class="px-4 py-2 dark:text-white">Référence</th>
+                        <th class="px-4 py-2 dark:text-white">Prix unitaire (HT)</th>
+                        <th class="px-4 py-2 dark:text-white">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product in category.products %}
+                        <tr>
+                            <td class="px-4 py-2 dark:text-white">{{ product.name }}</td>
+                            <td class="px-4 py-2 dark:text-white">{{ product.reference }}</td>
+                            <td class="px-4 py-2 dark:text-white">{{ product.price }} €</td>
+                            <td class="px-4 py-2 dark:text-white">
+                                <a href="{{ path('app_user_' ~ name.entity ~ '_add_item', {('id_' ~ name.entity): value.id, 'id_product': product.id}) }}"
+                                   class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-plus"></i> Ajouter
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if productWithoutCategory %}
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4 dark:text-white">Produits sans catégorie</h2>
+            <table class="w-full border border-gray-300 mb-4 dark:border-black">
+                <thead>
+                <tr>
+                    <th class="px-4 py-2 dark:text-white">Produit</th>
+                    <th class="px-4 py-2 dark:text-white">Référence</th>
+                    <th class="px-4 py-2 dark:text-white">Prix unitaire (HT)</th>
+                    <th class="px-4 py-2 dark:text-white">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in productWithoutCategory %}
+                    <tr>
+                        <td class="px-4 py-2 dark:text-white">{{ product.name }}</td>
+                        <td class="px-4 py-2 dark:text-white">{{ product.reference }}</td>
+                        <td class="px-4 py-2 dark:text-white">{{ product.price }} €</td>
+                        <td class="px-4 py-2 dark:text-white">
+                            <a href="{{ path('app_user_' ~ name.entity ~ '_add_item', {('id_' ~ name.entity): value.id, 'id_product': product.id}) }}"
+                               class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <table class="w-full border border-gray-300 mb-6 dark:border-black">
+        <thead>
+        <tr>
+            <th class="px-4 py-2 dark:text-white">Produit</th>
+            <th class="px-4 py-2 dark:text-white">Référence</th>
+            <th class="px-4 py-2 dark:text-white">Prix unitaire (HT)</th>
+            <th class="px-4 py-2 dark:text-white">Taux de taxe</th>
+            <th class="px-4 py-2 dark:text-white">Quantité</th>
+            <th class="px-4 py-2 dark:text-white">Remise par unité</th>
+            <th class="px-4 py-2 dark:text-white">Remise total</th>
+            <th class="px-4 py-2 dark:text-white">Total (HT)</th>
+            <th class="px-4 py-2 dark:text-white">Total (TTC)</th>
+            <th class="px-4 py-2 dark:text-white">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if items %}
+            {% for row in items %}
+                {{ form_start(row.form) }}
+                <tr>
+                    <td class="px-4 py-2 dark:text-white">{{ row.item.product.name }}</td>
+                    <td class="px-4 py-2 dark:text-white">{{ row.item.product.reference }}</td>
+                    <td class="px-4 py-2 dark:text-white">{{ row.item.product.price }} €</td>
+                    <td class="px-4 py-2 dark:text-white">{{ form_row(row.form.taxes) }}</td>
+                    <td class="px-4 py-2 dark:text-white">
+                        <a href="{{ path('app_user_' ~ name.entity ~ '_decrease_quantity_item', {'id_item': row.item.id}) }}"
+                           class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-minus"></i>
+                        </a>
+                        {{ form_row(row.form.quantity, {'attr': {'class': 'w-16 text-center'}}) }}
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_' ~ name.entity ~ '_increase_quantity_item', {'id_item': row.item.id}),
+                            'class': 'text-blue-600 hover:text-blue-800',
+                            'label': 'Étape précédente',
+                            'fa': 'plus'
+                        } %}
+                    </td>
+                    <td class="px-4 py-2 dark:text-white">{{ form_row(row.form.discountAmountOnItem) }} €</td>
+                    <td class="px-4 py-2 dark:text-white">{{ form_row(row.form.discountAmountOnTotal) }} €</td>
+                    <td class="px-4 py-2 dark:text-white">{{ row.item.quantity * row.item.price }} €</td>
+                    <td class="px-4 py-2 dark:text-white">{{ row.item.quantity * row.item.price * (1 + row.item.taxes / 100) }} €</td>
+                    <td class="px-4 py-2 dark:text-white">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_' ~ name.entity ~ '_remove_item', {('id_' ~ name.entity): value.id, 'id_item': row.item.id}),
+                            'class': 'text-red-600 hover:text-red-800',
+                            'fa': 'trash'
+                        } %}
+                    </td>
+                </tr>
+                {{ form_end(row.form) }}
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">Aucun produit</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    <div class="flex justify-between w-full items-center ">
+    {% include './components/a.html.twig' with {
+        'path': path('app_user_' ~ name.entity ~ '_step_one', {'id': value.id}),
+        'class': 'text-white font-bold py-2 px-4 rounded',
+        'label': 'Étape précédente',
+        'fa': 'arrow-left'
+    } %}
+
+    {% if value.isValidStepTwo %}
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_' ~ name.entity ~ '_step_three', {'id': value.id}),
+            'class': 'w-fit text-white font-bold rounded',
+            'label': 'Étape suivante',
+            'fa': 'arrow-right'
+        } %}
+    {% else %}
+{#        {% for error in value.IsNotValidStepTwoErrors %}#}
+{#            <p>{{ error }}</p>#}
+{#        {% endfor %}#}
+    {% endif %}
+    </div>
+{% endblock %}

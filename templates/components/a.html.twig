@@ -1,0 +1,9 @@
+<a href="{{ path }}"
+   class=" {% if class is defined %}{{ class }}{% endif %}">
+    {% if label is defined %}
+        {{ label }}
+    {% endif %}
+    {% if fa is defined %}
+        &nbsp; <i class="fas fa-{{ fa }}"></i>
+    {% endif %}
+</a>

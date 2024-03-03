@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+
+<body class="bg-gray-200">
+
+{{ form_start(form) }}
+    <ul>
+        {% if form.date is defined %}
+            <li class="mb-4">
+                <div class="bg-blue-100 p-2 rounded">
+                    <label for="{{ form.date.vars.id }}">Date:</label>
+                    {{ form_widget(form.date, {'attr': {'class': 'border p-2'}}) }}
+                </div>
+            </li>
+        {% else %}
+            <li class="mb-4">
+                <label for="{{ form.genericField.vars.id }}">Generic Field:</label>
+                {{ form_widget(form.genericField, {'attr': {'class': 'border p-2'}}) }}
+            </li>
+        {% endif %}
+    </ul>
+{{ form_end(form) }}
+</body>
+
+</html>
