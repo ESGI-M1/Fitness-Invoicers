@@ -7,6 +7,11 @@ parameters:
 
 services:
     # default configuration for services in *this* file
+    App\EventListener\OnKernelRights:
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+    knp_paginator:
+        class: Knp\Component\Pager\Paginator
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.

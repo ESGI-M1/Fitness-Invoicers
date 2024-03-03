@@ -3,18 +3,26 @@
 namespace App\Entity;
 
 use App\Enum\CivilityEnum;
+use App\Enum\CompanyMembershipStatusEnum;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity(fields: ['email'], message: 'user.email.alreadyExist')]
+#[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -48,6 +56,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isVerified = false;
+
+    #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Customer $Customer = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $mailSignature = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $invoiceMailContent = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $quoteMailContent = null;
 
     public function __construct()
     {
@@ -229,6 +249,91 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $companyMembership->setRelatedUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCompanyMembershipAccepted(): array
+    {
+        $companyMemberships = $this->getCompanyMemberships();
+
+        $companyMembershipsAccepted = [];
+        foreach ($companyMemberships as $companyMembership) {
+            if ($companyMembership->getStatus() === CompanyMembershipStatusEnum::ACCEPTED) {
+                $companyMembershipsAccepted[] = $companyMembership;
+            }
+        }
+
+        return $companyMembershipsAccepted;
+    }
+
+    public function __serialize()
+    {
+        return [
+            $this->id,
+            $this->email,
+            $this->password,
+        ];
+    }
+
+    public function __unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->email,
+            $this->password,
+        ) = $serialized;
+    }
+
+    public function getCustomer(): ?Customer
+    {
+        return $this->Customer;
+    }
+
+    public function setCustomer(?Customer $Customer): static
+    {
+        $this->Customer = $Customer;
+
+        return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    public function getMailSignature(): ?string
+    {
+        return $this->mailSignature;
+    }
+
+    public function setMailSignature(?string $mailSignature): static
+    {
+        $this->mailSignature = $mailSignature;
+
+        return $this;
+    }
+
+    public function getInvoiceMailContent(): ?string
+    {
+        return $this->invoiceMailContent;
+    }
+
+    public function setInvoiceMailContent(?string $invoiceMailContent): static
+    {
+        $this->invoiceMailContent = $invoiceMailContent;
+
+        return $this;
+    }
+
+    public function getQuoteMailContent(): ?string
+    {
+        return $this->quoteMailContent;
+    }
+
+    public function setQuoteMailContent(?string $quoteMailContent): static
+    {
+        $this->quoteMailContent = $quoteMailContent;
 
         return $this;
     }

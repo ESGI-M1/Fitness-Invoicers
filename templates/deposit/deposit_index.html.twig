@@ -1,13 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dépôt{% endblock %}
+{% block title %}Rapport{% endblock %}
 
 {% block main %}
-
-    {% for dep in deposit %}
-        {{ dep.quote }}
-        {{ dep.invoice }}
-        {{ dep.price }}
-    {% endfor %}
-
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Rapports',
+        'values': deposits,
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'right': 'ROLE_USER'
+    } %}
+    <div class="mt-4">
+        <table class="table table-bordered table-striped table-hover w-full">
+            <colgroup>
+                <col/>
+                <col/>
+                <col/>
+            </colgroup>
+            <thead>
+            <tr>
+                <th class="border">Devis</th>
+                <th class="border">Factures</th>
+                <th class="border">Prix (€)</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for deposit in deposits %}
+                <tr>
+                    <td>
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_quote_show', { 'id': deposit.quote.id }),
+                            'fa': 'eye'
+                        } %}
+                    </td>
+                    <td>
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_invoice_show', { 'id': deposit.invoice.id }),
+                            'fa': 'eye'
+                        } %}
+                    </td>
+                    <td class="border">{{ deposit.price }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center border">Aucun rapport</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if deposits is not empty %}
+            <div class="box-footer">
+                <div class="navigation">
+                    {{ knp_pagination_render(deposits) }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

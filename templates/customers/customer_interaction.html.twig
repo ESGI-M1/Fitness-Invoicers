@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Interaction{% endblock %}
+
+{% block main %}
+    <div class="text-right">
+        {% include './components/back.html.twig' %}
+    </div>
+    {% if interactions %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for type, objects in interactions %}
+            <div class="bg-white shadow-md rounded-md p-4">
+                <h2 class="text-lg font-semibold mb-4">{{ type }}</h2>
+                {% for date, object in objects %}
+                    <div class="bg-gray-100 rounded-md mb-2 p-2">
+                        <p class="text-sm text-gray-700">{{ date|date('Y-m-d') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-center">Aucune intéraction trouvée</p>
+    {% endif %}
+{% endblock %}

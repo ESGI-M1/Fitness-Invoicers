@@ -3,9 +3,121 @@
 {% block title %}Factures{% endblock %}
 
 {% block main %}
-
-    {% for inv in invoices %}
-        {{inv.status}}
-    {% endfor %}
-
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Factures',
+        'values': invoices,
+        'path': path('app_user_invoice_step_one'),
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'label': 'Ajouter une facture',
+        'right': 'ROLE_USER'
+    } %}
+    <div class="mt-4">
+        <table class="table table-bordered table-striped table-hover w-full">
+            <thead>
+            <tr>
+                {% include './components/sorted.html.twig' with {
+                    'title': 'ID',
+                    'entity': invoices,
+                    'value': 'i.id',
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Date de création',
+                    'entity': invoices,
+                    'value': 'i.createdAt',
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Client',
+                    'entity': invoices,
+                    'value': ['customer.lastName', 'customer.firstName'],
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Montant total',
+                    'entity': invoices,
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Montant remise',
+                    'entity': invoices,
+                    'value': 'i.discountAmount' ?? 0,
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Statut',
+                    'entity': invoices,
+                } %}
+                <th class="border">Devis</th>
+                <th class="border">Rapports</th>
+                <th class="border">Actions</th>
+                <th class="border">PDF</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for invoice in invoices %}
+                <tr>
+                    <td class="border">{{ invoice.id }}</td>
+                    <td class="border">{{ invoice.date|date('d/m/Y') }}</td>
+                    <td class="border">{{ invoice.customer ? invoice.customer.fullname : '' }}</td>
+                    <td class="border">{{ invoice.totalAmount }}€</td>
+                    <td class="border">
+                        {{ invoice.discountAmount is not null ? invoice.discountAmount ~ '€' : 0 }}
+                    </td>
+                    <td class="border">{{ invoice.status.getStatusLabel() }}</td>
+                    <td class="border text-center">
+                        {% if invoice.quote %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_quote_show', { 'id': invoice.quote.id }),
+                                'fa': 'eye'
+                            } %}
+                        {% else %}
+                            <span class="text-center">Aucun devis</span>
+                        {% endif %}
+                        {{ invoice.isValid ? 'Validé' : 'Non validé' }}
+                    </td>
+                    <td class="border">
+                        {{ invoice.deposit ? 'Acompte' : 'Solde' }}
+                    </td>
+                    <td class="border">
+                        {% if is_granted('see', invoice) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_show', { 'id': invoice.id }),
+                                'fa': 'eye'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('edit', invoice) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_step_one', { 'id': invoice.id }),
+                                'fa': 'edit'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('mail', invoice) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_step_four', { 'id': invoice.id }),
+                                'fa': 'envelope'
+                            } %}
+                        {% endif %}
+                        {% if is_granted('delete', invoice) %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_delete', { 'id': invoice.id, 'token': csrf_token('delete' ~ invoice.id) }),
+                                'fa': 'trash'
+                            } %}
+                        {% endif %}
+                    <td class="border">
+                        {% if is_granted('see', invoice) and invoice.isValid %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_invoice_pdf', { 'id': invoice.id }),
+                                'fa': 'file-pdf'
+                            } %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="9" class="text-center border">Aucune facture</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if invoices is not empty %}
+            {{ knp_pagination_render(invoices) }}
+        {% endif %}
+    </div>
 {% endblock %}

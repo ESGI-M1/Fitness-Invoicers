@@ -21,7 +21,8 @@ final class ProductFactory extends ModelFactory
             'categories' => [],
             'name' => self::faker()->words(random_int(1, 3), true),
             'price' => self::faker()->randomFloat(),
-            'ref' => self::faker()->uuid(),
+            'reference' => self::faker()->uuid(),
+            'company' => CompanyFactory::random(),
         ];
     }
 

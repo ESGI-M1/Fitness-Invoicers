@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block main %}
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Utilisateurs',
+        'values': users,
+        'path': path('app_user_company_membership_add'),
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'label': 'Ajouter un utilisateur',
+        'right': 'ROLE_ADMIN'
+    } %}
+
+    {% set direction = users.getDirection() %}
+
+    <div class="mt-4">
+        <table class="table table-bordered table-striped table-hover w-full sorted">
+            <thead>
+            {% include './components/sorted.html.twig' with {
+                'title': 'Nom',
+                'entity': users,
+                'value': 'users.lastName',
+            } %}
+            {% include './components/sorted.html.twig' with {
+                'title': 'Prénom',
+                'entity': users,
+                'value': 'users.firstName',
+            } %}
+            {% include './components/sorted.html.twig' with {
+                'title': 'Email',
+                'entity': users,
+                'value': 'users.email',
+            } %}
+            <th class="border">Statut</th>
+            {% if is_granted('company_referent') %}
+                <th class="border">Action</th>
+            {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td class="border">{{ user.relatedUser.lastName }}</td>
+                    <td class="border">{{ user.relatedUser.firstName }}</td>
+                    <td class="border">{{ user.relatedUser.email }}</td>
+                    <td class="border">{{ user.status.name }}</td>
+                    {% if is_granted('company_referent') %}
+                        <td class="border">
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_company_membership_edit', { 'id': user.id }),
+                                'fa': 'edit'
+                            } %}
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_company_membership_delete', { 'id': user.id, 'token': csrf_token('delete-user-company-membership' ~ user.id) }),
+                                'fa': 'trash'
+                            } %}
+                        </td>
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center border">Aucun utilisateur trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if users is not empty %}
+            <div class="box-footer">
+                <div class="navigation">
+                    {{ knp_pagination_render(users) }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

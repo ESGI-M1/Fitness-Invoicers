@@ -22,6 +22,7 @@ final class InvoiceFactory extends ModelFactory
             'status' => self::faker()->randomElement(InvoiceStatusEnum::class),
             'items' => [],
             'company' => CompanyFactory::createOne(),
+            'customer' => CustomerFactory::createOne(),
         ];
     }
 

@@ -2,19 +2,26 @@
 
 namespace App\Entity;
 
+use App\Enum\CompanyMembershipStatusEnum;
 use App\Repository\CompanyRepository;
 use App\Trait\TimestampableTrait;
+use App\Trait\SluggableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Ignore;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
-class Company
+#[Vich\Uploadable]
+class Company implements \Serializable
 {
     use TimestampableTrait;
+    use SluggableTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,14 +33,31 @@ class Company
     #[Assert\Length(min: 3, minMessage: 'Le nom de la société doit être de minimum {{ limit }} caractères')]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-    #[Gedmo\Slug(fields: ['name', 'id'])]
-    private ?string $slug = null;
-
     #[ORM\Column(type: Types::STRING, length: 14)]
     #[Assert\NotBlank(message: 'Veillez renseigner le numéro de SIRET de votre société')]
     #[Assert\Regex(pattern: '/^[0-9]{14}$/', message: 'Le numéro de SIRET doit être composé de 14 chiffres')]
     private ?string $siret = null;
+
+    #[Vich\UploadableField(mapping: 'companyLogo', fileNameProperty: 'imageName')]
+    #[Assert\Image(
+        maxSize: '250k',
+        mimeTypes: ['image/jpeg', 'image/png'],
+        maxHeight: 250,
+        maxWidth: 250,
+        minWidth: 48,
+        minHeight: 48,
+        maxSizeMessage: 'Le logo ne doit pas dépasser 250ko.',
+        mimeTypesMessage: 'Le logo doit être au format JPG ou PNG.',
+        maxHeightMessage: 'Le logo ne doit pas dépasser 250px de hauteur.',
+        maxWidthMessage: 'Le logo ne doit pas dépasser 250px de largeur.',
+        minWidthMessage: 'Le logo doit faire au moins 48px de largeur.',
+        minHeightMessage: 'Le logo doit faire au moins 48px de hauteur.',
+    )]
+    #[Ignore]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
 
     #[ORM\ManyToOne(inversedBy: 'referentCompanies')]
     #[ORM\JoinColumn(nullable: true)]
@@ -51,12 +75,26 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: Quote::class, orphanRemoval: true)]
     private Collection $quotes;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Address $address = null;
+
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Customer::class)]
+    private Collection $customers;
+
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Product::class)]
+    private Collection $products;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $invoiceDetails = null;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->companyMemberships = new ArrayCollection();
         $this->invoices = new ArrayCollection();
         $this->quotes = new ArrayCollection();
+        $this->customers = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,18 +110,6 @@ class Company
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): static
-    {
-        $this->slug = $slug;
 
         return $this;
     }
@@ -231,4 +257,194 @@ class Company
 
         return $this;
     }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $image = null): void
+    {
+        $this->imageFile = $image;
+
+        if (null !== $image) {
+            $this->updatedAt = new \DateTime();
+        }
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function userInCompany(User $user): bool
+    {
+        foreach ($this->companyMemberships as $companyMembership) {
+            if ($companyMembership->getRelatedUser() === $user) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function userAcceptedInCompany(User $user): bool
+    {
+        foreach ($this->companyMemberships as $companyMembership) {
+            if ($companyMembership->getRelatedUser() === $user && $companyMembership->getStatus() === CompanyMembershipStatusEnum::ACCEPTED) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->id,
+            $this->name,
+            $this->siret,
+            $this->imageName,
+            $this->createdAt,
+            $this->updatedAt,
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        [
+            $this->id,
+            $this->name,
+            $this->siret,
+            $this->imageName,
+            $this->createdAt,
+            $this->updatedAt,
+        ] = unserialize($serialized);
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Customer>
+     */
+    public function getCustomers(): Collection
+    {
+        return $this->customers;
+    }
+
+    public function addCustomer(Customer $customer): static
+    {
+        if (!$this->customers->contains($customer)) {
+            $this->customers->add($customer);
+            $customer->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCustomer(Customer $customer): static
+    {
+        if ($this->customers->removeElement($customer)) {
+            // set the owning side to null (unless already changed)
+            if ($customer->getCompany() === $this) {
+                $customer->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getCompany() === $this) {
+                $product->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isValid(): bool
+    {
+        return $this->getName() !== null
+            && $this->getSiret() !== null
+            && $this->getAddress() !== null
+            && $this->getReferent() !== null
+            && $this->getAddress()->isValid();
+    }
+
+    public function getIsNotValidErrors(): array
+    {
+        $errors = [];
+        if ($this->getName() === null) {
+            $errors[] = 'company.name.not_blank';
+        }
+
+        if ($this->getSiret() === null) {
+            $errors[] = 'company.siret.not_blank';
+        }
+
+        if ($this->getAddress() === null) {
+            $errors[] = 'company.address.not_blank';
+        }
+
+        if ($this->getReferent() === null) {
+            $errors[] = 'company.referent.not_blank';
+        }
+
+        if ($this->getAddress() !== null && !$this->getAddress()->isValid()) {
+            $errors = array_merge($errors, $this->getAddress()->getIsNotValidErrors());
+        }
+
+        return $errors;
+    }
+
+    public function getInvoiceDetails(): ?string
+    {
+        return $this->invoiceDetails;
+    }
+
+    public function setInvoiceDetails(?string $invoiceDetails): static
+    {
+        $this->invoiceDetails = $invoiceDetails;
+
+        return $this;
+    }
+    
 }

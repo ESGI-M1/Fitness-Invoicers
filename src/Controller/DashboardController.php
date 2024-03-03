@@ -2,73 +2,59 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
-use App\Entity\Invoice;
-use App\Entity\Product;
-use App\Entity\Quote;
-use App\Entity\User;
+use App\Form\Dashboard\DateRangeFormType;
+use App\Form\User\CompanyFormType;
+use App\Service\CompanySession;
+use App\Service\Dashboard;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\User\ProfileFormType;
 use Doctrine\ORM\EntityManagerInterface;
-
 
 class DashboardController extends AbstractController
 {
 
     #[Route('/', name: 'app_index')]
-    public function index(): Response
+    public function index(Request $request, Dashboard $dashboard, CompanySession $companySession): Response
     {
+
+        $company = $companySession->getCurrentCompany();
+
+        $dateRangeForm = $this->createForm(DateRangeFormType::class);
+        $dateRangeForm->handleRequest($request);
+
+        if($dateRangeForm->isSubmitted() && $dateRangeForm->isValid()) {
+
+            $statistics = $dashboard->handleForm($dateRangeForm, $company);
+
+            $dateRangeForm = $this->createForm(DateRangeFormType::class, [
+                'startDate' => $statistics['startDate'],
+                'endDate' => $statistics['endDate'],
+            ]);
+
+            return $this->render('dashboard/index.html.twig', [
+                'dateRangeForm' => $dateRangeForm->createView(),
+                'statistics' => $statistics
+            ]);
+        }
+        
         return $this->render('dashboard/index.html.twig', [
-            'controller_name' => 'DefaultController',
+            'dateRangeForm' => $dateRangeForm->createView(),
+            'statistics' => $dashboard->getDefaultStatistics($company),
         ]);
     }
 
-    #[Route('/utilisateurs', name: 'app_users')]
-    public function users(EntityManagerInterface $entityManager): Response
+    #[Route('/app_default_dev', name: 'app_default_dev')]
+    public function app_default_dev(): Response
     {
-        $users = $entityManager->getRepository(User::class)->findAll();
-
-        return $this->render('dashboard/users.html.twig', [
-            'users' => $users,
-        ]);
+        return $this->render('dashboard/index.html.twig');
     }
 
-    #[Route('/produits', name: 'app_products')]
-    public function products(EntityManagerInterface $entityManager): Response
+    #[Route('/design_guide', name: 'design_guide')]
+    public function designGuide(): Response
     {
-        $products = $entityManager->getRepository(Product::class)->findAll();
-
-        return $this->render('dashboard/products.html.twig', [
-            'products' => $products,
-        ]);
+        return $this->render('designGuide.html.twig');
     }
-
-    #[Route('/categories', name: 'app_categories')]
-    public function categories(EntityManagerInterface $entityManager): Response
-    {
-        $categories = $entityManager->getRepository(Category::class)->findAll();
-
-        return $this->render('dashboard/categories.html.twig', [
-            'categories' => $categories,
-        ]);
-    }
-
-    #[Route('/devis', name: 'app_quotes')]
-    public function quotes(EntityManagerInterface $entityManager): Response
-    {
-        $users = null;
-        $quotes = $entityManager->getRepository(Quote::class)->findBy([$users => $users]);
-
-        return $this->render('dashboard/quotes.html.twig', [
-            'quotes' => $quotes,
-        ]);
-    }
-
-    #[Route('/rapports', name: 'app_reports')]
-    public function reports(): Response
-    {
-        return $this->render('dashboard/reports.html.twig');
-    }
-
 }

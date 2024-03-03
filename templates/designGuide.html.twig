@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Design Guide{% endblock %}
+
+{% block main %}
+    <div class="flex flex-col items-center">
+        <h1 class="text-3xl font-bold mb-4">Guide de design avec Tailwind CSS</h1>
+        <div class="text-center ml-4">
+            <h2 class="text-2xl font-bold mb-2">Exemple de composant a</h2>
+            <div class="mb-4 p-4 rounded-lg">
+                {% include './components/a.html.twig' with {
+                    'path': '#',
+                    'class': 'text-red-600 hover:text-red-500',
+                    'label': 'Déconnexion',
+                } %}
+            </div>
+        </div>
+
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                <a href="{{ path }}"
+                   class=" {% if class is defined %}{{ class }}{% endif %} {% if bg_color is defined %}
+                   bg-{{ 'bg_color' }}-200 bg-{{ 'bg_color' }} hover:bg-{{ 'bg_color' }}-400 {% endif %}
+                   {% if fa is defined %}flex items-center justify-between{% endif %}">
+                    {{ 'label' }}
+                    {% if 'fa' is defined %}
+                        &nbsp; <i class="fas fa-{{ 'fa' }}"></i>
+                    {% endif %}
+                </a>
+                {% endverbatim %}
+            </xmp>
+        </div>
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2">Exemple de component a_menu</h2>
+                {% include './components/a_menu.html.twig' with {
+                    'name': 'Utilisateur',
+                    'path': '/companymembership',
+                    'fa': 'user'
+                } %}
+            </div>
+        </div>
+
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                <li class="rounded hover:bg-primaryLighter hover:text-primary hover:stroke-primary stroke-grey p-2">
+                    <a href="{{ path }}" class="flex nowrap gap-x-4 uppercase">
+                        {% if fa is defined %}
+                            &nbsp; <i class="fas fa-{{ fa }}"></i>
+                        {% endif %}
+                        {{ name }}
+                    </a>
+                </li>
+                    {% endverbatim %}
+            </xmp>
+        </div>
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2">Exemple de component a_top_menu</h2>
+                {% include './components/a_top_menu.html.twig' with {
+                    'id': 'lightMode',
+                    'fa': 'sun'
+                } %}
+            </div>
+        </div>
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                <button id="{{ id }}"
+                        class="rounded-xl p-0.5 hover:bg-primaryLighter bg-primaryLighter fill-grey
+                        dark:hover:bg-primary dark:bg-transparent dark:fill-white transition-colors duration-500">
+                    {% if fa is defined %}
+                        <i class="fas fa-{{ 'fa' }}"></i>
+                    {% endif %}
+                </button>
+                {% endverbatim %}
+            </xmp>
+        </div>
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2">Exemple de component back</h2>
+                {% include './components/back.html.twig' with {
+                    'content': 'Retour',
+                    'fa': 'arrow-left'
+                } %}
+            </div>
+        </div>
+
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                <button type="button" class="close text-gray-500 hover:text-gray-700" aria-label="Close"
+                        onclick="window.history.back()">
+                    {% if content is not defined %}
+                        <span aria-hidden="true" class="text-2xl">&times;</span>
+                    {% else %}
+                        {% if fa is defined %}
+                            &nbsp; <i class="fas fa-{{ 'fa' }}"></i>
+                        {% endif %}
+                        {{ content }}
+                    {% endif %}
+                </button>
+                {% endverbatim %}
+            </xmp>
+        </div>
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2">Exemple de bouton</h2>
+                <div class="mb-4">
+                    {% include './components/button.html.twig' with {
+                        'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6
+                        shadow-sm focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2
+                        border-solid p-4 shadow-lg justify-around bg-gray-100 hover:bg-gray-200',
+                        'label': 'Se connecter',
+                    } %}
+                </div>
+            </div>
+        </div>
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                <button class="{{ class }}">
+                    {{ label }}
+                </button>
+                {% endverbatim %}
+            </xmp>
+        </div>
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+        <div class="flex justify-between mb-8">
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold mb-2">Exemple de titre</h2>
+                <div class="mb-4">
+                    {% include './components/title.html.twig' with {
+                        'balise': 'h2',
+                        'title': 'Connectez-vous',
+                    } %}
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-black text-white p-4 rounded-lg shadow-md">
+            <xmp class="text-sm">
+                {% verbatim %}
+                <{{ balise }} class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-100">
+                {{ title }}</{{ balise }}>
+            {% endverbatim %}
+            </xmp>
+        </div>
+    </div>
+{% endblock %}

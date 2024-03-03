@@ -1,0 +1,17 @@
+<div class="flex justify-around bg-grey rounded-md items-center p-2">
+    <img src="{{ vich_uploader_asset(companySession.getCurrentCompanyTwig, 'imageFile') }}"
+         class="w-14 h-14 rounded-md aspect-square object-cover">
+    <h1 class="text-base font-bold uppercase">
+        <p>{{ companySession.getCurrentCompanyTwig.slug }}</p>
+        {% include './components/hr.html.twig' with {
+            'class': 'w-full h-1 my-1 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+        } %}
+        <a href="{{ path('app_user_company_set') }}">
+            <i class="fas fa-sync rotate"></i>
+        </a>
+        {% if is_granted('company_referent') %}
+            <a href="{{ path('app_user_company_show', { 'id': companySession.getCurrentCompanyTwig.id }) }}">
+                <i class="fa-solid fa-edit"></i> </a>
+        {% endif %}
+    </h1>
+</div>

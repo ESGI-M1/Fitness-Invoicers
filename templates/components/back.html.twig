@@ -1,0 +1,11 @@
+<button type="button" class="close text-gray-500 hover:text-gray-700" aria-label="Close"
+        onclick="window.history.back()">
+    {% if content is not defined %}
+        <span aria-hidden="true" class="text-2xl"><i class="fas fa-times text-2xl"></i></span>
+    {% else %}
+        {% if fa is defined %}
+            &nbsp; <i class="fas fa-{{ fa }}"></i>
+        {% endif %}
+        {{ content }}
+    {% endif %}
+</button>

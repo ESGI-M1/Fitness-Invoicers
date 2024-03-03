@@ -3,9 +3,35 @@
 {% block title %}{{ action }}{% endblock %}
 
 {% block main %}
-    <h1>{{ action }}</h1>
-
-    {{ form_start(form) }}
-    {{ form_end(form) }}
-
+    {% if form is not null %}
+        <div class="modal-header flex justify-between items-center">
+            <h5 class="modal-title text-lg font-bold">
+                {{ action }}
+                {% if subtitle is defined %}
+                    <div class="text-sm text-gray-600">{{ subtitle }}</div>
+                {% endif %}
+            </h5>
+            {% include './components/back.html.twig' %}
+        </div>
+        <div class="modal-body dialog-submit">
+            {{ form_start(form) }}
+            {% if form is defined %}
+                {% for child in form.children %}
+                    <div class="mb-4">
+                        {{ form_row(child) }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="flex justify-end">
+                {{ form.save is defined ? form_widget(form.save, { 'label': 'Sauvegarder', 'attr': {'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2 border-solid p-4 shadow-lg justify-around bg-gray-100 hover:bg-gray-200' } }) : null }}
+                {% if form.save is not defined %}
+                    {% include './components/button.html.twig' with {
+                        'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2 border-solid p-4 shadow-lg justify-around bg-gray-100 hover:bg-gray-200',
+                        'label': 'Sauvegarder',
+                    } %}
+                {% endif %}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    {% endif %}
 {% endblock %}

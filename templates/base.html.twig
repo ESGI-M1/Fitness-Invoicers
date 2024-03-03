@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>{% block title %}Welcome!{% endblock %}</title>
     <link rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
@@ -19,129 +19,17 @@
 
 {% block body %}
 
-    <div id="menu" class="flex h-screen w-screen">
-        <nav id="left-menu" class="overflow-hidden transition-all duration-500 bg-white text-white h-screen w-64 top-0 p-6 ">
-            <h2 class="text-base font-bold uppercase text-grey mt-8 mb-4">Général</h2>
-            <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey mb-10">
-                <li class="rounded hover:bg-primaryLighter hover:text-primary hover:stroke-primary stroke-grey p-2">
-                    <a href="{{ path('app_index') }}" class="flex nowrap gap-x-4 uppercase">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15" fill="none">
-                            <path d="M7.5 0.500033L7.825 0.120033C7.73443 0.0425682 7.61918 0 7.5 0C7.38082 0 7.26557 0.0425682 7.175 0.120033L7.5 0.500033ZM0.5 6.50003L0.175 6.12003L0 6.27003V6.50003H0.5ZM5.5 14.5V15C5.63261 15 5.75979 14.9474 5.85355 14.8536C5.94732 14.7598 6 14.6326 6 14.5H5.5ZM9.5 14.5H9C9 14.6326 9.05268 14.7598 9.14645 14.8536C9.24021 14.9474 9.36739 15 9.5 15V14.5ZM14.5 6.50003H15V6.27003L14.825 6.12003L14.5 6.50003ZM1.5 15H5.5V14H1.5V15ZM14.825 6.12003L7.825 0.120033L7.175 0.880033L14.175 6.88003L14.825 6.12003ZM7.175 0.120033L0.175 6.12003L0.825 6.88003L7.825 0.880033L7.175 0.120033ZM6 14.5V11.5H5V14.5H6ZM9 11.5V14.5H10V11.5H9ZM9.5 15H13.5V14H9.5V15ZM15 13.5V6.50003H14V13.5H15ZM0 6.50003V13.5H1V6.50003H0ZM7.5 10C7.89782 10 8.27936 10.1581 8.56066 10.4394C8.84196 10.7207 9 11.1022 9 11.5H10C10 10.837 9.73661 10.2011 9.26777 9.73227C8.79893 9.26342 8.16304 9.00003 7.5 9.00003V10ZM7.5 9.00003C6.83696 9.00003 6.20107 9.26342 5.73223 9.73227C5.26339 10.2011 5 10.837 5 11.5H6C6 11.1022 6.15804 10.7207 6.43934 10.4394C6.72064 10.1581 7.10218 10 7.5 10V9.00003ZM13.5 15C13.8978 15 14.2794 14.842 14.5607 14.5607C14.842 14.2794 15 13.8979 15 13.5H14C14 13.6326 13.9473 13.7598 13.8536 13.8536C13.7598 13.9474 13.6326 14 13.5 14V15ZM1.5 14C1.36739 14 1.24021 13.9474 1.14645 13.8536C1.05268 13.7598 1 13.6326 1 13.5H0C0 13.8979 0.158035 14.2794 0.43934 14.5607C0.720644 14.842 1.10218 15 1.5 15V14Z"/>
-                        </svg>
-                        Accueil
-                    </a>
-                </li>
-            </ul>
-            <h2 class="text-base font-bold uppercase text-grey mb-4">Tableau de bord</h2>
-            <ul class="flex flex-col gap-y-4 capitalize font-medium text-grey">
-                <li class="rounded hover:bg-primaryLighter hover:text-primary hover:stroke-primary stroke-grey p-2">
-                    <a href="{{ path('app_users') }}" class="flex nowrap gap-x-4 uppercase">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15" fill="none">
-                            <path d="M7.5 6.25C8.88071 6.25 10 5.13071 10 3.75C10 2.36929 8.88071 1.25 7.5 1.25C6.11929 1.25 5 2.36929 5 3.75C5 5.13071 6.11929 6.25 7.5 6.25Z"
-                                  stroke-width="1.5"/>
-                            <path d="M12.4981 11.25C12.5 11.1475 12.5 11.0431 12.5 10.9375C12.5 9.38438 10.2613 8.125 7.5 8.125C4.73875 8.125 2.5 9.38438 2.5 10.9375C2.5 12.4906 2.5 13.75 7.5 13.75C8.89437 13.75 9.9 13.6519 10.625 13.4769"
-                                  stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        Utilisateurs
-                    </a>
-                </li>
-                <li class="rounded hover:bg-primaryLighter hover:text-primary hover:stroke-primary stroke-grey p-2">
-                    <a href="{{ path('app_products') }}" class="flex nowrap gap-x-4 uppercase">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15" fill="none">
-                            <g clip-path="url(#clip0_167_1414)">
-                                <path d="M4.32031 4.31836L0.570312 0.568359M14.1989 10.0291L10.031 14.1969C9.88036 14.3474 9.67612 14.4319 9.46317 14.4319C9.25022 14.4319 9.04598 14.3474 8.89531 14.1969L1.92031 7.22193C1.87875 7.1822 1.8466 7.13368 1.82621 7.07992C1.80581 7.02616 1.7977 6.96852 1.80246 6.91122L2.4346 2.79693C2.44197 2.70277 2.48271 2.61433 2.5495 2.54755C2.61629 2.48076 2.70472 2.44002 2.79888 2.43265L6.91317 1.8005C6.97047 1.79575 7.02811 1.80386 7.08187 1.82425C7.13563 1.84464 7.18415 1.8768 7.22388 1.91836L14.1989 8.89336C14.3494 9.04403 14.4339 9.24827 14.4339 9.46122C14.4339 9.67416 14.3494 9.8784 14.1989 10.0291Z"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_167_1414">
-                                    <rect width="24" height="24" fill="white"/>
-                                </clipPath>
-                            </defs>
-                        </svg>
-                        Produits
-                    </a>
-                </li>
-                <li class="group rounded hover:bg-primaryLighter hover:text-primary p-2">
-                    <a href="{{ path('app_categories') }}"
-                       class="flex nowrap gap-x-4 uppercase group-hover:fill-primary fill-grey">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
-                            <g clip-path="url(#clip0_167_2072)">
-                                <path d="M9.84375 0.015625L15 2.59375V8.34326L14.0625 7.87451V3.64111L10.3125 5.51611V7.40576L9.375 7.87451V5.51611L5.625 3.64111V5.30371L4.6875 4.83496V2.59375L9.84375 0.015625ZM9.84375 4.70312L11.1401 4.05127L7.74902 2.11035L6.20361 2.88672L9.84375 4.70312ZM12.1509 3.55322L13.4839 2.88672L9.84375 1.06299L8.75244 1.6123L12.1509 3.55322ZM8.4375 8.34326L7.5 8.81201V8.80469L4.6875 10.2109V13.5435L7.5 12.1299V13.1846L4.21875 14.8252L0 12.7085V7.75732L4.21875 5.64795L8.4375 7.75732V8.34326ZM3.75 13.5435V10.2109L0.9375 8.80469V12.1299L3.75 13.5435ZM4.21875 9.39795L6.92139 8.05029L4.21875 6.69531L1.51611 8.05029L4.21875 9.39795ZM8.4375 9.39062L11.7188 7.75L15 9.39062V13.2505L11.7188 14.8911L8.4375 13.2505V9.39062ZM11.25 13.6094V11.3755L9.375 10.438V12.6719L11.25 13.6094ZM14.0625 12.6719V10.438L12.1875 11.3755V13.6094L14.0625 12.6719ZM11.7188 10.5625L13.4839 9.67627L11.7188 8.79736L9.95361 9.67627L11.7188 10.5625Z"/>
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_167_2072">
-                                    <rect width="15" height="15" fill="white"/>
-                                </clipPath>
-                            </defs>
-                        </svg>
-                        Catégories
-                    </a>
-                </li>
-                <li class="group rounded hover:bg-primaryLighter hover:text-primary p-2">
-                    <a href="{{ path('app_invoices') }}"
-                       class="flex nowrap gap-x-4 uppercase group-hover:fill-primary fill-grey">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
-                            <path d="M2.8125 1.40625V13.5938H10.3125V12.6562H3.75V2.34375H8.4375V5.15625H11.25V6.09375H12.1875V4.5L12.0469 4.35938L9.23438 1.54687L9.09375 1.40625H2.8125ZM9.375 3L10.5938 4.21875H9.375V3ZM4.6875 6.09375V7.03125H10.3125V6.09375H4.6875ZM12.6562 7.03125V7.96875C11.8594 8.10938 11.25 8.76562 11.25 9.60938C11.25 10.5469 11.9531 11.25 12.8906 11.25H13.3594C13.7344 11.25 14.0625 11.5781 14.0625 11.9531C14.0625 12.3281 13.7344 12.6562 13.3594 12.6562H11.7188V13.5938H12.6562V14.5312H13.5938V13.5938C14.3906 13.4531 15 12.7969 15 11.9531C15 11.0156 14.2969 10.3125 13.3594 10.3125H12.8906C12.5156 10.3125 12.1875 9.98438 12.1875 9.60938C12.1875 9.23438 12.5156 8.90625 12.8906 8.90625H14.5312V7.96875H13.5938V7.03125H12.6562ZM4.6875 8.4375V9.375H7.96875V8.4375H4.6875ZM8.90625 8.4375V9.375H10.3125V8.4375H8.90625ZM4.6875 10.3125V11.25H7.96875V10.3125H4.6875ZM8.90625 10.3125V11.25H10.3125V10.3125H8.90625Z"/>
-                        </svg>
-                        Factures
-                    </a>
-                </li>
-                <li class="group rounded hover:bg-primaryLighter hover:text-primary p-2">
-                    <a href="{{ path('app_quotes') }}"
-                       class="flex nowrap gap-x-4 uppercase group-hover:fill-primary fill-grey">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15">
-                            <path d="M11.25 1.25L12.1875 2.1875L13.125 1.25V5.70625L11.875 6.95625V3.06875H3.125V11.9312H6.5625V12.8125L5.625 13.75L4.6875 12.8125L3.75 13.75L2.8125 12.8125L1.875 13.75V1.25L2.8125 2.1875L3.75 1.25L4.6875 2.1875L5.625 1.25L6.5625 2.1875L7.5 1.25L8.4375 2.1875L9.375 1.25L10.3125 2.1875L11.25 1.25ZM8.125 12.475L11.9562 8.64375L13.2312 9.91875L9.4 13.75H8.125V12.475ZM12.3937 8.20625L13.0062 7.59375L13.0187 7.58125C13.05 7.55625 13.0875 7.53125 13.125 7.51875C13.1816 7.49798 13.2429 7.49401 13.3017 7.50732C13.3605 7.52063 13.4141 7.55064 13.4562 7.59375L14.2812 8.41875C14.4062 8.54375 14.4062 8.75 14.2812 8.86875L13.6687 9.48125L12.3937 8.20625ZM11.25 7.58125L10.7062 8.125H3.75V6.875H11.25V7.58125ZM9.45625 9.375L8.20625 10.625H3.75V9.375H9.45625ZM11.25 5.625V4.375H3.75V5.625H11.25Z"/>
-                        </svg>
-                        Devis
-                    </a>
-                </li>
-                <li class="group rounded hover:bg-primaryLighter hover:text-primary p-2">
-                    <a href="{{ path('app_reports') }}"
-                       class="flex nowrap gap-x-4 uppercase group-hover:fill-primary fill-grey">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 12 15">
-                            <path d="M10.9091 1.60714H9.27273V1.07143C9.27273 0.787268 9.15779 0.514746 8.95321 0.313814C8.74862 0.112882 8.47114 0 8.18182 0H3.81818C3.52885 0 3.25138 0.112882 3.04679 0.313814C2.84221 0.514746 2.72727 0.787268 2.72727 1.07143V1.60714H1.09091C0.801582 1.60714 0.524105 1.72003 0.31952 1.92096C0.114935 2.12189 0 2.39441 0 2.67857V13.9286C0 14.2127 0.114935 14.4853 0.31952 14.6862C0.524105 14.8871 0.801582 15 1.09091 15H10.9091C11.1984 15 11.4759 14.8871 11.6805 14.6862C11.8851 14.4853 12 14.2127 12 13.9286V2.67857C12 2.39441 11.8851 2.12189 11.6805 1.92096C11.4759 1.72003 11.1984 1.60714 10.9091 1.60714ZM3.81818 1.07143H8.18182V3.21429H3.81818V1.07143ZM10.9091 13.9286H1.09091V2.67857H2.72727V4.28571H9.27273V2.67857H10.9091V13.9286Z"/>
-                        </svg>
-                        Rapports
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
+    <div id="menu" class="flex h-screen">
+        {% include './layout/menu.html.twig' %}
         <div class="w-full">
-            <nav class="transition-all duration-300 bg-primary h-12 w-full p-4 px-8 flex justify-between items-center">
-                <button id="burger-menu" class="rounded-xl p-0.5 stroke-white hover:bg-primaryLighter hover:stroke-grey dark:hover:bg-gray-800 dark:hover:stroke-white transition-colors duration-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="24" height="24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
-                <div class="flex gap-x-4 items-center">
-                    <div class="flex justify-around items-center rounded-xl w-24 dark:bg-gray-800 bg-white py-0.5">
-                        <button id="lightMode" class="rounded-xl p-0.5 hover:bg-primaryLighter bg-primaryLighter fill-grey dark:hover:bg-primary dark:bg-transparent dark:fill-white transition-colors duration-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
-                        </button>
-                        <button id="darkMode" class="rounded-xl p-0.5 hover:bg-primaryLighter fill-grey dark:bg-primary dark:hover:bg-primary dark:fill-white transition-colors duration-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"/></svg>
-                        </button>
-                        <button id="systemMode" class="rounded-xl p-0.5 hover:bg-primaryLighter dark:hover:bg-primary transition-colors fill-grey dark:fill-white duration-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M160-160v-80h110l-16-14q-52-46-73-105t-21-119q0-111 66.5-197.5T400-790v84q-72 26-116 88.5T240-478q0 45 17 87.5t53 78.5l10 10v-98h80v240H160Zm400-10v-84q72-26 116-88.5T720-482q0-45-17-87.5T650-648l-10-10v98h-80v-240h240v80H690l16 14q49 49 71.5 106.5T800-482q0 111-66.5 197.5T560-170Z"/></svg>
-                        </button>
-                    </div>
-                    <a href="logout" class="rounded-xl p-0.5 fill-white hover:bg-primaryLighter hover:fill-grey dark:hover:bg-gray-800 dark:hover:fill-white transition-colors duration-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg>
-                    </a>
-                </div>
-            </nav>
-            {% block main %}{% endblock %}
+            {% include './layout/top_menu.html.twig' %}
+            <main class="flex flex-col flex-grow p-4">
+                {% include './components/error.html.twig' %}
+                {% block main %}{% endblock %}
+            </main>
         </div>
     </div>
-
+    
 {% endblock %}
-
-{% for type, flashMessages in app.flashes %}
-    {% for message in flashMessages %}
-        {{ type }}{{ message }}
-    {% endfor %}
-{% endfor %}
 </body>
 </html>

@@ -3,13 +3,50 @@
 {% block title %}Produits{% endblock %}
 
 {% block main %}
-    {% for pro in product %}
-        {{ pro.name }}
-        {{ pro.ref }}
-        {{ pro.slug }}
-        {{ pro.price }}
-        {% for category in pro.categories %}
-            {{ category.name }}
-        {% endfor %}
-    {% endfor %}
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Produits',
+        'values': products,
+        'path': path('app_user_product_add'),
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'label': 'Ajouter un produit',
+        'right': 'ROLE_USER'
+    } %}
+    <div class="container mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            {% for product in products %}
+                <div class="w-full p-2">
+                    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                        <img class="w-full h-36" src="{{ vich_uploader_asset(product, 'imageFile') }}">
+                        <div class="p-4">
+                            <h2 class="text-gray-800 text-lg font-semibold">{{ product.name }}</h2>
+                            <p class="mt-2 text-gray-600">{{ product.reference }}</p>
+                            <p class="mt-2 text-gray-600">{{ product.price }} €</p>
+                            <p class="mt-2 text-gray-600">Catégories:</p>
+                            <ul class="list-disc pl-5">
+                                {% for category in product.categories %}
+                                    <li>{{ category.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="p-4">
+                            {% include './components/a.html.twig' with {
+                                'path': path('app_user_product_edit', {'id': product.id}),
+                                'class': 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded',
+                                'label': 'Modifier',
+                                'svg_path': 'M15 5a1 1 0 0 1 1 1v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h1V4a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v1h1zm-4 1h-2V4a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v2H5a1 1 0 0 0 0 2h1v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8h1a1 1 0 0 0 0-2h-1V6a1 1 0 0 0-1-1z'
+                            } %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if products is not empty %}
+            <div class="box-footer">
+                <div class="navigation">
+                    {{ knp_pagination_render(products) }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

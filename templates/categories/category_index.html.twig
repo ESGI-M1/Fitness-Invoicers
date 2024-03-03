@@ -3,11 +3,56 @@
 {% block title %}Catégories{% endblock %}
 
 {% block main %}
-
-    {% for cat in category %}
-        {{cat.name}}
-        {{cat.company}}
-        {{cat.slug}}
-    {% endfor %}
-
+    {% include './layout/search_border.html.twig' with {
+        'form': form,
+        'entity': 'Catégories',
+        'values': categories,
+        'path': path('app_user_category_add'),
+        'class': 'fancy-add bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded float-right',
+        'label': 'Ajouter une catégorie',
+        'right': 'ROLE_USER'
+    } %}
+    <div class="mt-4">
+        <table class="table table-bordered table-striped table-hover w-full">
+            <thead>
+            <tr>
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Nom',
+                    'entity': categories,
+                    'value': 'c.name',
+                } %}
+                {% include './components/sorted.html.twig' with {
+                    'title': 'Nombre de produits',
+                    'entity': categories,
+                } %}
+                <th class="border"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for category in categories %}
+                <tr>
+                    <td class="border">{{ category.name }}</td>
+                    <td class="border">{{ category.products|length }}</td>
+                    <td class="text-center border">
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_category_edit', { 'id': category.id }),
+                            'fa': 'edit'
+                        } %}
+                        {% include './components/a.html.twig' with {
+                            'path': path('app_user_category_delete', { 'id': category.id, 'token': csrf_token('delete' ~ category.id) }),
+                            'fa': 'trash'
+                        } %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center border">Aucune catégorie définie</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if categories is not empty %}
+            {{ knp_pagination_render(categories) }}
+        {% endif %}
+    </div>
 {% endblock %}

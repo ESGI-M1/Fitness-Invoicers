@@ -19,9 +19,6 @@ final class ItemFactory extends ModelFactory
     {
         return [
             'quantity' => self::faker()->numberBetween(1, 10),
-            'productLabel' => self::faker()->word(),
-            'productRef' => self::faker()->uuid(),
-            'productPrice' => self::faker()->randomFloat(2, 0, 1000),
             'product' => ProductFactory::createOne(),
         ];
     }

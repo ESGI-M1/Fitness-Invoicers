@@ -1,8 +1,13 @@
 twig:
   default_path: '%kernel.project_dir%/templates'
   form_themes: [
-      - 'form/form_themes.html.twig'
+    'tailwind_2_layout.html.twig',
+    'form/form_themes.html.twig'
   ]
+  globals:
+    companySession: '@App\Service\CompanySession'
+  paths:
+    '%kernel.project_dir%/vendor/knplabs/knp-paginator-bundle/templates': KnpPaginator
 
 when@test:
   twig:

@@ -1,0 +1,18 @@
+{% set direction = entity.getDirection() %}
+{% if value is defined %}
+    <th class="border
+        {% if entity.isSorted(value) %} sorted {{ direction }}"{% else %}"{% endif %}>
+    {{ knp_pagination_sortable(entity, title, value, []) }}
+    {% if entity.isSorted(value) %}
+        {% if app.request.get('direction') == 'asc' %}
+            <i class="fa-solid fa-arrow-up"></i>
+        {% elseif app.request.get('direction') == 'desc' %}
+            <i class="fa-solid fa-arrow-down"></i>
+        {% endif %}
+    {% endif %}
+    </th>
+{% else %}
+    <th class="border">
+        {{ title }}
+    </th>
+{% endif %}
