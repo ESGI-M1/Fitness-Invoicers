@@ -13,6 +13,7 @@
                     {% if error %}
                         <div class="alert alert-danger text-xl mb-6 text-center text-white underline">{{ error.message }}</div>
                     {% endif %}
+                    {% include './components/error.html.twig' %}
                     {% include './components/title.html.twig' with {
                         'balise': 'h2',
                         'title': 'Connectez-vous',

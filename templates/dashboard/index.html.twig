@@ -53,12 +53,12 @@
         {{ form_start(dateRangeForm) }}
         <div class="flex flex-wrap items-center mb-4 justify-around">
             <div class="flex items-center flex-wrap p-4 gap-2 rounded-lg dark:bg-gray-900 mb-4">
-                    {{ form_row(dateRangeForm.submitDay) }}
-                    {{ form_row(dateRangeForm.submitMonth) }}
-                    {{ form_row(dateRangeForm.submitYear) }}
-                    {{ form_row(dateRangeForm.submitDayBefore) }}
-                    {{ form_row(dateRangeForm.submitMonthBefore) }}
-                    {{ form_row(dateRangeForm.submitYearBefore) }}
+                {{ form_row(dateRangeForm.submitDay) }}
+                {{ form_row(dateRangeForm.submitMonth) }}
+                {{ form_row(dateRangeForm.submitYear) }}
+                {{ form_row(dateRangeForm.submitDayBefore) }}
+                {{ form_row(dateRangeForm.submitMonthBefore) }}
+                {{ form_row(dateRangeForm.submitYearBefore) }}
             </div>
             <div class="flex items-baseline md:flex-row flex-col p-4 pb-0 gap-2 rounded-lg dark:bg-gray-900">
                 {{ form_row(dateRangeForm.startDate) }}
@@ -76,15 +76,25 @@
                     </div>
                     <div class="w-full px-4 mb-4 dark:text-white">
                         <div class="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold mb-2">Nombre de factures
+                            <h3 class="text-lg font-semibold mb-2 text-center">Nombre de factures
                                 : {{ statistics.invoices|length }}</h3>
-                            {% for key, status in statistics.invoicesByStatus.invoices %}
-                                <div class="flex items-center justify-between mb-2">
-                                    <div>{{ key }}</div>
-                                    <div>{{ status|length }} {{ status|length > 1 ? 'factures' : 'facture' }}</div>
-                                    <div>{{ statistics.invoicesByStatus.amount[key] }} €</div>
-                                </div>
-                            {% endfor %}
+                            <table class="w-full text-center">
+                                <thead>
+                                <tr>
+                                    <th>Statut</th>
+                                    <th>Nombre</th>
+                                    <th>Montant</th>
+                                </tr>
+                                <tbody>
+                                {% for key, status in statistics.invoicesByStatus.invoices %}
+                                    <tr>
+                                        <td>{{ key }}</td>
+                                        <td>{{ status|length }} {{ status|length > 1 ? 'factures' : 'facture' }}</td>
+                                        <td>{{ statistics.invoicesByStatus.amount[key] }} €</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -94,14 +104,25 @@
                     </div>
                     <div class="w-full px-4 mb-4 dark:text-white">
                         <div class="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold mb-2">Nombre de devis : {{ statistics.quotes|length }}</h3>
-                            {% for key, status in statistics.quotesByStatus.quotes %}
-                                <div class="flex items-center justify-between mb-2">
-                                    <div>{{ key }}</div>
-                                    <div>{{ status|length }} devis</div>
-                                    <div>{{ statistics.quotesByStatus.amount[key] }} €</div>
-                                </div>
-                            {% endfor %}
+                            <h3 class="text-lg font-semibold mb-2 text-center">Nombre de devis
+                                : {{ statistics.quotes|length }}</h3>
+                            <table class="w-full text-center">
+                                <thead>
+                                <tr>
+                                    <th>Statut</th>
+                                    <th>Nombre</th>
+                                    <th>Montant</th>
+                                </tr>
+                                <tbody>
+                                {% for key, status in statistics.quotesByStatus.quotes %}
+                                    <tr>
+                                        <td>{{ key }}</td>
+                                        <td>{{ status|length }} {{ status|length > 1 ? 'devis' : 'devis' }}</td>
+                                        <td>{{ statistics.quotesByStatus.amount[key] }} €</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

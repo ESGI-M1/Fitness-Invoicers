@@ -9,7 +9,7 @@
     <h1 class="text-3xl font-semibold mb-6 dark:text-white">Envoi {{ phrase }} n°{{ entity.id }}</h1>
 
     <div class="container mx-auto px-4 py-8 dark:text-white">
-        <div class="flex flex-wrap items-center mb-4 justify-around">
+        <div class="flex flex-wrap items-center mb-4 justify-around p-4 bg-white dark:bg-gray-900 dark:text-white shadow-lg rounded-lg">
             <div class="w-full md:w-2/5 md:mr-4">
                 <h2 class="text-xl mb-2">Personnalisation du mail</h2>
                 {{ form_start(form) }}
@@ -22,7 +22,7 @@
                 <p class="mb-2">Destinataire : {{ entity.customer.email }}</p>
                 <p class="mb-4">Objet : {{ mail.object }}</p>
                 {% if mail.joinPDF %}
-                    <p><i class="fas fa-file-pdf"></i>Le PDF {{ phrase }} sera joint au mail</p>
+                    <p><i class="fas fa-file-pdf mr-2 mb-2"></i>Le PDF {{ phrase }} sera joint au mail</p>
                 {% endif %}
                 <div>
                     {% include './mails/mail.html.twig' with {

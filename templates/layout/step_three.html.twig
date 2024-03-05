@@ -27,12 +27,8 @@
 
     {% if value.isValid %}
         <div class="mb-8 p-4 bg-white dark:bg-gray-900 dark:text-white shadow-lg rounded-lg">
-            <h2>Tout est valide</h2>
             {{ form_start(formStatus) }}
-            {{ form_row(formStatus.status) }}
-            {% if name.title == 'Factures' %}
-                {{ form_row(formStatus.paymentMethod) }}
-            {% endif %}
+            {{ form_widget(formStatus) }}
             <button type="submit" class="btn btn-primary bg-secondary hover:bg-secondary-hover text-white py-2 px-4 rounded">Valider</button>
             {{ form_end(formStatus) }}
         </div>

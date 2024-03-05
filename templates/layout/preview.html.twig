@@ -126,6 +126,12 @@
             <th>Total TTC</th>
             <td>{{ value.getTotalAmount }} €</td>
         </tr>
+        {% if pre == 'FA' %}
+            <tr>
+                <th>Reste à payer</th>
+                <td>{{ value.getOutStandingAmount }} €</td>
+            </tr>
+        {% endif %}
         </tbody>
     </table>
 

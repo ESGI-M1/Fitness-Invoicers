@@ -20,7 +20,9 @@
         {% include './components/button.html.twig' with {
             'label': 'Découvrir dès maintenant',
             'fa': 'arrow-right',
-            'class': 'flex w-full items-center rounded-md px-4 py-1.5 text-xl font-semibold leading-6 shadow-sm focus:outline-none focus-visible:ring focus-visible:ring-gray-300 focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2 border-solid p-4 shadow-lg items-center justify-between',
+            'class': 'flex w-full items-center mb-8 rounded-md px-4 py-1.5 text-xl font-semibold leading-6 shadow-sm focus:outline-none focus-visible:ring focus-visible:ring-gray-300 focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2 border-solid p-4 shadow-lg items-center justify-between',
         } %}
     </div>
+    {% include './components/error.html.twig' %}
+
 </div>

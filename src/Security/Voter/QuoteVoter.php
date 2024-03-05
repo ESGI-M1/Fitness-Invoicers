@@ -115,7 +115,7 @@ class QuoteVoter extends Voter
             return false;
         }
         
-        return $quote->getStatus() === QuoteStatusEnum::ACCEPTED && $quote->isValid() && $quote->getInvoices()->isEmpty();
+        return ( $quote->getStatus() === QuoteStatusEnum::ACCEPTED || $quote->getStatus() === QuoteStatusEnum::SENT ) && $quote->isValid() && $quote->getInvoices()->isEmpty();
     }
 
     private function canMail(Quote $quote, UserInterface $user): bool

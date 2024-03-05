@@ -89,6 +89,7 @@ class SecurityController extends AbstractController
                     ->htmlTemplate('security/confirmation_email.html.twig')
             );
 
+            $this->addFlash('success', 'Votre compte a bien été créé. Veuillez confirmer votre email pour vous connecter.');
             return $this->redirectToRoute('app_user_profile');
         }
 

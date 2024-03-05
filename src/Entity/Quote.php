@@ -229,31 +229,31 @@ class Quote
 
         $errors = [];
         if ($this->getCustomer() === null) {
-            $errors[] = 'customer.not.valid';
+            $errors[] = 'Le client est obligatoire';
         }
 
         if ($this->getCompany() === null) {
-            $errors[] = 'company.not.valid';
+            $errors[] = 'La société est obligatoire';
         }
 
         if ($this->getExpirationDate() === null) {
-            $errors[] = 'expiration.date.is.required';
+            $errors[] = 'La date d\'expiration est obligatoire';
         }
 
         if ($this->getItems()->count() === 0) {
-            $errors[] = 'items.are.required';
+            $errors[] = 'Le devis doit contenir au moins un article';
         }
 
         if ($this->getTotalAmount() <= 0) {
-            $errors[] = 'items.total.amount.must.be.greater.than.0';
+            $errors[] = 'Le montant total du devis doit être supérieur à 0';
         }
 
         if ($this->getTotalWithoutTaxes() <= 0) {
-            $errors[] = 'items.total.without.taxes.must.be.greater.than.0';
+            $errors[] = 'Le montant total sans taxes du devis doit être supérieur à 0';
         }
 
         if ($this->getTaxesAmount() < 0) {
-            $errors[] = 'items.taxes.amount.must.be.greater.or.equal.to.0';
+            $errors[] = 'Le montant total des taxes du devis doit être supérieur ou égal à 0';
         }
 
         if ($this->getCustomer() !== null) {

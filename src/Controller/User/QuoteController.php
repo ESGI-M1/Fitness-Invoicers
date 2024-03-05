@@ -397,8 +397,8 @@ class QuoteController extends AbstractController
             return $this->redirectToRoute('app_user_quote_index');
         }
 
-        if ($quote->getStatus() != QuoteStatusEnum::ACCEPTED) {
-            $this->addFlash('danger', 'Le devis n°' . $quote->getId() . ' ne peut pas être converti car il n\'est pas accepté');
+        if ($quote->getStatus() != QuoteStatusEnum::ACCEPTED && $quote->getStatus() != QuoteStatusEnum::SENT) {
+            $this->addFlash('danger', 'Le devis n°' . $quote->getId() . ' ne peut pas être converti car il n\'est pas accepté ou envoyé');
             return $this->redirectToRoute('app_user_quote_index');
         }
 
