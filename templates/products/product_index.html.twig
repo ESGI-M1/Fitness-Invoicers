@@ -19,8 +19,8 @@
                     <img class="w-48 h-48 object-cover mx-auto" src="{{ vich_uploader_asset(product, 'imageFile') }}">
                     <div class="p-4">
                         <h2 class="text-gray-800 text-lg font-semibold dark:text-white">{{ product.name }}</h2>
-                        <p class="mt-2 text-gray-600 dark:text-white">{{ product.reference }}</p>
-                        <p class="mt-2 text-gray-600 dark:text-white">{{ product.price }} €</p>
+                        <p class="mt-2 text-gray-600 dark:text-white">Référence : {{ product.reference }}</p>
+                        <p class="mt-2 text-gray-600 dark:text-white">Prix : {{ product.price }} €</p>
                         {% if product.categories and product.categories is not empty %}
                             <p class="mt-2 text-gray-600 dark:text-white">Catégories:</p>
                             <ul class="list-disc pl-5">

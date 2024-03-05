@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const burgerButton = document.getElementById('burger-menu');
     const leftMenu = document.getElementById('left-menu');
+    const closeButton = document.getElementById('close-menu');
 
     const menuState = localStorage.getItem('menuState');
 
@@ -15,6 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     burgerButton.addEventListener('click', () => {
+        switchMenu();
+    });
+
+    closeButton.addEventListener('click', () => {
         switchMenu();
     });
 
@@ -57,9 +62,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (leftMenu.classList.contains('max-w-full')) {
             leftMenu.classList.remove('max-w-full');
             leftMenu.classList.add('max-w-0');
+                closeButton.classList.add('hidden');
+
         } else {
             leftMenu.classList.remove('max-w-0');
             leftMenu.classList.add('max-w-full');
+            if (window.innerWidth < 768) {
+                closeButton.classList.remove('hidden');
+            }
         }
 
         const currentState = leftMenu.classList.contains('max-w-full') ? 'max-w-full' : 'max-w-0';

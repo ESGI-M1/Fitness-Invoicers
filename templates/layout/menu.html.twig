@@ -10,6 +10,9 @@
 
 <nav id="left-menu"
      class="transition-all duration-1000 bg-white w-full md:w-1/6 text-white max-w-0 min-h-screen overflow-hidden top-0 shrink-0 w-56 dark:bg-gray-900">
+    <button id="close-menu" class="text-black absolute top-4 right-4 hidden dark:text-white">
+        <i class="fas fa-times"></i>
+    </button>
     <div class="px-6 pt-4">
         {% if companySession.getCurrentCompanyTwig %}
             {% include './layout/current_company.html.twig' %}

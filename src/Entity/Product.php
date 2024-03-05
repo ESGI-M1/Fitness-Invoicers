@@ -39,18 +39,18 @@ class Product
 
     #[Vich\UploadableField(mapping: 'productImage', fileNameProperty: 'imageName')]
     #[Assert\Image(
-        maxSize: '1000k',
+        maxSize: '2000k',
         mimeTypes: ['image/jpeg', 'image/png'],
-        maxHeight: 600,
-        maxWidth: 600,
-        minHeight: 300,
-        minWidth: 300,
-        maxSizeMessage: 'L\'image produit ne doit pas dépasser 1000ko.',
+        maxHeight: 1080,
+        maxWidth: 1080,
+        minHeight: 200,
+        minWidth: 200,
+        maxSizeMessage: 'L\'image produit ne doit pas dépasser 2000ko.',
         mimeTypesMessage: 'L\'image produit doit être au format JPG ou PNG.',
-        maxHeightMessage: 'L\'image produit ne doit pas dépasser 600px de hauteur.',
-        maxWidthMessage: 'L\'image produit ne doit pas dépasser 600px de largeur.',
-        minHeightMessage: 'L\'image produit doit faire au moins 300px de hauteur.',
-        minWidthMessage: 'L\'image produit doit faire au moins 300px de largeur.'
+        maxHeightMessage: 'L\'image produit ne doit pas dépasser 1080px de hauteur.',
+        maxWidthMessage: 'L\'image produit ne doit pas dépasser 1080px de largeur.',
+        minHeightMessage: 'L\'image produit doit faire au moins 200px de hauteur.',
+        minWidthMessage: 'L\'image produit doit faire au moins 200px de largeur.'
     )]
     private ?File $imageFile = null;
 

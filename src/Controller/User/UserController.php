@@ -80,7 +80,7 @@ class UserController extends AbstractController
     public function invitation(Request $request, EntityManagerInterface $entityManager): Response
     {
 
-        $this->addFlash('success', 'Veuillez renseignez votre mot de passe pour vous connecter plus tard');
+        $this->addFlash('success', 'Veuillez utiliser le mot de passe oublié pour réinitialiser votre mot de passe');
 
         return $this->redirectToRoute('app_user_profile');
     }
