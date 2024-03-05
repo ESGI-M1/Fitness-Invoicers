@@ -413,19 +413,19 @@ class Company implements \Serializable
     {
         $errors = [];
         if ($this->getName() === null) {
-            $errors[] = 'company.name.not_blank';
+            $errors[] = 'Le nom de la société ne peut pas être vide';
         }
 
         if ($this->getSiret() === null) {
-            $errors[] = 'company.siret.not_blank';
+            $errors[] = 'Le numéro de SIRET ne peut pas être vide';
         }
 
         if ($this->getAddress() === null) {
-            $errors[] = 'company.address.not_blank';
+            $errors[] = 'L\'adresse de la société ne peut pas être vide';
         }
 
         if ($this->getReferent() === null) {
-            $errors[] = 'company.referent.not_blank';
+            $errors[] = 'Le référent de la société ne peut pas être vide';
         }
 
         if ($this->getAddress() !== null && !$this->getAddress()->isValid()) {

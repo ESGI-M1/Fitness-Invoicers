@@ -96,16 +96,16 @@ class Address
     {
         $error = [];
         if ($this->postal_code === null) {
-            $error[] = "address.postal_code.required";
+            $error[] = "Le code postal est obligatoire";
         }
         if ($this->city === null) {
-            $error[] = "address.city.required";
+            $error[] = "La ville est obligatoire";
         }
         if ($this->country === null) {
-            $error[] = "address.country.required";
+            $error[] = "Le pays est obligatoire";
         }
         if ($this->street === null) {
-            $error[] = "address.street.required";
+            $error[] = "La rue est obligatoire";
         }
         return $error;
     }

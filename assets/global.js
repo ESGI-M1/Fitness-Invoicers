@@ -1,19 +1,5 @@
 import $ from 'jquery';
 
-function fancyConfirm(opts) {
-    opts = Object.assign({
-        type: 'green',
-        title: 'Confirmation',
-        message: 'Etes-vous sûr de vouloir effectuer cette opération?',
-        okButton: 'Oui',
-        noButton: 'Annuler',
-        callback: function () {
-        },
-        adButton: null,
-        intButton: null
-    }, opts);
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     $('.select2').select2({
         closeOnSelect: false,

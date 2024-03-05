@@ -4,19 +4,23 @@
 
 {% block main %}
 
-    <h1>Devis {{ quote.id }}</h1>
+    <h1 class="text-3xl font-semibold mb-6 dark:text-white">Devis n°{{ quote.id }}</h1>
 
+    <div class="p-4 mb-8 w-3/5 mx-auto rounded-lg dark:text-white dark:bg-gray-900">
     {{ form_start(form) }}
-        {{ form_row(form.convertType) }}
-        {{ form_row(form.dueDate) }}
-        {{ form_row(form.amount) }}
-        {{ form_row(form.paymentMethod) }}
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        {{ form_widget(form) }}
+        {% include './components/button.html.twig' with {
+            'class': 'bg-primary hover:bg-primary-hover text-center text-white font-bold py-2 px-4 rounded w-full',
+            'label': 'Convertir en facture',
+        } %}
     {{ form_end(form) }}
+    </div>
 
 
-    {% include './quotes/quote_preview.html.twig' with {
-        'quote': quote,
+    {% include './layout/preview.html.twig' with {
+        'value': quote,
+        'title': 'Devis',
+        'pre': 'DE',
     } %}
 
 {% endblock %}

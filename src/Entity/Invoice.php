@@ -259,31 +259,31 @@ class Invoice
 
         $errors = [];
         if ($this->getCustomer() === null) {
-            $errors[] = 'customer.not.valid';
+            $errors[] = 'Le client est requis';
         }
 
         if ($this->getDetails() === null) {
-            $errors[] = 'details.are.required';
+            $errors[] = 'Les mentions légales sont requises';
         }
 
         if ($this->getDueDate() === null) {
-            $errors[] = 'due.date.is.required';
+            $errors[] = 'La date d\'échéance est requise';
         }
 
         if ($this->getItems()->count() === 0) {
-            $errors[] = 'items.are.required';
+            $errors[] = 'Une facture doit contenir au moins un article';
         }
 
         if ($this->getTotalAmount() <= 0) {
-            $errors[] = 'items.total.amount.must.be.greater.than.0';
+            $errors[] = 'Le montant total doit être supérieur à 0';
         }
 
         if ($this->getTotalWithoutTaxes() <= 0) {
-            $errors[] = 'items.total.without.taxes.must.be.greater.than.0';
+            $errors[] = 'Le montant total sans taxes doit être supérieur à 0';
         }
 
         if ($this->getTaxesAmount() < 0) {
-            $errors[] = 'items.taxes.amount.must.be.greater.or.equal.to.0';
+            $errors[] = 'Le montant des taxes doit être supérieur ou égal à 0';
         }
 
         if ($this->getCustomer() !== null) {
@@ -306,18 +306,28 @@ class Invoice
     public function isValidStepOne(): bool
     {
         return $this->getCustomer() !== null
-            && $this->getCustomer()->isValid();
+            && $this->getCompany() !== null
+            && $this->getCustomer()->isValid()
+            && $this->getCompany()->isValid();
     }
 
     public function getIsNotValidStepOneErrors(): array
     {
         $errors = [];
         if ($this->getCustomer() === null) {
-            $errors[] = 'customer.not.valid';
+            $errors[] = 'Le client est requis';
+        }
+
+        if($this->getCompany() === null) {
+            $errors[] = 'La société est requise';
         }
 
         if ($this->getCustomer() !== null) {
             $errors = array_merge($errors, $this->getCustomer()->getIsNotValidErrors());
+        }
+
+        if ($this->getCompany() !== null) {
+            $errors = array_merge($errors, $this->getCompany()->getIsNotValidErrors());
         }
 
         return $errors;

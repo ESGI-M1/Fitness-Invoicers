@@ -28,13 +28,13 @@ class QuoteSearchType extends AbstractType
                 'required' => false,
                 'label' => 'N° de devis',
             ])
+            ->add('alias', TextType::class, [
+                'required' => false,
+                'label' => 'Client',
+            ])
             ->add('discountAmount', NumberType::class, [
                 'required' => false,
                 'label' => 'Montant de la remise',
-            ])
-            ->add('discountPercent', NumberType::class, [
-                'required' => false,
-                'label' => 'Réduction %',
             ])
             ->add('status', ChoiceType::class, [
                 'choices' => $status,

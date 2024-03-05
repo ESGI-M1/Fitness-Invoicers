@@ -1,12 +1,21 @@
-console.log("js loaded");
-
 document.addEventListener('DOMContentLoaded', function() {
     const burgerButton = document.getElementById('burger-menu');
     const leftMenu = document.getElementById('left-menu');
 
+    const menuState = localStorage.getItem('menuState');
+
+    if (menuState && window.innerWidth >= 768) {
+        leftMenu.classList.add(menuState);
+    } else {
+        if (window.innerWidth >= 768) {
+            leftMenu.classList.add('max-w-full');
+        } else {
+            leftMenu.classList.add('max-w-0');
+        }
+    }
+
     burgerButton.addEventListener('click', () => {
-        leftMenu.classList.toggle('max-w-full');
-        leftMenu.classList.toggle('max-w-0');
+        switchMenu();
     });
 
     const lightMode = document.getElementById('lightMode');
@@ -44,7 +53,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function switchMenu() {
+        if (leftMenu.classList.contains('max-w-full')) {
+            leftMenu.classList.remove('max-w-full');
+            leftMenu.classList.add('max-w-0');
+        } else {
+            leftMenu.classList.remove('max-w-0');
+            leftMenu.classList.add('max-w-full');
+        }
+
+        const currentState = leftMenu.classList.contains('max-w-full') ? 'max-w-full' : 'max-w-0';
+        localStorage.setItem('menuState', currentState);
+    }
+
+
     initSystemMode();
 
 });
-

@@ -114,8 +114,8 @@ class QuoteVoter extends Voter
         if(!$currentCompany || $currentCompany !== $quote->getCompany() || !$currentCompany->userInCompany($user)) {
             return false;
         }
-
-        return $quote->getStatus() === QuoteStatusEnum::ACCEPTED && $quote->isValid() && !$quote->getInvoices();
+        
+        return $quote->getStatus() === QuoteStatusEnum::ACCEPTED && $quote->isValid() && $quote->getInvoices()->isEmpty();
     }
 
     private function canMail(Quote $quote, UserInterface $user): bool

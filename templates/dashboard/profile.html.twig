@@ -3,8 +3,8 @@
 {% block title %}Profil{% endblock %}
 
 {% block main %}
-<div class="flex gap-6"> {# Utilisation de flex-col pour aligner les éléments verticalement, et gap-6 pour ajouter un espace entre eux #}
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4 dark:bg-gray-900 dark:text-white"> {# Réduction de la taille des carrés blancs en modifiant la valeur de p-6 à p-4 #}
+<div class="flex gap-6 flex-col md:flex-row">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4 dark:bg-gray-900 dark:text-white">
         {% include './components/title.html.twig' with {
             'balise': 'h2',
             'title': 'Modifier votre profil',
@@ -72,7 +72,7 @@
         'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
     } %}
 
-    <div class="max-w-md w-3/6 mx-auto bg-white rounded-lg shadow-md p-6 dark:bg-gray-900">
+    <div class="max-w-md w-3/6 mx-auto w-full bg-white rounded-lg shadow-md p-6 dark:bg-gray-900">
         {{ form_start(mailForm) }}
 
         <div class="overflow-y-auto max-h-full">

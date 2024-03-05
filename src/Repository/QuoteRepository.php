@@ -36,15 +36,25 @@ class QuoteRepository extends ServiceEntityRepository
                 ->andWhere('q.id LIKE :id')
                 ->setParameter('id', '%' . $options['id'] . '%');
         }
+        if (isset($options['alias']) && $options['alias'] !== '') {
+            $parts = explode(' ', $options['alias']);
+            $subAnd = [];
+            foreach ($parts as $k => $p) {
+                $tag = 'alias_' . $k;
+                $subOr = [];
+                foreach (['customer.firstName', 'customer.lastName'] as $f) {
+                    $subOr[] = "{$f} LIKE :{$tag}";
+                }
+                $subAnd[] = '(' . implode(' OR ', $subOr) . ')';
+                $query->setParameter($tag, "%$p%");
+            }
+            $query
+                ->andWhere('(' . implode(' AND ', $subAnd) . ')');
+        }
         if (isset($options['discountAmount']) && $options['discountAmount']) {
             $query
                 ->andWhere('q.discountAmount LIKE :discountAmount')
                 ->setParameter('discountAmount', '%' . $options['discountAmount'] . '%');
-        }
-        if (isset($options['discountPercent']) && $options['discountPercent']) {
-            $query
-                ->andWhere('q.discountPercent LIKE :discountPercent')
-                ->setParameter('discountPercent', '%' . $options['discountPercent'] . '%');
         }
         if (isset($options['status']) && $options['status']) {
             $query

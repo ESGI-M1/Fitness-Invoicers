@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Security;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -15,17 +15,6 @@ class ChangePasswordFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('currentPassword', PasswordType::class, [
-                'label' => 'Votre mot de passe',
-                'attr' => [
-                    'autocomplete' => 'current-password',
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter your current password',
-                    ]),
-                ],
-            ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'options' => [

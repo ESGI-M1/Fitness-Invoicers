@@ -128,14 +128,9 @@
 </table>
 
 <div>
-
     {% if invoice.deposit %}
-        <table style="border: 1px solid darkgrey;margin-bottom: 2rem">
+        <table style="border: 1px solid darkgrey;margin-bottom: 2rem; float: left">
             <tbody>
-                <tr>
-                    <th>Méthode de paiement</th>
-                    <td>{{ invoice.payment.method }}</td>
-                </tr>
                 <tr>
                     <th>Acompte</th>
                     <td>{{ invoice.deposit.amount }} €</td>
@@ -144,13 +139,11 @@
         </table>
     {% endif %}
 
-
-    <table style="border: 1px solid darkgrey;margin-bottom: 2rem">
+    <table style="border: 1px solid darkgrey;margin-bottom: 2rem; float: right">
         <tbody>
         <tr>
-            <th>Moyen de paiement</th>
-            <td>{{ invoice.payments[0].method.name }}</td>
-            }
+            <th>Méthode de paiement</th>
+            <td>{{ invoice.payments|length ? invoice.payments[0].method.name : 'Non renseigné' }}</td>
         </tr>
         <tr>
             <th>Total HT</th>
@@ -172,7 +165,7 @@
     </table>
 </div>
 
-<p>{{ invoice.details }}</p>
+<p style="margin-top: 14rem">{{ invoice.details }}</p>
 
 <footer style="position: absolute; left: 30%; right: 30%; margin: 0 auto; bottom: 0; text-align: center;">
     <p>{{ invoice.company.name }}</p>

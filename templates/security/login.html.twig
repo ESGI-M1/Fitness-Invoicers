@@ -3,20 +3,20 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    {% if error %}
-        <div class="alert alert-danger">{{ error.message }}</div>
-    {% endif %}
 
     <div class="flex h-screen">
         {% include './layout/welcome_nav.html.twig' %}
         <div class="w-full lg:w-3/4 bg-no-repeat bg-cover"
              style="background-image: url('/images/templates/background-welcome.png');">
             <div class="flex min-h-full flex-col px-6 py-12 lg:px-8">
-                <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+                <div class="sm:mx-auto sm:w-full sm:max-w-sm mt-20 ">
+                    {% if error %}
+                        <div class="alert alert-danger text-xl mb-6 text-center text-white underline">{{ error.message }}</div>
+                    {% endif %}
                     {% include './components/title.html.twig' with {
                         'balise': 'h2',
                         'title': 'Connectez-vous',
-                        'class' : 'mt-20 text-center text-3xl font-bold leading-9 tracking-tight text-white'
+                        'class' : 'text-center text-3xl font-bold leading-9 tracking-tight text-white'
                     } %}
                 </div>
                 {% if app.user %}

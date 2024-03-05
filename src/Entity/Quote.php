@@ -311,19 +311,19 @@ class Quote
     {
         $errors = [];
         if ($this->getItems()->count() === 0) {
-            $errors[] = 'items.are.required';
+            $errors[] = 'Le devis doit contenir au moins un article';
         }
 
         if ($this->getTotalAmount() <= 0) {
-            $errors[] = 'items.total.amount.must.be.greater.than.0';
+            $errors[] = 'Le montant total du devis doit être supérieur à 0';
         }
 
         if ($this->getTotalWithoutTaxes() <= 0) {
-            $errors[] = 'items.total.without.taxes.must.be.greater.than.0';
+            $errors[] = 'Le montant total sans taxes du devis doit être supérieur à 0';
         }
 
         if ($this->getTaxesAmount() < 0) {
-            $errors[] = 'items.taxes.amount.must.be.greater.or.equal.to.0';
+            $errors[] = 'Le montant total des taxes du devis doit être supérieur ou égal à 0';
         }
 
         foreach ($this->getItems() as $item) {
@@ -346,15 +346,15 @@ class Quote
     {
         $errors = [];
         if ($this->getDetails() === null) {
-            $errors[] = 'details.are.required';
+            $errors[] = 'Les mentions légales sont obligatoires';
         }
 
         if ($this->getExpirationDate() === null) {
-            $errors[] = 'expiration.date.is.required';
+            $errors[] = 'La date d\'expiration est obligatoire';
         }
 
         if ($this->getStatus() !== QuoteStatusEnum::PENDING && $this->getStatus() !== QuoteStatusEnum::SENT && $this->getStatus() !== QuoteStatusEnum::ACCEPTED) {
-            $errors[] = 'status.is.not.valid';
+            $errors[] = 'Le statut du devis est invalide';
         }
 
         return $errors;

@@ -37,7 +37,7 @@ class QuoteConvertFormType extends AbstractType
             ->add('paymentMethod', EnumType::class, [
                 'class' => PaymentMethodEnum::class,
                 'label' => 'Moyen de paiement',
-                'required' => false,
+                'required' => true,
                 'expanded' => true,
             ])
             ->add('amount', NumberType::class, [

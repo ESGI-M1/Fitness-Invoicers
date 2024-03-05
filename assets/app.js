@@ -9,6 +9,5 @@
 import 'select2';
 import './styles/app.scss';
 import './js/navbar.js';
-import './addForm.js';
 import './global.js';
 

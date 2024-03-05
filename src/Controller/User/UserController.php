@@ -3,15 +3,13 @@
 namespace App\Controller\User;
 
 use App\Form\User\ProfileFormType;
-use App\Form\ChangePasswordFormType;
+use App\Form\Security\ChangeCurrentPasswordFormType;
 use App\Form\User\UserMailFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Notifier\NotifierInterface;
-use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -24,7 +22,7 @@ class UserController extends AbstractController
         $user = $this->getUser();
 
         $profileForm = $this->createForm(ProfileFormType::class, $user);
-        $passwordForm = $this->createForm(ChangePasswordFormType::class);
+        $passwordForm = $this->createForm(ChangeCurrentPasswordFormType::class);
         $mailForm = $this->createForm(UserMailFormType::class, $user);
 
         $companyMemberships = $user->getCompanyMemberships()->getValues();

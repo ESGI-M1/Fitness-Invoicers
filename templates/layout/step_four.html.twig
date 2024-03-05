@@ -6,37 +6,37 @@
 
     {% set phrase = title is same as "Devis" ? 'du devis' : 'de la facture' %}
 
-    <h1>Envoi {{ phrase }} n°{{ entity.id }}</h1>
+    <h1 class="text-3xl font-semibold mb-6 dark:text-white">Envoi {{ phrase }} n°{{ entity.id }}</h1>
 
-    <div class="flex w-full justify-around gap-4">
-        <div class="w-2/5">
-            <h2>Personnalisation du mail</h2>
-            {{ form_start(form) }}
-            {{ form_row(form.object) }}
-            {{ form_row(form.content) }}
-            {{ form_row(form.joinPdf) }}
-            {{ form_end(form) }}
-        </div>
+    <div class="container mx-auto px-4 py-8 dark:text-white">
+        <div class="flex flex-wrap items-center mb-4 justify-around">
+            <div class="w-full md:w-2/5 md:mr-4">
+                <h2 class="text-xl mb-2">Personnalisation du mail</h2>
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+            </div>
 
-        <div class="w-3/5">
-            <h2>Aperçu du mail</h2>
-            <p>Destinataire : {{ entity.customer.email }}</p>
-            <p>Objet : {{ mail.object }}</p>
-            {% if mail.joinPDF %}
-                <p><i class="fas fa-file-pdf"></i>Le PDF {{ phrase }} sera joint au mail</p>
-            {% endif %}
-            <div>
-                {% include './mails/mail.html.twig' with {
-                    'mail': mail,
-                    'company': companySession.getCurrentCompanyTwig,
-                    'user': app.user,
-                } %}
+            <div class="w-full md:w-fit">
+                <h2 class="mb-2">Aperçu du mail</h2>
+                <p class="mb-2">Destinataire : {{ entity.customer.email }}</p>
+                <p class="mb-4">Objet : {{ mail.object }}</p>
+                {% if mail.joinPDF %}
+                    <p><i class="fas fa-file-pdf"></i>Le PDF {{ phrase }} sera joint au mail</p>
+                {% endif %}
+                <div>
+                    {% include './mails/mail.html.twig' with {
+                        'mail': mail,
+                        'company': companySession.getCurrentCompanyTwig,
+                        'user': app.user,
+                    } %}
+                </div>
             </div>
         </div>
-    </div>
 
-    {% include './layout/preview.html.twig' with {
-        'value': entity,
-    } %}
+        {% include './layout/preview.html.twig' with {
+            'value': entity,
+        } %}
+    </div>
 
 {% endblock %}

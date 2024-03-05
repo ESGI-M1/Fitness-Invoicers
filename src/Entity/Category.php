@@ -29,7 +29,6 @@ class Category
 
     #[ORM\ManyToOne(inversedBy: 'categories')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank(message: 'La société est obligatoire')]
     private ?Company $company = null;
 
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'categories')]

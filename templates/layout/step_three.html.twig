@@ -5,6 +5,26 @@
 {% block main %}
     <h1 class="text-3xl font-semibold mb-6 dark:text-white">Sélection du statut</h1>
 
+    <div class="flex justify-between w-full items-center mb-4">
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_' ~ name.entity ~ '_step_two', {'id': value.id}),
+            'class': 'w-fit font-bold rounded dark:bg-gray-900',
+            'label': 'Étape précédente',
+            'fa': 'arrow-left'
+        } %}
+
+        {% if value.isValidStepThree %}
+            <div class="text-right">
+                {% include './components/a.html.twig' with {
+                    'path': path('app_user_' ~ name.entity ~ '_step_four', {'id': value.id}),
+                    'class': 'w-fit font-bold rounded dark:bg-gray-900',
+                    'label': 'Étape suivante',
+                    'fa': 'arrow-right'
+                } %}
+            </div>
+        {% endif %}
+    </div>
+
     {% if value.isValid %}
         <div class="mb-8 p-4 bg-white dark:bg-gray-900 dark:text-white shadow-lg rounded-lg">
             <h2>Tout est valide</h2>
@@ -21,10 +41,9 @@
     <div class="mb-8 p-4 bg-white dark:bg-gray-900 dark:text-white shadow-lg rounded-lg">
         {{ form_start(formExpirationDate is defined ? formExpirationDate : form) }}
         {% if formExpirationDate is defined %}
-            {{ form_row(formExpirationDate.expirationDate) }}
+            {{ form_widget(formExpirationDate) }}
         {% else %}
-            {{ form_row(form.dueDate) }}
-            {{ form_row(form.details) }}
+            {{ form_widget(form) }}
         {% endif %}
         <button type="submit"
                 class="btn btn-primary bg-secondary hover:bg-secondary-hover text-white py-2 px-4 rounded">Valider
@@ -33,23 +52,5 @@
     </div>
     
     {% include './layout/preview.html.twig' %}
-    <div class="flex justify-between w-full items-center ">
-        {% include './components/a.html.twig' with {
-            'path': path('app_user_' ~ name.entity ~ '_step_two', {'id': value.id}),
-            'label': 'Étape précédente',
-            'fa': 'arrow-left'
-        } %}
-
-        {% if value.isValidStepThree %}
-            <div class="text-right">
-                {% include './components/a.html.twig' with {
-                    'path': path('app_user_' ~ name.entity ~ '_step_four', {'id': value.id}),
-                    'class': 'w-fit rounded mt-6',
-                    'label': 'Étape suivante',
-                    'fa': 'arrow-right'
-                } %}
-            </div>
-        {% endif %}
-    </div>
 
 {% endblock %}

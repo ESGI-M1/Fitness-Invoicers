@@ -1,6 +1,6 @@
 @layer components {
   .search form{
-    @apply w-full flex p-4 pb-0 shadow-lg rounded-lg dark:bg-gray-900;
+    @apply w-full flex p-4 pb-0 shadow-lg flex-col md:flex-row rounded-lg dark:bg-gray-900;
 
     & div {
       @apply pr-2 rounded-md;
@@ -13,8 +13,16 @@
     @apply dark:text-white #{!important};
   }
 
+  #mail_form input,
+  #mail_form textarea,
   #profile_form input,
-  #change_password_form input {
+  #invoice_due_date_form input,
+  #invoice_due_date_form textarea,
+  #invoice_status_form_status,
+  #change_password_form input,
+  #quote_convert_form input,
+  #change_current_password_form input,
+  #quote_expiration_date_form_expirationDate {
     @apply dark:text-gray-800 #{!important};
   }
 

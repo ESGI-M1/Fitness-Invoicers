@@ -4,8 +4,8 @@
 
 {% block main %}
 
-    <h1>Devis {{ quote.id }}</h1>
-
+    <h1 class="text-3xl font-semibold mb-6 dark:text-white">Devis n°{{ quote.id }}</h1>
+    
     {% include './layout/preview.html.twig' with {
         'value': quote,
         'title': 'Devis',

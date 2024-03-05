@@ -37,13 +37,13 @@ class MailFormType extends AbstractType
             ->add('send', SubmitType::class, [
                 'label' => 'Envoyer',
                 'attr' => [
-                    'class' => 'btn btn-primary',
+                    'class' => 'bg-secondary hover:bg-secondary-hover text-white font-bold py-2 px-4 rounded',
                 ],
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer',
                 'attr' => [
-                    'class' => 'btn btn-primary',
+                    'class' => 'bg-primary hover:bg-primary-hover text-white font-bold py-2 px-4 rounded',
                 ],
             ]);
 

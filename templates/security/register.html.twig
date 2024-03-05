@@ -8,13 +8,14 @@
     {% endfor %}
     <div class="flex h-screen">
         {% include './layout/welcome_nav.html.twig' %}
-        <div class="w-full lg:w-3/4 bg-no-repeat bg-cover"
+        <div class="w-full h-fit lg:w-3/4 bg-no-repeat bg-cover"
              style="background-image: url('/images/templates/background-welcome.png');">
             <div class="flex min-h-full flex-col px-6 py-12 lg:px-8">
                 <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                     {% include './components/title.html.twig' with {
                         'balise': 'h2',
                         'title': 'Inscrivez-vous',
+                        'class' : 'text-center text-3xl font-bold leading-9 tracking-tight text-white'
                     } %}
                 </div>
                 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -37,8 +38,8 @@
                             'text': 'Se connecter',
                             'link': path('app_login')
                         } %}
+                        {% include './layout/footer_security.html.twig' %}
                     </div>
-                    {% include './layout/footer_security.html.twig' %}
                 </div>
             </div>
         </div>

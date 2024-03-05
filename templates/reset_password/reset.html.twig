@@ -3,10 +3,6 @@
 {% block title %}Réinitialiser votre mot de passe{% endblock %}
 
 {% block body %}
-    {% if error %}
-        <div class="alert alert-danger">{{ error.message }}</div>
-    {% endif %}
-
     <div class="flex h-screen">
         {% include './layout/welcome_nav.html.twig' %}
         <div class="w-full lg:w-3/4 bg-no-repeat bg-cover"
@@ -41,7 +37,7 @@
                 {% endif %}
 
                 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    {{ form_start(resetForm) }}
+                    {{ form_start(resetForm, {'attr': {'class': 'connection'}}) }}
                     {% for child in resetForm.children %}
                         <div class="mb-4">
                             {{ form_row(child) }}

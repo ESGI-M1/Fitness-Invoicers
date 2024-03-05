@@ -11,37 +11,37 @@
 
     {% if statistics %}
         <script>
-          const invoiceChartData = {
-            labels: [
-                {% for key, status in statistics.invoicesByStatus.invoices %}
-              '{{ key }}',
-                {% endfor %}
-            ],
-            datasets: [{
-              label: 'Montant des factures',
-              data: [
-                  {% for status in statistics.invoicesByStatus.amount %}
-                '{{ status }}',
-                  {% endfor %}
-              ],
-            }],
-          };
+            const invoiceChartData = {
+                labels: [
+                    {% for key, status in statistics.invoicesByStatus.invoices %}
+                    '{{ key }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Montant des factures',
+                    data: [
+                        {% for status in statistics.invoicesByStatus.amount %}
+                        '{{ status }}',
+                        {% endfor %}
+                    ],
+                }],
+            };
 
-          const quoteChartData = {
-            labels: [
-                {% for key, status in statistics.quotesByStatus.quotes %}
-              '{{ key }}',
-                {% endfor %}
-            ],
-            datasets: [{
-              label: 'Montant des devis',
-              data: [
-                  {% for status in statistics.quotesByStatus.amount %}
-                '{{ status }}',
-                  {% endfor %}
-              ],
-            }],
-          };
+            const quoteChartData = {
+                labels: [
+                    {% for key, status in statistics.quotesByStatus.quotes %}
+                    '{{ key }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Montant des devis',
+                    data: [
+                        {% for status in statistics.quotesByStatus.amount %}
+                        '{{ status }}',
+                        {% endfor %}
+                    ],
+                }],
+            };
 
         </script>
     {% endif %}
@@ -52,15 +52,15 @@
         <!-- Formulaire de sélection de la plage de dates -->
         {{ form_start(dateRangeForm) }}
         <div class="flex flex-wrap items-center mb-4 justify-around">
-            <div class="flex p-4 gap-2 rounded-lg dark:bg-gray-900">
-                {{ form_row(dateRangeForm.submitDay) }}
-                {{ form_row(dateRangeForm.submitMonth) }}
-                {{ form_row(dateRangeForm.submitYear) }}
-                {{ form_row(dateRangeForm.submitDayBefore) }}
-                {{ form_row(dateRangeForm.submitMonthBefore) }}
-                {{ form_row(dateRangeForm.submitYearBefore) }}
+            <div class="flex items-center flex-wrap p-4 gap-2 rounded-lg dark:bg-gray-900 mb-4">
+                    {{ form_row(dateRangeForm.submitDay) }}
+                    {{ form_row(dateRangeForm.submitMonth) }}
+                    {{ form_row(dateRangeForm.submitYear) }}
+                    {{ form_row(dateRangeForm.submitDayBefore) }}
+                    {{ form_row(dateRangeForm.submitMonthBefore) }}
+                    {{ form_row(dateRangeForm.submitYearBefore) }}
             </div>
-            <div class="flex p-4 pb-0 gap-2 rounded-lg dark:bg-gray-900">
+            <div class="flex items-baseline md:flex-row flex-col p-4 pb-0 gap-2 rounded-lg dark:bg-gray-900">
                 {{ form_row(dateRangeForm.startDate) }}
                 {{ form_row(dateRangeForm.endDate) }}
                 {{ form_row(dateRangeForm.submitDateRange) }}
@@ -68,9 +68,8 @@
         </div>
         {{ form_end(dateRangeForm) }}
 
-        <!-- Statistiques sur les factures et les devis -->
         {% if statistics %}
-            <div class="flex -mx-4">
+            <div class="flex flex-wrap">
                 <div class="flex w-1/2 flex-col">
                     <div class="w-full px-4 mb-4">
                         <canvas id="invoiceChart" class="dark:bg-gray-900 p-4 rounded-lg"></canvas>

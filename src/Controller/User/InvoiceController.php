@@ -21,6 +21,7 @@ use App\Form\Invoice\InvoiceStatusFormType;
 use App\Form\Invoice\InvoiceDueDateFormType;
 use App\Form\Item\ItemStepTwoFormType;
 use App\Form\Mail\MailFormType;
+use App\Form\Payment\PaymentFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,13 +35,14 @@ use Dompdf\Dompdf;
 
 class InvoiceController extends AbstractController
 {
-    #[Route('/invoice', name : 'app_user_invoice_index')]
+    #[Route('/invoice', name: 'app_user_invoice_index')]
     public function list(
         EntityManagerInterface $entityManager,
-        Request $request,
-        PaginatorInterface $paginator,
-        CompanySession $companySession,
-    ): Response {
+        Request                $request,
+        PaginatorInterface     $paginator,
+        CompanySession         $companySession,
+    ): Response
+    {
         $form = $this->createForm(
             InvoiceSearchType::class,
         );
@@ -62,16 +64,40 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('/invoice/show/{id}', name : 'app_user_invoice_show', methods : ['GET'])]
+    #[Route('/invoice/show/{id}', name: 'app_user_invoice_show', methods: ['GET', 'POST'])]
     #[IsGranted('see', 'invoice')]
-    public function show(Invoice $invoice): Response
+    public function show(Invoice $invoice, Request $request, EntityManagerInterface $entityManager): Response
     {
+
+        $form = null;
+        $payment = new Payment();
+
+        if ($invoice->getStatus() == InvoiceStatusEnum::VALIDATED || $invoice->getStatus() == InvoiceStatusEnum::SENT) {
+
+            $form = $this->createForm(PaymentFormType::class, $payment);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $payment->setDate(new \DateTimeImmutable());
+                $payment->setInvoice($invoice);
+                $payment->setStatus(PaymentStatusEnum::PAID);
+
+
+                $entityManager->persist($payment);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Le paiement a été enregistré');
+            }
+        }
+
+
         return $this->render('invoices/invoice_show.html.twig', [
             'invoice' => $invoice,
+            'form' => $form
         ]);
     }
 
-    #[Route('invoice/add', name : 'app_user_invoice_add', methods : ['GET', 'POST'])]
+    #[Route('invoice/add', name: 'app_user_invoice_add', methods: ['GET', 'POST'])]
     #[IsGranted('add', 'invoice')]
     public function add(Request $request, EntityManagerInterface $entityManager, CompanySession $companySession, Mail $mail): Response
     {
@@ -97,7 +123,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('invoice/step_one/{id}', name : 'app_user_invoice_step_one', defaults : ['id' => null], methods : ['GET', 'POST'])]
+    #[Route('invoice/step_one/{id}', name: 'app_user_invoice_step_one', defaults: ['id' => null], methods: ['GET', 'POST'])]
     public function stepOne(Request $request, EntityManagerInterface $entityManager, Invoice $invoice = null, CompanySession $companySession): Response
     {
         if (!$this->isGranted('add', $invoice) && !$this->isGranted('edit', $invoice)) {
@@ -125,6 +151,8 @@ class InvoiceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->addFlash('success', 'Le client a bien été sélectionné');
             $entityManager->persist($invoice);
             $entityManager->flush();
         }
@@ -140,7 +168,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('invoice/step_two/{id}', name : 'app_user_invoice_step_two', methods : ['GET', 'POST'])]
+    #[Route('invoice/step_two/{id}', name: 'app_user_invoice_step_two', methods: ['GET', 'POST'])]
     #[IsGranted('edit', 'invoice')]
     public function stepTwo(Request $request, EntityManagerInterface $entityManager, Invoice $invoice, CompanySession $companySession): Response
     {
@@ -187,7 +215,7 @@ class InvoiceController extends AbstractController
                 $item->setTaxes((float)$data['taxes']);
                 $item->setDiscountAmountOnTotal((float)$data['discountAmountOnTotal']);
                 $item->setDiscountAmountOnItem((float)$data['discountAmountOnItem']);
-                
+
                 $entityManager->flush();
             }
         }
@@ -212,7 +240,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('invoice/step_three/{id}', name : 'app_user_invoice_step_three', methods : ['GET', 'POST'])]
+    #[Route('invoice/step_three/{id}', name: 'app_user_invoice_step_three', methods: ['GET', 'POST'])]
     #[IsGranted('edit', 'invoice')]
     public function stepThree(Request $request, EntityManagerInterface $entityManager, Invoice $invoice): Response
     {
@@ -228,8 +256,8 @@ class InvoiceController extends AbstractController
             return $this->redirectToRoute('app_user_invoice_step_two', ['id' => $invoice->getId()]);
         }
 
-        if(!$invoice->isValid()){
-            foreach($invoice->getIsNotValidErrors() as $error){
+        if (!$invoice->isValid()) {
+            foreach ($invoice->getIsNotValidErrors() as $error) {
                 $this->addFlash('danger', $error);
             }
         }
@@ -274,7 +302,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('invoice/step_four/{id}', name : 'app_user_invoice_step_four', methods : ['GET', 'POST'])]
+    #[Route('invoice/step_four/{id}', name: 'app_user_invoice_step_four', methods: ['GET', 'POST'])]
     #[IsGranted('mail', 'invoice')]
     public function stepFour(Request $request, EntityManagerInterface $entityManager, Invoice $invoice, Mailer $mailer): Response
     {
@@ -287,8 +315,12 @@ class InvoiceController extends AbstractController
         $mail = new Mail();
         $user = $this->getUser();
         $mail->setObject('Votre facture n°' . $invoice->getId() . ' est disponible : ' . $invoice->getCompany()->getName());
-        $mail->setContent($user->getInvoiceMailContent());
-        $mail->setSignature($user->getMailSignature());
+        if ($user->getInvoiceMailContent()) {
+            $mail->setContent($user->getInvoiceMailContent());
+        }
+        if ($user->getMailSignature()) {
+            $mail->setSignature($user->getMailSignature());
+        }
 
         $form = $this->createForm(MailFormType::class, $mail);
         $form->handleRequest($request);
@@ -312,13 +344,14 @@ class InvoiceController extends AbstractController
     }
 
 
-    #[Route('invoice/add-item/{id_invoice}/{id_product}', name : 'app_user_invoice_add_item', methods : ['GET'])]
+    #[Route('invoice/add-item/{id_invoice}/{id_product}', name: 'app_user_invoice_add_item', methods: ['GET'])]
     #[IsGranted('edit', 'invoice')]
     public function addItem(
-        EntityManagerInterface $entityManager,
-        #[MapEntity(id : 'id_invoice')] Invoice $invoice,
-        #[MapEntity(id : 'id_product')] Product $product
-    ): Response {
+        EntityManagerInterface                 $entityManager,
+        #[MapEntity(id: 'id_invoice')] Invoice $invoice,
+        #[MapEntity(id: 'id_product')] Product $product
+    ): Response
+    {
         $item = $entityManager->getRepository(Item::class)->findOneBy(['product' => $product, 'invoices' => $invoice]);
 
         if ($item) {
@@ -342,13 +375,14 @@ class InvoiceController extends AbstractController
         return $this->redirectToRoute('app_user_invoice_step_two', ['id' => $invoice->getId()]);
     }
 
-    #[Route('invoice/remove-item/{id_invoice}/{id_item}', name : 'app_user_invoice_remove_item', methods : ['GET'])]
+    #[Route('invoice/remove-item/{id_invoice}/{id_item}', name: 'app_user_invoice_remove_item', methods: ['GET'])]
     #[IsGranted('edit', 'invoice')]
     public function removeItem(
-        EntityManagerInterface $entityManager,
-        #[MapEntity(id : 'id_invoice')] Invoice $invoice,
-        #[MapEntity(id : 'id_item')] Item $item
-    ): Response {
+        EntityManagerInterface                 $entityManager,
+        #[MapEntity(id: 'id_invoice')] Invoice $invoice,
+        #[MapEntity(id: 'id_item')] Item       $item
+    ): Response
+    {
         $invoice->removeItem($item);
         $entityManager->remove($item);
         $entityManager->flush();
@@ -356,12 +390,13 @@ class InvoiceController extends AbstractController
         return $this->redirectToRoute('app_user_invoice_step_two', ['id' => $invoice->getId()]);
     }
 
-    #[Route('invoice/increase-quantity-item/{id_item}', name : 'app_user_invoice_increase_quantity_item', methods : ['GET'])]
+    #[Route('invoice/increase-quantity-item/{id_item}', name: 'app_user_invoice_increase_quantity_item', methods: ['GET'])]
     #[IsGranted('edit', 'item')]
     public function increaseQuantityItem(
-        EntityManagerInterface $entityManager,
-        #[MapEntity(id : 'id_item')] Item $item
-    ): Response {
+        EntityManagerInterface           $entityManager,
+        #[MapEntity(id: 'id_item')] Item $item
+    ): Response
+    {
         $item->setQuantity($item->getQuantity() + 1);
         $entityManager->persist($item);
         $entityManager->flush();
@@ -371,12 +406,13 @@ class InvoiceController extends AbstractController
         return $this->redirectToRoute('app_user_invoice_step_two', ['id' => $invoice->getId()]);
     }
 
-    #[Route('invoice/decrease-quantity-item/{id_item}', name : 'app_user_invoice_decrease_quantity_item', methods : ['GET'])]
+    #[Route('invoice/decrease-quantity-item/{id_item}', name: 'app_user_invoice_decrease_quantity_item', methods: ['GET'])]
     #[IsGranted('edit', 'item')]
     public function decreaseQuantityItem(
-        EntityManagerInterface $entityManager,
-        #[MapEntity(id : 'id_item')] Item $item
-    ): Response {
+        EntityManagerInterface           $entityManager,
+        #[MapEntity(id: 'id_item')] Item $item
+    ): Response
+    {
         if ($item->getQuantity() > 1) {
             $item->setQuantity($item->getQuantity() - 1);
             $entityManager->persist($item);
@@ -390,7 +426,7 @@ class InvoiceController extends AbstractController
         return $this->redirectToRoute('app_user_invoice_step_two', ['id' => $invoice->getId()]);
     }
 
-    #[Route('invoice/edit/{id}', name : 'app_user_invoice_edit', methods : ['GET', 'POST'])]
+    #[Route('invoice/edit/{id}', name: 'app_user_invoice_edit', methods: ['GET', 'POST'])]
     #[IsGranted('edit', 'invoice')]
     public function edit(Request $request, Invoice $invoice, EntityManagerInterface $entityManager): Response
     {
@@ -410,7 +446,7 @@ class InvoiceController extends AbstractController
         ]);
     }
 
-    #[Route('invoice/delete/{id}/{token}', name : 'app_user_invoice_delete', methods : ['GET'])]
+    #[Route('invoice/delete/{id}/{token}', name: 'app_user_invoice_delete', methods: ['GET'])]
     #[IsGranted('delete', 'invoice')]
     public function delete(Invoice $invoice, EntityManagerInterface $entityManager, string $token): Response
     {
@@ -430,7 +466,7 @@ class InvoiceController extends AbstractController
         return $this->redirectToRoute('app_user_invoice_index');
     }
 
-    #[Route('invoice/pdf/{id}', name : 'app_user_invoice_pdf', methods : ['GET'])]
+    #[Route('invoice/pdf/{id}', name: 'app_user_invoice_pdf', methods: ['GET'])]
     #[IsGranted('see', 'invoice')]
     public function generatePdf(Invoice $invoice): Response
     {

@@ -9,7 +9,9 @@ use App\Entity\Product;
 use App\Entity\Item;
 use App\Entity\Mail;
 use App\Entity\Payment;
+use App\Entity\Category;
 use App\Enum\InvoiceStatusEnum;
+use App\Enum\PaymentStatusEnum;
 use App\Enum\QuoteStatusEnum;
 use App\Form\Quote\QuoteCustomerFormType;
 use App\Form\Quote\QuoteFormType;
@@ -100,6 +102,8 @@ class QuoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->addFlash('success', 'Le client a bien été sélectionné');
 
             $entityManager->persist($quote);
             $entityManager->flush();
@@ -252,8 +256,12 @@ class QuoteController extends AbstractController
         $mail = new Mail();
         $user = $this->getUser();
         $mail->setObject('Votre devis n°' . $quote->getId() . ' est disponible : ' . $quote->getCompany()->getName());
-        $mail->setContent($user->getQuoteMailContent());
-        $mail->setSignature($user->getMailSignature());
+        if ($user->getQuoteMailContent()) {
+            $mail->setContent($user->getQuoteMailContent());
+        }
+        if ($user->getMailSignature()) {
+            $mail->setSignature($user->getMailSignature());
+        }
 
         $form = $this->createForm(MailFormType::class, $mail);
         $form->handleRequest($request);
@@ -410,7 +418,7 @@ class QuoteController extends AbstractController
             $invoice->setQuote($quote);
             $invoice->setDetails($quote->getDetails());
             $invoice->setDate(new \DateTimeImmutable());
-            $invoice->setDueDate($form->get('dueDate')->getData());
+            $invoice->setDueDate(\DateTimeImmutable::createFromMutable($form->get('dueDate')->getData()));
             $invoice->setStatus(InvoiceStatusEnum::SENT);
             $items = $quote->getItems();
             foreach ($items as $item) {
@@ -452,10 +460,13 @@ class QuoteController extends AbstractController
                     $deposit = new Deposit();
                     $deposit->setInvoice($invoice);
                     $deposit->setAmount($amount);
+
                     $payment = new Payment();
                     $payment->setInvoice($invoice);
                     $payment->setAmount($amount);
                     $payment->setMethod($paymentMethod);
+                    $payment->setStatus(PaymentStatusEnum::PAID);
+                    $payment->setDate(new \DateTimeImmutable());
 
                     $entityManager->persist($deposit);
                     $entityManager->persist($payment);
@@ -480,10 +491,13 @@ class QuoteController extends AbstractController
                     $deposit = new Deposit();
                     $deposit->setInvoice($invoice);
                     $deposit->setAmount($amountPercent);
+
                     $payment = new Payment();
                     $payment->setInvoice($invoice);
                     $payment->setAmount($amountPercent);
                     $payment->setMethod($paymentMethod);
+                    $payment->setStatus(PaymentStatusEnum::PAID);
+                    $payment->setDate(new \DateTimeImmutable());
 
                     $entityManager->persist($deposit);
                     $entityManager->persist($payment);

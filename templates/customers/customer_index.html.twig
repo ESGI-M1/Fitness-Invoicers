@@ -30,7 +30,7 @@
                                         } %}
                                         {% if customer.deliveryAddress %}
                                             {% include './components/a_table.html.twig' with {
-                                                'path': path('app_user_address_deliveryAddress_edit', {'address_id': customer.deliveryAddress.id, 'customer_id': customer.id}),
+                                                'path': path('app_user_address_deliveryAddress_edit', {'customer': customer.id}),
                                                 'fa': 'edit'
                                             } %}
                                             <p>{{ customer.deliveryAddress.street }}</p>
@@ -52,7 +52,7 @@
                                         } %}
                                         {% if customer.billingAddress %}
                                             {% include './components/a_table.html.twig' with {
-                                                'path': path('app_user_address_billingAddress_edit', {'address_id': customer.billingAddress.id, 'customer_id': customer.id}),
+                                                'path': path('app_user_address_billingAddress_edit', {'customer': customer.id}),
                                                 'fa': 'edit'
                                             } %}
                                             <p>{{ customer.billingAddress.street }}</p>

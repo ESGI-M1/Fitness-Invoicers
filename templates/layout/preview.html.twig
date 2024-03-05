@@ -1,10 +1,7 @@
 {% set pre = (name.title is defined ? name.title is same as "Devis" : title is same as "Devis") ? 'DE' : 'FA' %}
 
-<div>
-    <div class="text-right">
-        {% include './components/back.html.twig' %}
-    </div>
-    <table style="width: 100%">
+<div class="w-4/5 mx-auto p-4 rounded-lg bg-white dark:text-white dark:bg-gray-900 mb-8">
+    <table class="w-full mb-4">
         <tbody>
         <tr>
             <td>
@@ -14,7 +11,7 @@
                     - {{ value.company.address.country }}</p>
                 <p>{{ value.company.siret }}</p>
             </td>
-            <td style="text-align: right">
+            <td class="text-right">
                 <h1>{{ name.title is defined ? name.title : title }}</h1>
                 <h3>{{ value.date| date('d/m/Y') }}</h3>
                 <h3>#{{ pre }}{{ value.id }}</h3>
@@ -23,10 +20,10 @@
         </tbody>
     </table>
 
-    <table style="margin: 0 auto;margin-bottom: 2rem; ">
+    <table class="mx-auto mb-4">
         <tbody>
         <tr>
-            <td>
+            <td class="px-10">
                 <h2>Adresse de livraison</h2>
                 {% if value.customer and value.customer.status.name == 'VALIDATED' %}
                     <p>{{ value.customer.fullName }}</p>
@@ -45,7 +42,7 @@
                     <p>-----------------</p>
                 {% endif %}
             </td>
-            <td>
+            <td class="px-10">
                 <h2>Adresse de facturation</h2>
                 {% if value.customer and value.customer.status.name == 'VALIDATED' %}
                     <p>{{ value.customer.fullName }}</p>
@@ -65,31 +62,37 @@
                 {% endif %}
             </td>
             {% if value.expirationDate is defined %}
-                <td style="vertical-align: baseline">
+                <td class="align-baseline">
                     <h2>Date de validité</h2>
                     <p>{{ value.expirationDate ? value.expirationDate| date('d/m/Y') }}</p>
+                </td>
+            {% endif %}
+            {% if value.dueDate is defined %}
+                <td class="align-baseline">
+                    <h2>Date d'échéance</h2>
+                    <p>{{ value.dueDate ? value.dueDate| date('d/m/Y') }}</p>
                 </td>
             {% endif %}
         </tr>
         </tbody>
     </table>
-    <table style="width: 100%; border: 1px solid darkgrey; margin-bottom: 2rem">
+    <table class="w-full border mb-4">
         <thead>
         <tr>
-            <th>Référence</th>
-            <th>Produit</th>
-            <th>Taux de taxe</th>
-            <th>Prix unitaire (HT)</th>
-            <th>Quantité</th>
-            <th>Remise par unité (HT) €</th>
-            <th>Remise total (HT) €</th>
-            <th>Total (HT)</th>
-            <th>Total (TTC)</th>
+            <th class="p-2">Référence</th>
+            <th class="p-2">Produit</th>
+            <th class="p-2">Taux de taxe</th>
+            <th class="p-2">Prix unitaire (HT)</th>
+            <th class="p-2">Quantité</th>
+            <th class="p-2">Remise par unité (HT) €</th>
+            <th class="p-2">Remise total (HT) €</th>
+            <th class="p-2">Total (HT)</th>
+            <th class="p-2">Total (TTC)</th>
         </tr>
         </thead>
         <tbody>
         {% for item in value.items %}
-            <tr>
+            <tr class="text-center dark:text-white border border-gray-300">
                 <td>{{ item.product.reference }}</td>
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.taxes ? item.taxes : 0 }} %</td>
@@ -103,24 +106,9 @@
         {% endfor %}
     </table>
 
-    {% if name.title == 'Factures' and value.deposit and false %}
-        <table style="border: 1px solid darkgrey;margin-bottom: 2rem">
-            <tbody>
-            <tr>
-                <th>Méthode de paiement</th>
-                <td>{{ invoice.payment.method }}</td>
-            </tr>
-            <tr>
-                <th>Acompte</th>
-                <td>{{ invoice.deposit.amount }} €</td>
-            </tr>
-            </tbody>
-        </table>
-    {% endif %}
-
-    <table style="border: 1px solid darkgrey; float: right">
+    <table class="border ml-auto">
         <tbody>
-        {% if name.title == 'Factures' %}
+        {% if pre == 'FA' %}
             <tr>
                 <th>Méthode de paiement</th>
                 <td>{{ value.payments|length ? value.payments[0].method.name : 'Non renseigné' }}</td>
@@ -141,9 +129,9 @@
         </tbody>
     </table>
 
-    <p>{{ value.details }}</p>
+    <p class="my-6">{{ value.details }}</p>
 
-    <footer style="margin: 0 auto; bottom: 0; text-align: center;">
+    <footer class="mx-auto bottom-0 text-center">
         <p>{{ value.company.name }}</p>
         <p>SIRET: {{ value.company.siret }}</p>
         <p>{{ value.company.address.street }}

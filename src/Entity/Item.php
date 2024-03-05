@@ -147,7 +147,7 @@ class Item
 
     public function getTotalWithoutTaxes(): float
     {
-        return $this->getPrice() * $this->getQuantity() - $this->getDiscountAmountOnItem() - $this->getDiscountAmountOnTotal();
+        return $this->getPrice() * $this->getQuantity() - $this->getDiscountAmountOnItem() * $this->getQuantity() - $this->getDiscountAmountOnTotal();
     }
 
     public function getDiscountAmount(): float

@@ -5,21 +5,75 @@
 {% block main %}
     <h1 class="text-3xl font-semibold mb-6 dark:text-white">Sélection des produits</h1>
 
+    <div class="flex justify-between w-full items-center mb-4">
+        {% include './components/a.html.twig' with {
+            'path': path('app_user_' ~ name.entity ~ '_step_one', {'id': value.id}),
+            'class': 'w-fit font-bold rounded dark:bg-gray-900',
+            'label': 'Étape précédente',
+            'fa': 'arrow-left'
+        } %}
+
+        {% if value.isValidStepTwo %}
+            {% include './components/a.html.twig' with {
+                'path': path('app_user_' ~ name.entity ~ '_step_three', {'id': value.id}),
+                'class': 'w-fit font-bold rounded dark:bg-gray-900',
+                'label': 'Étape suivante',
+                'fa': 'arrow-right'
+            } %}
+        {% endif %}
+    </div>
+
     <div class="mb-6">
         {{ form_start(categoryForm) }}
         <div class="mb-4">
             {{ form_row(categoryForm.categories, {'attr': {'class': 'w-full select2 border border-gray-300 rounded p-2 focus:outline-none focus:border-primary dark:border-black dark:text-white'}}) }}
         </div>
-        <button type="submit" class="btn btn-primary bg-secondary hover:bg-secondary-hover text-white py-2 px-4 rounded">
+        <button type="submit"
+                class="btn btn-primary bg-secondary hover:bg-secondary-hover text-white py-2 px-4 rounded">
             <i class="fas fa-check mr-2"></i> Valider
         </button>
         {{ form_end(categoryForm) }}
     </div>
 
-    {% if productFromCategory %}
-        {% for category in productFromCategory %}
-            <div class="mb-8 p-4 bg-white dark:bg-gray-900 shadow-lg rounded-lg">
-                <h2 class="text-xl ml-4 font-semibold mb-4 dark:text-white">Catégorie : {{ category.name }}</h2>
+    <div class="w-full flex justify-around gap-8">
+        {% if productFromCategory %}
+            {% for category in productFromCategory %}
+                <div class="mb-8 p-4 bg-white dark:bg-gray-900 shadow-lg rounded-lg w-fit">
+                    <h2 class="text-xl ml-4 font-semibold mb-4 dark:text-white">Catégorie : {{ category.name }}</h2>
+                    <table class="w-full border border-gray-300 dark:border-black">
+                        <thead>
+                        <tr class="border border-gray-300">
+                            <th class="p-2 dark:text-white">Produit</th>
+                            <th class="p-2 dark:text-white">Référence</th>
+                            <th class="p-2 dark:text-white">Prix unitaire (HT)</th>
+                            <th class="p-2 dark:text-white">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-center dark:text-white">
+                        {% for product in category.products %}
+                            <tr class="border border-gray-300">
+                                <td class="p-2">{{ product.name }}</td>
+                                <td class="p-2">{{ product.reference }}</td>
+                                <td class="p-2">{{ product.price }} €</td>
+                                <td class="p-2">
+                                    {% include './components/a_table.html.twig' with {
+                                        'path': path('app_user_' ~ name.entity ~ '_add_item', {('id_' ~ name.entity): value.id, 'id_product': product.id}),
+                                        'class': 'text-primary hover:text-primary-hover',
+                                        'label': 'Ajouter',
+                                        'fa' : 'plus'
+                                    } %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if productWithoutCategory %}
+            <div class="mb-8 p-4 bg-white dark:bg-gray-900 shadow-lg rounded-lg w-fit">
+                <h2 class="text-xl ml-4 font-semibold mb-4 dark:text-white">Produits sans catégorie</h2>
                 <table class="w-full border border-gray-300 dark:border-black">
                     <thead>
                     <tr class="border border-gray-300">
@@ -30,59 +84,28 @@
                     </tr>
                     </thead>
                     <tbody class="text-center dark:text-white">
-                    {% for product in category.products %}
+                    {% for product in productWithoutCategory %}
                         <tr class="border border-gray-300">
                             <td class="p-2">{{ product.name }}</td>
                             <td class="p-2">{{ product.reference }}</td>
                             <td class="p-2">{{ product.price }} €</td>
                             <td class="p-2">
-                                <a href="{{ path('app_user_' ~ name.entity ~ '_add_item', {('id_' ~ name.entity): value.id, 'id_product': product.id}) }}"
-                                   class="text-primary hover:text-primary-hover">
-                                    <i class="fas fa-plus"></i> Ajouter
-                                </a>
+                                {% include './components/a_table.html.twig' with {
+                                    'path': path('app_user_' ~ name.entity ~ '_add_item', {('id_' ~ name.entity): value.id, 'id_product': product.id}),
+                                    'class': 'text-primary hover:text-primary-hover',
+                                    'label': 'Ajouter',
+                                    'fa' : 'plus'
+                                } %}
                             </td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
-        {% endfor %}
-    {% endif %}
+        {% endif %}
+    </div>
 
-    {% if productWithoutCategory %}
-        <div class="mb-8 p-4 bg-white dark:bg-gray-900 shadow-lg rounded-lg">
-            <h2 class="text-xl ml-4 font-semibold mb-4 dark:text-white">Produits sans catégorie</h2>
-            <table class="w-full border border-gray-300 dark:border-black">
-                <thead>
-                <tr class="border border-gray-300">
-                    <th class="p-2 dark:text-white">Produit</th>
-                    <th class="p-2 dark:text-white">Référence</th>
-                    <th class="p-2 dark:text-white">Prix unitaire (HT)</th>
-                    <th class="p-2 dark:text-white">Actions</th>
-                </tr>
-                </thead>
-                <tbody class="text-center dark:text-white">
-                {% for product in productWithoutCategory %}
-                    <tr class="border border-gray-300">
-                        <td class="p-2">{{ product.name }}</td>
-                        <td class="p-2">{{ product.reference }}</td>
-                        <td class="p-2">{{ product.price }} €</td>
-                        <td class="p-2">
-                            {% include './components/a_table.html.twig' with {
-                                'path': path('app_user_' ~ name.entity ~ '_add_item', {('id_' ~ name.entity): value.id, 'id_product': product.id}),
-                                'class': 'dark:text-primary hover:text-primary-hover',
-                                'label': 'Ajouter',
-                                'fa' : 'plus'
-                            } %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% endif %}
-
-    <div class="mb-8 p-4 bg-white dark:bg-gray-900 dark:text-white shadow-lg rounded-lg">
+    <div class="mb-8 p-4 bg-white dark:bg-gray-900 dark:text-white shadow-lg rounded-lg w-fit">
         <h2 class="text-xl ml-4 font-semibold mb-4 ">Facture n°{{ value.id }}</h2>
         <table class="w-full border border-gray-300 mb-6 dark:border-black table-fixed">
             <thead>
@@ -148,25 +171,4 @@
         </table>
     </div>
 
-    <div class="flex justify-between w-full items-center ">
-        {% include './components/a.html.twig' with {
-            'path': path('app_user_' ~ name.entity ~ '_step_one', {'id': value.id}),
-            'class': 'text-white font-bold py-2 px-4 rounded',
-            'label': 'Étape précédente',
-            'fa': 'arrow-left'
-        } %}
-
-        {% if value.isValidStepTwo %}
-            {% include './components/a.html.twig' with {
-                'path': path('app_user_' ~ name.entity ~ '_step_three', {'id': value.id}),
-                'class': 'w-fit text-white font-bold rounded',
-                'label': 'Étape suivante',
-                'fa': 'arrow-right'
-            } %}
-        {% else %}
-            {#        {% for error in value.IsNotValidStepTwoErrors %} #}
-            {#            <p>{{ error }}</p> #}
-            {#        {% endfor %} #}
-        {% endif %}
-    </div>
 {% endblock %}

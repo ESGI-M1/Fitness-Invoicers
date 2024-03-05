@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\User\LoginFormType;
 use App\Form\User\RegistrationFormType;
-use App\Form\ChangePasswordFormType;
-use App\Form\ResetPasswordRequestFormType;
+use App\Form\Security\ChangePasswordFormType;
+use App\Form\Security\ResetPasswordRequestFormType;
 
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
@@ -41,7 +41,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();

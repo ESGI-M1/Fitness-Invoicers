@@ -81,7 +81,7 @@ class CompanyMembershipController extends AbstractController
                 $companyMembership->setRelatedUser($userByMail);
 
                 $email = (new Email())
-                    ->from($this->getParameter('SUPPORT_EMAIL'))
+                    ->from($this->getParameter('supportEmail'))
                     ->to($form->get('email')->getData())
                     ->subject('Invitation à rejoindre l\'entreprise : ' . $company->getName())
                     ->text('Bonjour, vous avez été invité à rejoindre l\'entreprise : ' . $company->getName())
@@ -98,6 +98,7 @@ class CompanyMembershipController extends AbstractController
                 $user->setIsVerified(true);
 
                 $entityManager->persist($user);
+                $entityManager->flush(); // Flush to get the user id
 
                 $loginLinkDetails = $loginLinkHandler->createLoginLink($user);
 
