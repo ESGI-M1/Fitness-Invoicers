@@ -247,9 +247,8 @@ tertiary: {
                 <br>
                 <div class="mb-4">
                     {% include './components/button.html.twig' with {
-                        'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6
-                        shadow-sm focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2
-                        border-solid p-4 shadow-lg justify-around bg-gray-100 hover:bg-gray-200',
+                        'class': 'flex w-full items-center rounded-md px-3 py-1.5 transition text-md ring-2 bg-opacity-80
+                        ring-secondary font-semibold leading-6 shadow-lg justify-around bg-gray-100 hover:bg-gray-200',
                         'label': 'Se connecter',
                     } %}
                 </div>
@@ -258,8 +257,11 @@ tertiary: {
         <div class="bg-black text-white p-4 rounded-lg shadow-md">
             <xmp class="text-sm">
                 {% verbatim %}
-                <button class="{{ class }}">
+                   <button type="submit" class="{{ class }}">
                     {{ label }}
+                    {% if fa is defined %}
+                        &nbsp; <i class="fas fa-{{ fa }}"></i>
+                    {% endif %}
                 </button>
                 {% endverbatim %}
             </xmp>
@@ -391,20 +393,95 @@ tertiary: {
 
     <div class="flex justify-center mb-8">
         <div class="ml-4">
-            <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component input</h2>
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component input_connection</h2>
             <br>
-            <label class="block text-gray-800 required" for="_username">Identifiant</label>
-            <input type="email" id="_username" name="_username" required="required" class="form-input"
-                   data-dashlane-rid="b73028a3843fc260" data-form-type="username" data-kwimpalastatus="alive"
-                   data-kwimpalaid="1709468192904-0">
+            <form class="connection">
+                <label class="block text-gray-800 required" for="_username">Identifiant</label>
+                <input type="email" id="_username" name="_username" required="required" class="form-input"
+                       data-dashlane-rid="b73028a3843fc260" data-form-type="username" data-kwimpalastatus="alive"
+                       data-kwimpalaid="1709468192904-0">
+            </form>
         </div>
     </div>
     <div class="bg-black text-white p-4 rounded-lg shadow-md">
         <xmp class="text-sm">
             {% verbatim %}
               @layer components {
-                  .form-input {
-                    @apply w-full rounded-md bg-gray-100 shadow-inner;
+                   form.connection input {
+                    @apply form-input ring-2 ring-secondary bg-opacity-80 bg-gray-100 focus:bg-gray-200;
+                  }
+
+                  form.connection label {
+                    @apply text-white;
+                  }
+                }
+                {% endverbatim %}
+        </xmp>
+    </div>
+
+    {% include './components/hr.html.twig' with {
+        'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+    } %}
+
+    <div class="flex justify-center mb-8">
+        <div class="ml-4">
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component input_search</h2>
+            <br>
+            <div class="search">
+                <form>
+                    <div class="mb-6">
+                        <label class="block text-gray-800" for="category_search_alias">Nom</label>
+                        <input type="text" id="category_search_alias" name="category_search[alias]" class="mt-1 w-full"
+                               data-dashlane-rid="ff74b59df0a6971d" data-form-type="">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="bg-black text-white p-4 rounded-lg shadow-md">
+        <xmp class="text-sm">
+            {% verbatim %}
+              @layer components {
+                 .search input {
+                    @apply rounded border-2 border-primary py-2 px-4;
+
+                    &:focus {
+                      @apply border-2;
+                    }
+                  }
+                }
+                {% endverbatim %}
+        </xmp>
+    </div>
+
+    {% include './components/hr.html.twig' with {
+        'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
+    } %}
+
+    <div class="flex justify-center mb-8">
+        <div class="ml-4">
+            <h2 class="text-2xl font-bold mb-2 dark:text-white">Exemple de component input_action</h2>
+            <br>
+            <form class="action">
+                <div class="mb-6"><label class="block text-gray-800 required"
+                                         for="product_form_reference">Référence</label>
+                    <input type="text" id="product_form_reference" name="product_form[reference]" required="required"
+                           class="mt-1 w-full" data-dashlane-rid="9007c1c0361970d6" data-form-type="other">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="bg-black text-white p-4 rounded-lg shadow-md">
+        <xmp class="text-sm">
+            {% verbatim %}
+              @layer components {
+               form.action input:not([type=file]),
+                  form.action select {
+                    @apply w-full rounded border-2 shadow-md border-white py-2 px-4 mb-2;
+
+                    &:focus {
+                      @apply border-2;
+                    }
                   }
                 }
                 {% endverbatim %}

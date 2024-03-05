@@ -325,7 +325,6 @@ class Invoice
 
     public function isValidStepTwo(): bool
     {
-        return true;
         foreach ($this->getItems() as $item) {
             if (!$item->isValid()) {
                 return false;

@@ -97,6 +97,11 @@ class CompanyController extends AbstractController
         $user = $this->getUser();
         $companies = $user->getCompanyMembershipAccepted();
 
+        if(!count($companies)) {
+            $this->addFlash('warning', 'Vous n\'avez pas encore d\'entreprise, veuillez en ajouter une.');
+            return $this->redirectToRoute('app_user_profile');
+        }
+
         $form = $this->createForm(
             CompanyChoiceType::class,
             null,

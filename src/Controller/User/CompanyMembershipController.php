@@ -81,7 +81,7 @@ class CompanyMembershipController extends AbstractController
                 $companyMembership->setRelatedUser($userByMail);
 
                 $email = (new Email())
-                    ->from('changeme@changeme.fr')
+                    ->from($this->getParameter('SUPPORT_EMAIL'))
                     ->to($form->get('email')->getData())
                     ->subject('Invitation à rejoindre l\'entreprise : ' . $company->getName())
                     ->text('Bonjour, vous avez été invité à rejoindre l\'entreprise : ' . $company->getName())
@@ -89,7 +89,7 @@ class CompanyMembershipController extends AbstractController
 
                 $mailer->send($email);
 
-                $this->addFlash('success', 'Utilisateur ajouté avec succès!');
+                $this->addFlash('success', 'Utilisateur ajouté avec succès !');
 
             } else {
                 $companyMembership->setRelatedUser($user);
@@ -105,7 +105,7 @@ class CompanyMembershipController extends AbstractController
                 $recipient = new Recipient($user->getEmail());
                 $notifier->send($notification, $recipient);
 
-                $this->addFlash('success', 'Utilisateur ajouté avec succès! Un email a été envoyé à l\'utilisateur pour qu\'il puisse se connecter');
+                $this->addFlash('success', 'Utilisateur ajouté avec succès ! Un email a été envoyé à l\'utilisateur pour qu\'il puisse se connecter');
 
             }
 
@@ -153,7 +153,7 @@ class CompanyMembershipController extends AbstractController
         }
 
         return $this->render('action.html.twig', [
-            'action' => 'Edit company membership',
+            'action' => 'Modifier l\'utilisateur : ' . $user->getFullName(),
             'form' => $form->createView(),
         ]);
 

@@ -9,18 +9,19 @@
 
     <div class="flex h-screen">
         {% include './layout/welcome_nav.html.twig' %}
-        <div class="w-full lg:w-3/4">
+        <div class="w-full lg:w-3/4 bg-no-repeat bg-cover"
+             style="background-image: url('/images/templates/background-welcome.png');">
             <div class="flex min-h-full flex-col px-6 py-12 lg:px-8">
                 <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                     {% include './components/title.html.twig' with {
                         'balise': 'h2',
                         'title': 'Connectez-vous',
-                        'class' : 'mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-100'
+                        'class' : 'mt-20 text-center text-3xl font-bold leading-9 tracking-tight text-white'
                     } %}
                 </div>
                 {% if app.user %}
                     <div class="flex flex-col justify-between items-center mb-3">
-                        <div>
+                        <div class="text-white">
                             Vous êtes connecté en tant que {{ app.user.userIdentifier }},
                             {% include './components/a_login.html.twig' with {
                                 'path': path('app_logout'),
@@ -40,22 +41,22 @@
                 {% endif %}
 
                 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    {{ form_start(form) }}
+                    {{ form_start(form, {'attr': {'class': 'connection'}}) }}
                         {% for child in form.children %}
                             <div class="mb-4">
-                                {{ form_row(child, {'attr': {'class': 'form-input'}}) }}
+                                {{ form_row(child) }}
                             </div>
                         {% endfor %}
-                    {% include './components/button.html.twig' with {
-                        'class': 'flex w-full items-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:border-gray-300 focus-visible:outline-offset-2 border border-2 border-solid p-4 shadow-lg  justify-around bg-gray-100 hover:bg-gray-200',
-                        'label': 'Se connecter',
-                    } %}
+                        {% include './components/button.html.twig' with {
+                            'class': 'flex w-full items-center rounded-md px-3 py-1.5 transition text-md ring-2 bg-opacity-80 ring-secondary font-semibold leading-6 shadow-lg justify-around bg-gray-100 hover:bg-gray-200',
+                            'label': 'Se connecter',
+                        } %}
                     {{ form_end(form) }}
-                    <div class="flex justify-end mb-4">
+                    <div class="flex justify-end my-4">
                         {% include './components/a_login.html.twig' with {
                             'path': path('app_forgot_password_request'),
-                            'class': 'text-sm ml-2 text-primary-hover hover:text-primary',
-                            'label': 'Mot de passe oublié?',
+                            'class': 'text-sm ml-2 hover:text-primary-hover text-primary',
+                            'label': 'Mot de passe oublié ?',
                         } %}
                     </div>
                     {% include './components/text_connection.html.twig' with {
@@ -63,6 +64,7 @@
                         'text': 'Créer un compte',
                         'link': path('app_register')
                     } %}
+                    {% include './layout/footer_security.html.twig' %}
                 </div>
             </div>
         </div>

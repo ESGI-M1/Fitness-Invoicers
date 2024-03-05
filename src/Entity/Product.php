@@ -62,7 +62,6 @@ class Product
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank(message: 'La société est obligatoire.')]
     private ?Company $company = null;
 
     public function __construct()

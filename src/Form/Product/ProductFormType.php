@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Entity\Category;
 use App\Service\CompanySession;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,7 +36,7 @@ class ProductFormType extends AbstractType
                 'required' => true,
                 'label' => 'Référence',
             ])
-            ->add('price', TextType::class, [
+            ->add('price', NumberType::class, [
                 'required' => true,
                 'label' => 'Prix',
             ])

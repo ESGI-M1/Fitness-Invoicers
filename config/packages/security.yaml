@@ -29,7 +29,8 @@ security:
             login_link:
                 check_route: invitation_check
                 signature_properties: ['id']
-                max_uses: 1
+                lifetime: 3600
+                max_uses: 30
                 default_target_path: app_user_invitation
                 always_use_default_target_path: true
 

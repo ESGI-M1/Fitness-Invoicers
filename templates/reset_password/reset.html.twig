@@ -3,10 +3,71 @@
 {% block title %}Réinitialiser votre mot de passe{% endblock %}
 
 {% block body %}
-    <h1>Réinitialiser votre mot de passe</h1>
+    {% if error %}
+        <div class="alert alert-danger">{{ error.message }}</div>
+    {% endif %}
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Réinitialiser mot de passe</button>
-    {{ form_end(resetForm) }}
+    <div class="flex h-screen">
+        {% include './layout/welcome_nav.html.twig' %}
+        <div class="w-full lg:w-3/4 bg-no-repeat bg-cover"
+             style="background-image: url('/images/templates/background-welcome.png');">
+            <div class="flex min-h-full flex-col px-6 py-12 lg:px-8">
+                <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+                    {% include './components/title.html.twig' with {
+                        'balise': 'h2',
+                        'title': 'Réinitialiser votre mot de passe',
+                        'class' : 'mt-20 text-center text-3xl font-bold leading-9 tracking-tight text-white'
+                    } %}
+                </div>
+                {% if app.user %}
+                    <div class="flex flex-col justify-between items-center mb-3">
+                        <div class="text-white">
+                            Vous êtes connecté en tant que {{ app.user.userIdentifier }},
+                            {% include './components/a_login.html.twig' with {
+                                'path': path('app_logout'),
+                                'class': 'text-tertiary-hover hover:text-tertiary',
+                                'label': 'Déconnexion',
+                            } %}
+                        </div>
+                        <div>
+                            {% include './components/a_login.html.twig' with {
+                                'path': path('app_index'),
+                                'class': 'text-primary-hover hover:text-primary',
+                                'label': 'Revenir vers l\'accueil',
+                                'fa': 'home'
+                            } %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                    {{ form_start(resetForm) }}
+                    {% for child in resetForm.children %}
+                        <div class="mb-4">
+                            {{ form_row(child) }}
+                        </div>
+                    {% endfor %}
+                    {% include './components/button.html.twig' with {
+                        'class': 'flex w-full items-center rounded-md px-3 py-1.5 transition text-md ring-2 bg-opacity-80 ring-secondary font-semibold leading-6 shadow-lg justify-around bg-gray-100 hover:bg-gray-200',
+                        'label': 'Réinitialiser mot de passe',
+                    } %}
+                    {{ form_end(resetForm) }}
+                    <div class="flex justify-end my-4">
+                        {% include './components/a_login.html.twig' with {
+                            'path': path('app_forgot_password_request'),
+                            'class': 'text-sm ml-2 hover:text-primary-hover text-primary',
+                            'label': 'Mot de passe oublié?',
+                        } %}
+                    </div>
+                    {% include './components/text_connection.html.twig' with {
+                        'title': 'Pas encore membre?',
+                        'text': 'Créer un compte',
+                        'link': path('app_register')
+                    } %}
+                    {% include './layout/footer_security.html.twig' %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+

@@ -18,6 +18,9 @@ class CustomerSearchType extends AbstractType
             ->add('alias', TextType::class, [
                 'required' => false,
                 'label' => 'Nom',
+                'attr' => [
+                    'placeholder' => 'Ex: Dupont'
+                ]
             ])
         ;
     }

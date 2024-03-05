@@ -16,18 +16,30 @@ class AddressFormType extends AbstractType
             ->add('street', TextType::class, [
                 'label' => 'Rue',
                 'required' => true,
+                'attr' => [
+                    'placeholder' => 'Ex: 1 rue de la paix'
+                ]
             ])
             ->add('city', TextType::class, [
                 'label' => 'Ville',
                 'required' => true,
+                'attr' => [
+                    'placeholder' => 'Ex: Paris'
+                ]
             ])
             ->add('postalCode', TextType::class, [
                 'label' => 'Code postal',
                 'required' => true,
+                'attr' => [
+                    'placeholder' => 'Ex: 75000'
+                ]
             ])
             ->add('country', TextType::class, [
                 'label' => 'Pays',
                 'required' => true,
+                'attr' => [
+                    'placeholder' => 'Ex: France'
+                ]
             ])
         ;
     }

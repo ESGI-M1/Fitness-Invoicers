@@ -32,18 +32,23 @@ class InvoiceSearchType extends AbstractType
             ->add('id', IntegerType::class, [
                 'required' => false,
                 'label' => 'N° de facture',
+                'attr' => [
+                    'placeholder' => 'Ex: 12'
+                ]
             ])
             ->add('discountTotal', NumberType::class, [
                 'required' => false,
                 'label' => 'Montant total',
+                'attr' => [
+                    'placeholder' => 'Ex: 123'
+                ]
             ])
             ->add('discountAmount', NumberType::class, [
                 'required' => false,
-                'label' => 'Montant de la remise',
-            ])
-            ->add('discountPercent', NumberType::class, [
-                'required' => false,
-                'label' => 'Réduction %',
+                'label' => 'Montant remise',
+                'attr' => [
+                    'placeholder' => 'Ex: 123'
+                ]
             ])
             ->add('status', ChoiceType::class, [
                 'choices' => $status,

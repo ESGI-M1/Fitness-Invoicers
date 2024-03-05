@@ -59,10 +59,11 @@ class ProductController extends AbstractController
         $product = new Product();
         $form = $this->createForm(ProductFormType::class, $product);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
 
             $product->setCompany($company);
+
             $entityManager->persist($product);
             $entityManager->flush();
             $this->addFlash('success', 'Le produit a bien été ajouté');

@@ -4,7 +4,7 @@
 
 {% block main %}
 <div class="flex gap-6"> {# Utilisation de flex-col pour aligner les éléments verticalement, et gap-6 pour ajouter un espace entre eux #}
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4"> {# Réduction de la taille des carrés blancs en modifiant la valeur de p-6 à p-4 #}
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4 dark:bg-gray-900 dark:text-white"> {# Réduction de la taille des carrés blancs en modifiant la valeur de p-6 à p-4 #}
         {% include './components/title.html.twig' with {
             'balise': 'h2',
             'title': 'Modifier votre profil',
@@ -18,7 +18,7 @@
         } %}
         {{ form_end(profileForm) }}
     </div>
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4 dark:bg-gray-900 dark:text-white">
         {% include './components/title.html.twig' with {
             'balise': 'h2',
             'title': 'Modifier votre mot de passe',
@@ -32,7 +32,7 @@
         } %}
         {{ form_end(passwordForm) }}
     </div>
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-4 dark:bg-gray-900 dark:text-white">
         {% include './components/title.html.twig' with {
             'balise': 'h2',
             'title': 'Vos entreprises',
@@ -44,15 +44,16 @@
                     <p class="font-semibold">{{ companyMemberShip.company.name }}</p>
                     <p>{{ companyMemberShip.status.name }}</p>
                 </div>
-                <div class="flex gap-2"> {# Réduction de l'espace entre les icônes #}
+                <div class="flex gap-6"> {# Réduction de l'espace entre les icônes #}
                     {% if is_granted('referent', companyMemberShip) and companySession.getCurrentCompanyTwig %}
                         {% include './components/a_table.html.twig' with {
-                            'path': path('app_user_company_edit', { 'id': companySession.getCurrentCompanyTwig.id }),
-                            'fa': 'edit',
+                            'path': path('app_user_company_show', { 'id': companySession.getCurrentCompanyTwig.id }),
+                            'fa': 'eye',
                         } %}
                     {% endif %}
                     {% include './components/a_table.html.twig' with {
                         'path': path('app_user_company_membership_delete', {'id': companyMemberShip.id, 'token': csrf_token('delete-user-company-membership' ~ companyMemberShip.id)}),
+                        'label': 'Quitter',
                         'fa': 'trash',
                     } %}
                 </div>
@@ -71,18 +72,20 @@
         'class': 'w-full h-1 my-8 bg-gray-200 border-0 rounded dark:bg-gray-700">'
     } %}
 
-    {{ form_start(mailForm) }}
-    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+    <div class="max-w-md w-3/6 mx-auto bg-white rounded-lg shadow-md p-6 dark:bg-gray-900">
+        {{ form_start(mailForm) }}
+
         <div class="overflow-y-auto max-h-full">
             {{ form_row(mailForm.invoiceMailContent, {'attr': {'class': 'w-full mb-4 h-full'}}) }}
             {{ form_row(mailForm.quoteMailContent, {'attr': {'class': 'w-full mb-4 h-full'}}) }}
             {{ form_row(mailForm.mailSignature, {'attr': {'class': 'w-full mb-4 h-full'}}) }}
         </div>
+        {% include './components/button.html.twig' with {
+            'class': 'bg-primary hover:bg-primary-hover text-center text-white font-bold py-2 px-4 rounded mt-4 w-full',
+            'label': 'Enregistrer les modifications',
+        } %}
+        {{ form_end(mailForm) }}
+
     </div>
-    {% include './components/button.html.twig' with {
-        'class': 'bg-primary hover:bg-primary-hover text-center text-white font-bold py-2 px-4 rounded mt-4 w-full',
-        'label': 'Enregistrer les modifications',
-    } %}
-    {{ form_end(mailForm) }}
 
 {% endblock %}

@@ -42,11 +42,17 @@ class UserSearchType extends AbstractType
         $builder
             ->add('alias', TextType::class, [
                 'label' => 'Nom',
-                'required' => false
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Ex: Dupont'
+                ]
             ])
             ->add('email', EmailType::class, [
                 'required' => true,
                 'label' => 'Email',
+                'attr' => [
+                    'placeholder' => 'Ex: jrabus@myges.fr'
+                ]
             ])
             ->add('civility', ChoiceType::class, [
                 'choices' => $civilities,

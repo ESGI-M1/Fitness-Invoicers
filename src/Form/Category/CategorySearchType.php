@@ -17,6 +17,9 @@ class CategorySearchType extends AbstractType
             ->add('alias', TextType::class, [
                 'required' => false,
                 'label' => 'Nom',
+                'attr' => [
+                    'placeholder' => 'Ex: poids-lourds'
+                ]
             ])
         ;
     }

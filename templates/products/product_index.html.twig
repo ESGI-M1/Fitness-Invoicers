@@ -30,7 +30,7 @@
                             </ul>
                         {% endif %}
                     </div>
-                    <div class="flex justify-between items-center gap-4 px-4 pb-4">
+                    <div class="flex justify-between items-center gap-4 px-4 pb-4 w-max">
                         {% include './components/a.html.twig' with {
                             'path': path('app_user_product_edit', {'id': product.id}),
                             'class': 'bg-primary hover:bg-primary-hover',

@@ -14,7 +14,7 @@
             {% include './components/back.html.twig' %}
         </div>
         <div class="modal-body dialog-submit">
-            {{ form_start(form) }}
+            {{ form_start(form, {'attr': {'class': 'action'}}) }}
             {% if form is defined %}
                 {% for child in form.children %}
                     <div class="mb-4">

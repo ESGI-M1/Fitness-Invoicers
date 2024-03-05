@@ -30,3 +30,6 @@ yarn-error.log
 app/
 
 /public/images
+.env
+.env.local.dist
+.env.test

@@ -54,12 +54,14 @@ class CustomerController extends AbstractController
         $company = $companySession->getCurrentCompany();
         
         $customer = new Customer();
+        $customer->setCompany($company);
+
         $form = $this->createForm(CustomerFormType::class, $customer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $customer->setCompany($company);
             $customer->setStatus(CustomerStatutEnum::VALIDATED);
+
             $entityManager->persist($customer);
             $entityManager->flush();
 
@@ -153,11 +155,10 @@ class CustomerController extends AbstractController
 
             $deliveryAddress = $customer->getDeliveryAddress();
             $billingAddress = $customer->getBillingAddress();
+
             $deliveryAddress ? $entityManager->remove($deliveryAddress) : null;
             $billingAddress ? $entityManager->remove($billingAddress) : null;
-
-            $entityManager->persist($deliveryAddress);
-            $entityManager->persist($billingAddress);
+            
             $entityManager->flush();
             $this->addFlash('success', 'Les données du client ont été supprimées');
         }
