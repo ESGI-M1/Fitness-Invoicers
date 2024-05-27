@@ -5,7 +5,7 @@
 - Nom : Maxime, github : Naegato, départ janvier
 - Nom : Arthur SERENNE, github : ArthurSerenne, départ décembre
 
-Lien de la prod : http://fit.sc2raju8736.universe.wf/
+Lien de la prod : http://fit.sc2raju8736.universe.wf/ ! N'est plus en ligne
 
 Lien du repo github : https://github.com/Fitness-Invoicers/Fitness-Invoicers
 
